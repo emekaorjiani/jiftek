@@ -1,10 +1,10 @@
-import Link from "next/link"
-import Image from "next/image"
+import { Link } from "@inertiajs/react"
 import { Button } from "@/components/ui/button"
 import { ChevronRight, CheckCircle, ArrowRight } from "lucide-react"
-
+import FrontLayout from "@/layouts/front-pages/front-layout"
 export default function ServicesPage() {
   return (
+    <FrontLayout>
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
         {/* Hero Section */}
@@ -60,7 +60,7 @@ export default function ServicesPage() {
               </div>
               <div className="mx-auto lg:mx-0 relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-teal-500 rounded-2xl blur-2xl opacity-10"></div>
-                <Image
+                <img
                   src="/placeholder.svg?height=400&width=600&text=Consulting"
                   alt="Technology Consulting"
                   width={600}
@@ -283,6 +283,7 @@ export default function ServicesPage() {
         </section>
       </main>
     </div>
+    </FrontLayout>
   )
 }
 

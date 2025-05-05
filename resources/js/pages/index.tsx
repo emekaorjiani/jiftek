@@ -7,7 +7,7 @@ export default function HomePage() {
   return (
     <FrontLayout>
       {/* Hero Section */}
-      <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-gray-900 to-gray-800">
+      <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-600 dark:bg-gradient-to-r dark:from-blue-900 dark:via-blue-800 dark:to-blue-700">
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
             <div className="space-y-4">
@@ -22,11 +22,11 @@ export default function HomePage() {
                 and growth for forward-thinking organizations.
               </p>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+                <Button size="lg" className="bg-blue-700 hover:bg-blue-900 cursor-pointer">
                   Explore Solutions
                   <ChevronRight className="ml-1 h-4 w-4" />
                 </Button>
-                <Button size="lg" variant="outline" className="text-gray-100 border-gray-300 hover:bg-gray-700">
+                <Button size="lg" variant="outline" className="dark:text-white text-amber-600 hover:text-amber-400 border-white hover:bg-blue-700 cursor-pointer">
                   Request a Consultation
                 </Button>
               </div>
@@ -46,7 +46,7 @@ export default function HomePage() {
       </section>
 
       {/* Trusted By Section */}
-      <section className="w-full py-8 border-y border-gray-700">
+      <section className="w-full py-8 border-y border-gray-700 bg-gradient-to-r from-blue-900 to-blue-800">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
@@ -70,17 +70,17 @@ export default function HomePage() {
       </section>
 
       {/* Core Solutions Section */}
-      <section className="w-full py-12 md:py-24 lg:py-32">
+      <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-900">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
-              <div className="inline-flex items-center rounded-lg bg-gray-800 px-3 py-1 text-sm text-gray-200 border border-gray-400">
+              <div className="inline-flex items-center rounded-lg bg-blue-600 px-3 py-1 text-sm text-gray-200 border border-blue-400">
                 <span>Our Solutions</span>
               </div>
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-gray-100">
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-blue-600">
                 Comprehensive Technology Solutions
               </h2>
-              <p className="max-w-[700px] text-gray-300 md:text-xl/relaxed">
+              <p className="max-w-[700px] text-gray-500 dark:text-gray-400 md:text-xl/relaxed">
                 We offer end-to-end technology services designed to help your business innovate and thrive in the
                 digital era.
               </p>

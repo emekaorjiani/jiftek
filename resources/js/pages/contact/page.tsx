@@ -1,12 +1,12 @@
-import Link from "next/link"
-import Image from "next/image"
+import { Link } from "@inertiajs/react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Phone, Mail, MapPin, Clock } from "lucide-react"
-
+import FrontLayout from "@/layouts/front-pages/front-layout"
 export default function ContactPage() {
   return (
+    <FrontLayout>
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
         {/* Hero Section */}
@@ -134,7 +134,7 @@ export default function ContactPage() {
                 <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
                   <h3 className="font-medium mb-4">Our Locations</h3>
                   <div className="aspect-video overflow-hidden rounded-lg">
-                    <Image
+                    <img
                       src="/placeholder.svg?height=300&width=600&text=Map"
                       alt="Office Locations Map"
                       width={600}
@@ -260,6 +260,7 @@ export default function ContactPage() {
         </section>
       </main>
     </div>
+    </FrontLayout>
   )
 }
 
