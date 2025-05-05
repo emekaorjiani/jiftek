@@ -1,13 +1,14 @@
 import { Button } from "@/components/ui/button"
 import { ChevronRight, Award, Target, Users, Heart } from "lucide-react"
-
+import FrontLayout from "@/layouts/front-pages/front-layout"
 export default function AboutPage() {
   return (
+    <FrontLayout>
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
         {/* Hero Section */}
         <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-slate-50 to-blue-50">
-          <div className="container px-4 md:px-6">
+          <div className="container mx-auto px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
               <div className="space-y-4">
                 <div className="inline-flex items-center rounded-lg bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800">
@@ -36,15 +37,15 @@ export default function AboutPage() {
         </section>
 
         {/* Mission & Vision */}
-        <section className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-blue-950 via-blue-700 to-blue-900 animate-gradient-x">
+          <div className="container mx-auto px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-2 lg:gap-12">
               <div className="space-y-4">
                 <div className="inline-flex items-center gap-2">
                   <Target className="h-5 w-5 text-blue-600" />
-                  <h2 className="text-2xl font-bold">Our Mission</h2>
+                  <h2 className="text-2xl font-bold text-gray-200">Our Mission</h2>
                 </div>
-                <p className="text-slate-700 md:text-lg/relaxed">
+                <p className="dark:text-slate-200 text-slate-200 md:text-lg/relaxed">
                   To empower organizations with innovative technology solutions that drive growth, efficiency, and
                   competitive advantage. We are committed to delivering exceptional value through our expertise,
                   integrity, and client-focused approach.
@@ -53,9 +54,9 @@ export default function AboutPage() {
               <div className="space-y-4">
                 <div className="inline-flex items-center gap-2">
                   <Award className="h-5 w-5 text-blue-600" />
-                  <h2 className="text-2xl font-bold">Our Vision</h2>
+                  <h2 className="text-2xl font-bold text-gray-200">Our Vision</h2>
                 </div>
-                <p className="text-slate-700 md:text-lg/relaxed">
+                <p className="dark:text-slate-200 text-slate-200 md:text-lg/relaxed">
                   To be the most trusted technology partner for forward-thinking organizations, known for our
                   innovation, excellence, and the transformative impact we create for our clients and communities.
                 </p>
@@ -66,7 +67,7 @@ export default function AboutPage() {
 
         {/* Values */}
         <section className="w-full py-12 md:py-24 lg:py-32 bg-slate-50">
-          <div className="container px-4 md:px-6">
+          <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Our Core Values</h2>
@@ -110,8 +111,8 @@ export default function AboutPage() {
         </section>
 
         {/* Our Story Timeline */}
-        <section className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-blue-500 to-blue-600 animate-gradient-x">
+          <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Our Journey</h2>
@@ -177,7 +178,7 @@ export default function AboutPage() {
 
         {/* Leadership Team */}
         <section className="w-full py-12 md:py-24 lg:py-32 bg-slate-50">
-          <div className="container px-4 md:px-6">
+          <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Our Leadership Team</h2>
@@ -192,37 +193,37 @@ export default function AboutPage() {
                   name: "Alex Johnson",
                   title: "Chief Executive Officer",
                   bio: "With over 20 years of experience in technology leadership, Alex has led Jiftek from its founding to become an industry leader.",
-                  image: "/placeholder.svg?height=300&width=300&text=CEO",
+                  img: "/placeholder.svg?height=300&width=300&text=CEO",
                 },
                 {
                   name: "Sarah Chen",
                   title: "Chief Technology Officer",
                   bio: "Sarah brings deep technical expertise and a passion for innovation, leading our technology strategy and development teams.",
-                  image: "/placeholder.svg?height=300&width=300&text=CTO",
+                  img: "/placeholder.svg?height=300&width=300&text=CTO",
                 },
                 {
                   name: "Michael Rodriguez",
                   title: "Chief Operating Officer",
                   bio: "Michael ensures operational excellence across all aspects of our business, with a focus on client satisfaction and results.",
-                  image: "/placeholder.svg?height=300&width=300&text=COO",
+                  img: "/placeholder.svg?height=300&width=300&text=COO",
                 },
                 {
                   name: "Emily Patel",
                   title: "VP of Client Services",
                   bio: "Emily leads our client services team, ensuring we deliver exceptional value and build lasting relationships with our clients.",
-                  image: "/placeholder.svg?height=300&width=300&text=VP",
+                  img: "/placeholder.svg?height=300&width=300&text=VP",
                 },
                 {
                   name: "David Kim",
                   title: "VP of Engineering",
                   bio: "David oversees our engineering teams, bringing technical excellence and innovation to every solution we deliver.",
-                  image: "/placeholder.svg?height=300&width=300&text=VP",
+                  img: "/placeholder.svg?height=300&width=300&text=VP",
                 },
                 {
                   name: "Lisa Thompson",
                   title: "VP of Marketing",
                   bio: "Lisa leads our marketing efforts, sharing Jiftek's story and connecting our solutions with the organizations that need them most.",
-                  image: "/placeholder.svg?height=300&width=300&text=VP",
+                  img: "/placeholder.svg?height=300&width=300&text=VP",
                 },
               ].map((leader, i) => (
                 <div
@@ -231,7 +232,7 @@ export default function AboutPage() {
                 >
                   <div className="aspect-square overflow-hidden">
                     <img
-                      src={leader.image || "/placeholder.svg"}
+                      src={leader.img || "/placeholder.svg"}
                       alt={leader.name}
                       width={300}
                       height={300}
@@ -251,20 +252,20 @@ export default function AboutPage() {
 
         {/* Company Culture */}
         <section className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
+          <div className="container mx-auto px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
               <div className="space-y-4">
                 <div className="inline-flex items-center rounded-lg bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800">
                   <span>Our Culture</span>
                 </div>
-                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
+                <h2 className="text-3xl font-bold tracking-tighter text-blue-400 md:text-4xl/tight">
                   A Culture of Innovation and Collaboration
                 </h2>
-                <p className="text-slate-700 md:text-lg/relaxed">
+                <p className="text-slate-200 md:text-lg/relaxed">
                   At Jiftek, we foster a culture that encourages creativity, continuous learning, and teamwork. We
                   believe that our people are our greatest asset, and we invest in their growth and well-being.
                 </p>
-                <p className="text-slate-700 md:text-lg/relaxed">
+                <p className="text-slate-200 md:text-lg/relaxed">
                   Our collaborative environment brings together diverse perspectives and expertise, enabling us to solve
                   complex challenges and deliver exceptional results for our clients.
                 </p>
@@ -311,7 +312,7 @@ export default function AboutPage() {
 
         {/* CTA Section */}
         <section className="w-full py-12 md:py-24 lg:py-32 bg-blue-600 text-white">
-          <div className="container px-4 md:px-6">
+          <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Join Us on Our Journey</h2>
@@ -333,6 +334,7 @@ export default function AboutPage() {
         </section>
       </main>
     </div>
+    </FrontLayout>
   )
 }
 

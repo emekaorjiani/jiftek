@@ -1,12 +1,12 @@
-import {Link} from "@inertiajs/react"
-// import {Image} from "@inertiajs/react"
+import { Link } from "@inertiajs/react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Phone, Mail, MapPin, Clock } from "lucide-react"
-
+import FrontLayout from "@/layouts/front-pages/front-layout"
 export default function ContactPage() {
   return (
+    <FrontLayout>
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
         {/* Hero Section */}
@@ -260,6 +260,7 @@ export default function ContactPage() {
         </section>
       </main>
     </div>
+    </FrontLayout>
   )
 }
 

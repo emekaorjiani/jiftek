@@ -1,6 +1,6 @@
 import { Link } from "@inertiajs/react"
 import { Button } from "@/components/ui/button"
-import { ChevronRight, Menu } from "lucide-react"
+import {  Menu } from "lucide-react"
 import { ReactNode } from "react"
 
 interface FrontLayoutProps {
@@ -27,6 +27,9 @@ export default function FrontLayout({ children }: FrontLayoutProps) {
           </div>
 
           <nav className="hidden md:flex gap-6 items-center">
+            <Link href="/about" className="text-sm font-medium text-gray-300 transition-colors hover:text-gray-100">
+              About Us
+            </Link>
             <Link
               href="/solutions"
               className="text-sm font-medium text-gray-300 transition-colors hover:text-gray-100"
@@ -38,9 +41,6 @@ export default function FrontLayout({ children }: FrontLayoutProps) {
               className="text-sm font-medium text-gray-300 transition-colors hover:text-gray-100"
             >
               Services
-            </Link>
-            <Link href="/about" className="text-sm font-medium text-gray-300 transition-colors hover:text-gray-100">
-              About Us
             </Link>
             <Link
               href="/insights"
@@ -54,11 +54,11 @@ export default function FrontLayout({ children }: FrontLayoutProps) {
           </nav>
 
           <div className="flex items-center gap-4">
-            <Button variant="outline" className="hidden md:inline-flex text-gray-200 border-gray-600 hover:bg-gray-700">
+            <Button variant="outline" className="hidden md:inline-flex bg-amber-400 text-gray-200 border-gray-600 hover:bg-amber-700 cursor-pointer">
               Request a Demo
             </Button>
-            <Button className="hidden md:inline-flex bg-gray-700 hover:bg-gray-600 text-gray-200">Contact Us</Button>
-            <Button variant="ghost" size="icon" className="md:hidden text-gray-200 hover:bg-gray-700">
+            <Button className="hidden md:inline-flex bg-blue-700 hover:bg-blue-600 text-gray-200 cursor-pointer">Contact Us</Button>
+            <Button variant="ghost" size="icon" className="md:hidden text-gray-200 hover:bg-gray-700 cursor-pointer">
               <Menu className="h-5 w-5" />
               <span className="sr-only">Toggle menu</span>
             </Button>

@@ -1,11 +1,11 @@
-import {Link} from "@inertiajs/react"
-
+import { Link } from "@inertiajs/react"
 import { Button } from "@/components/ui/button"
 import { ChevronRight, Search, Tag, Clock, User } from "lucide-react"
 import { Input } from "@/components/ui/input"
-
+import FrontLayout from "@/layouts/front-pages/front-layout"
 export default function InsightsPage() {
   return (
+    <FrontLayout>
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
         {/* Hero Section */}
@@ -310,6 +310,7 @@ export default function InsightsPage() {
         </section>
       </main>
     </div>
+    </FrontLayout>
   )
 }
 

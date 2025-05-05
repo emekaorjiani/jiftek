@@ -1,10 +1,10 @@
-import {Link} from "@inertiajs/react"
-
+import { Link } from "@inertiajs/react"
 import { Button } from "@/components/ui/button"
 import { ChevronRight, CheckCircle, ArrowRight } from "lucide-react"
-
+import FrontLayout from "@/layouts/front-pages/front-layout"
 export default function ServicesPage() {
   return (
+    <FrontLayout>
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
         {/* Hero Section */}
@@ -283,6 +283,7 @@ export default function ServicesPage() {
         </section>
       </main>
     </div>
+    </FrontLayout>
   )
 }
 
