@@ -175,7 +175,7 @@ export default function HomePage() {
                     src={item.img || "/placeholder.svg"}
                     alt={item.title}
                     className="object-cover transition-all group-hover:scale-105"
-                    fill
+                    // fill
                   />
                 </div>
                 <div className="p-6">
@@ -348,7 +348,7 @@ export default function HomePage() {
                     src={`/placeholder.svg?height=200&width=400&text=Blog+${i + 1}`}
                     alt={`Blog ${i + 1}`}
                     className="object-cover transition-all group-hover:scale-105"
-                    fill
+                    // fill
                   />
                 </div>
                 <div className="p-6">

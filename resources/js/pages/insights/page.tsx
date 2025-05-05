@@ -1,5 +1,5 @@
-import Link from "next/link"
-import Image from "next/image"
+import {Link} from "@inertiajs/react"
+
 import { Button } from "@/components/ui/button"
 import { ChevronRight, Search, Tag, Clock, User } from "lucide-react"
 import { Input } from "@/components/ui/input"
@@ -69,7 +69,7 @@ export default function InsightsPage() {
               </div>
               <div className="mx-auto lg:mx-0 relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-teal-500 rounded-2xl blur-2xl opacity-10"></div>
-                <Image
+                <img
                   src="/placeholder.svg?height=400&width=600&text=AI+in+Business"
                   alt="AI in Business"
                   width={600}
@@ -128,11 +128,11 @@ export default function InsightsPage() {
                   className="group relative overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition-all hover:shadow-md"
                 >
                   <div className="relative h-48 w-full overflow-hidden">
-                    <Image
+                    <img
                       src={`/placeholder.svg?height=200&width=400&text=Article+${i + 1}`}
                       alt={`Article ${i + 1}`}
                       className="object-cover transition-all group-hover:scale-105"
-                      fill
+                      // fill
                     />
                   </div>
                   <div className="p-6">
@@ -194,11 +194,11 @@ export default function InsightsPage() {
                   className="group relative overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition-all hover:shadow-md"
                 >
                   <div className="relative h-60 w-full overflow-hidden">
-                    <Image
+                    <img
                       src={`/placeholder.svg?height=300&width=600&text=Case+Study+${i + 1}`}
                       alt={`Case Study ${i + 1}`}
                       className="object-cover transition-all group-hover:scale-105"
-                      fill
+                      // fill
                     />
                   </div>
                   <div className="p-6">

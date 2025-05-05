@@ -1,4 +1,3 @@
-import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ChevronRight, Award, Target, Users, Heart } from "lucide-react"
 
@@ -24,7 +23,7 @@ export default function AboutPage() {
               </div>
               <div className="mx-auto lg:mx-0 relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-teal-500 rounded-2xl blur-2xl opacity-10"></div>
-                <Image
+                <img
                   src="/placeholder.svg?height=400&width=600&text=About+Us"
                   alt="Jiftek Team"
                   width={600}
@@ -231,7 +230,7 @@ export default function AboutPage() {
                   className="group relative overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"
                 >
                   <div className="aspect-square overflow-hidden">
-                    <Image
+                    <img
                       src={leader.image || "/placeholder.svg"}
                       alt={leader.name}
                       width={300}
@@ -277,28 +276,28 @@ export default function AboutPage() {
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <Image
+                <img
                   src="/placeholder.svg?height=300&width=300&text=Culture+1"
                   alt="Team Collaboration"
                   width={300}
                   height={300}
                   className="rounded-lg object-cover h-full"
                 />
-                <Image
+                <img
                   src="/placeholder.svg?height=300&width=300&text=Culture+2"
                   alt="Office Environment"
                   width={300}
                   height={300}
                   className="rounded-lg object-cover h-full mt-8"
                 />
-                <Image
+                <img
                   src="/placeholder.svg?height=300&width=300&text=Culture+3"
                   alt="Team Event"
                   width={300}
                   height={300}
                   className="rounded-lg object-cover h-full"
                 />
-                <Image
+                <img
                   src="/placeholder.svg?height=300&width=300&text=Culture+4"
                   alt="Innovation Workshop"
                   width={300}
