@@ -125,75 +125,75 @@ export default function FrontLayout({ children }: FrontLayoutProps) {
             </div>
             <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-3">
               <div className="space-y-4">
-                <h3 className="text-sm font-medium text-slate-900">Solutions</h3>
+                <h3 className="text-sm font-medium text-gray-200">Solutions</h3>
                 <ul className="space-y-2">
                   <li>
-                    <Link href="#" className="text-sm text-slate-600 hover:text-slate-900">
+                    <Link href="#" className="text-sm text-gray-200 hover:text-slate-900">
                       Digital Transformation
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-sm text-slate-600 hover:text-slate-900">
+                    <Link href="#" className="text-sm text-gray-200 hover:text-slate-900">
                       Cloud Services
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-sm text-slate-600 hover:text-slate-900">
+                    <Link href="#" className="text-sm text-gray-200 hover:text-slate-900">
                       Custom Software
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-sm text-slate-600 hover:text-slate-900">
+                    <Link href="#" className="text-sm text-gray-200 hover:text-slate-900">
                       Data Analytics
                     </Link>
                   </li>
                 </ul>
               </div>
               <div className="space-y-4">
-                <h3 className="text-sm font-medium text-slate-900">Company</h3>
+                <h3 className="text-sm font-medium text-gray-200">Company</h3>
                 <ul className="space-y-2">
                   <li>
-                    <Link href="#" className="text-sm text-slate-600 hover:text-slate-900">
+                    <Link href="#" className="text-sm text-gray-200 hover:text-slate-900">
                       About
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-sm text-slate-600 hover:text-slate-900">
+                    <Link href="#" className="text-sm text-gray-200 hover:text-slate-900">
                       Careers
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-sm text-slate-600 hover:text-slate-900">
+                    <Link href="#" className="text-sm text-gray-200 hover:text-slate-900">
                       Partners
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-sm text-slate-600 hover:text-slate-900">
+                    <Link href="#" className="text-sm text-gray-200 hover:text-slate-900">
                       Contact
                     </Link>
                   </li>
                 </ul>
               </div>
               <div className="space-y-4">
-                <h3 className="text-sm font-medium text-slate-900">Resources</h3>
+                <h3 className="text-sm font-medium text-gray-200">Resources</h3>
                 <ul className="space-y-2">
                   <li>
-                    <Link href="#" className="text-sm text-slate-600 hover:text-slate-900">
+                    <Link href="#" className="text-sm text-gray-200 hover:text-slate-900">
                       Blog
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-sm text-slate-600 hover:text-slate-900">
+                    <Link href="#" className="text-sm text-gray-200 hover:text-slate-900">
                       Case Studies
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-sm text-slate-600 hover:text-slate-900">
+                    <Link href="#" className="text-sm text-gray-200 hover:text-slate-900">
                       Whitepapers
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-sm text-slate-600 hover:text-slate-900">
+                    <Link href="#" className="text-sm text-gray-200 hover:text-slate-900">
                       Webinars
                     </Link>
                   </li>
@@ -204,17 +204,17 @@ export default function FrontLayout({ children }: FrontLayoutProps) {
           <div className="mt-8 border-t border-slate-200 pt-8">
             <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
               <div className="flex flex-wrap gap-4">
-                <Link href="#" className="text-xs text-slate-600 hover:text-slate-900">
+                <Link href="#" className="text-xs text-gray-200 hover:text-slate-900">
                   Terms of Service
                 </Link>
-                <Link href="#" className="text-xs text-slate-600 hover:text-slate-900">
+                <Link href="#" className="text-xs text-gray-200 hover:text-slate-900">
                   Privacy Policy
                 </Link>
-                <Link href="#" className="text-xs text-slate-600 hover:text-slate-900">
+                <Link href="#" className="text-xs text-gray-200 hover:text-slate-900">
                   Cookie Policy
                 </Link>
               </div>
-              <p className="text-xs text-slate-600">© {new Date().getFullYear()} Jiftek. All rights reserved.</p>
+              <p className="text-xs text-gray-200">© {new Date().getFullYear()} Jiftek. All rights reserved.</p>
             </div>
           </div>
         </div>
