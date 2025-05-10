@@ -132,7 +132,7 @@ export default function InsightsPage() {
                       src={`/placeholder.svg?height=200&width=400&text=Article+${i + 1}`}
                       alt={`Article ${i + 1}`}
                       className="object-cover transition-all group-hover:scale-105"
-                      fill
+                      // fill
                     />
                   </div>
                   <div className="p-6">
@@ -198,7 +198,7 @@ export default function InsightsPage() {
                       src={`/placeholder.svg?height=300&width=600&text=Case+Study+${i + 1}`}
                       alt={`Case Study ${i + 1}`}
                       className="object-cover transition-all group-hover:scale-105"
-                      fill
+                      // fill
                     />
                   </div>
                   <div className="p-6">

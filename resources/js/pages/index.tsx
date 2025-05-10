@@ -175,7 +175,7 @@ export default function HomePage() {
                     src={item.img || "/placeholder.svg"}
                     alt={item.title}
                     className="object-cover transition-all group-hover:scale-105"
-                    fill
+                    // fill
                   />
                 </div>
                 <div className="p-6">
@@ -332,7 +332,7 @@ export default function HomePage() {
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
                 Stay Informed with Jiftek
               </h2>
-              <p className="max-w-[700px] text-slate-700 md:text-xl/relaxed">
+              <p className="max-w-[700px] text-gray-200 md:text-xl/relaxed">
                 Explore our latest articles, guides, and industry insights.
               </p>
             </div>
@@ -348,7 +348,7 @@ export default function HomePage() {
                     src={`/placeholder.svg?height=200&width=400&text=Blog+${i + 1}`}
                     alt={`Blog ${i + 1}`}
                     className="object-cover transition-all group-hover:scale-105"
-                    fill
+                    // fill
                   />
                 </div>
                 <div className="p-6">
