@@ -1,6 +1,6 @@
 import type React from "react"
-import Link from "next/link"
-import { redirect } from "next/navigation"
+import { Link } from '@inertiajs/react'
+import { router } from '@inertiajs/react'
 import {
   LayoutDashboard,
   FileEdit,
@@ -28,7 +28,7 @@ export default function AdminLayout({
 }) {
   // In a real app, this would redirect unauthenticated users
   if (!checkAuth()) {
-    redirect("/login")
+    router.visit('/login')
   }
 
   return (
