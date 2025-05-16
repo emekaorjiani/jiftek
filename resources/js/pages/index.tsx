@@ -106,10 +106,10 @@ export default function HomePage() {
             ].map((item, i) => (
               <div
                 key={i}
-                className="group relative overflow-hidden rounded-lg border border-gray-700 bg-gray-800 p-6 shadow-sm transition-all hover:shadow-md"
+                className="group relative overflow-hidden rounded-lg border border-blue-500 bg-blue-700 dark:bg-gray-800 p-6 shadow-sm transition-all hover:shadow-md"
               >
                 <div className="space-y-4">
-                  <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-700 text-blue-400">
+                  <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-yellow-700 text-blue-100">
                     {item.icon}
                   </div>
                   <h3 className="text-xl font-bold text-gray-100">{item.title}</h3>
@@ -128,7 +128,7 @@ export default function HomePage() {
             ))}
           </div>
           <div className="flex justify-center mt-10">
-            <Button variant="outline" size="lg" className="text-gray-100 border-gray-300 hover:bg-gray-700">
+            <Button variant="outline" size="lg" className="text-blue-500 hover:text-blue-500 border-gray-300 hover:bg-gray-700 cursor-pointer">
               View All Solutions
               <ChevronRight className="ml-1 h-4 w-4" />
             </Button>
@@ -137,14 +137,14 @@ export default function HomePage() {
       </section>
 
       {/* Case Studies Section */}
-      <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-900">
+      <section className="w-full py-12 md:py-24 lg:py-32 dark:bg-blue-950 bg-gray-400">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
               <div className="inline-flex items-center rounded-lg bg-blue-900 px-3 py-1 text-sm font-medium text-blue-200 border border-blue-400">
                 <span>Success Stories</span>
               </div>
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-gray-100">
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-blue-500">
                 Our Client Success Stories
               </h2>
               <p className="max-w-[700px] text-gray-300 md:text-xl/relaxed">
@@ -168,7 +168,7 @@ export default function HomePage() {
             ].map((item, i) => (
               <div
                 key={i}
-                className="group relative overflow-hidden rounded-lg border border-gray-700 bg-gray-800 shadow-sm transition-all hover:shadow-md"
+                className="group relative overflow-hidden rounded-lg border border-blue-700 bg-blue-500 dark:border-gray-300 dark:bg-gray-700 shadow-sm transition-all hover:shadow-md"
               >
                 <div className="relative h-60 w-full overflow-hidden">
                   <img
@@ -211,7 +211,7 @@ export default function HomePage() {
               {Array.from({ length: 3 }).map((_, i) => (
                 <div
                   key={i}
-                  className="flex flex-col justify-between rounded-lg border border-slate-200 bg-white p-6 shadow-sm"
+                  className="flex flex-col justify-between rounded-lg border border-slate-200 bg-white  dark:bg-blue-950 p-6 shadow-sm"
                 >
                   <div className="space-y-4">
                     <div className="space-y-2">
@@ -232,7 +232,7 @@ export default function HomePage() {
                           </svg>
                         ))}
                       </div>
-                      <blockquote className="text-lg font-medium leading-relaxed text-slate-900">
+                      <blockquote className="text-lg font-medium leading-relaxed text-slate-900 dark:text-blue-50">
                         "Jiftek's team demonstrated exceptional expertise and commitment throughout our digital
                         transformation project. The results have exceeded our expectations."
                       </blockquote>
@@ -280,7 +280,7 @@ export default function HomePage() {
                 </Button>
               </div>
             </div>
-            <div className="space-y-4 bg-blue-700 rounded-lg p-6 lg:p-8">
+            <div className="space-y-4 bg-blue-800 rounded-lg p-6 lg:p-8">
               <h3 className="text-2xl font-bold">Contact Us</h3>
               <div className="grid gap-4">
                 <div className="grid gap-2">
@@ -326,7 +326,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
-              <div className="inline-flex items-center rounded-lg bg-slate-100 px-3 py-1 text-sm">
+              <div className="inline-flex items-center rounded-lg bg-slate-100 px-3 py-1 text-sm text-blue-500">
                 <span>Latest Insights</span>
               </div>
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
@@ -341,7 +341,7 @@ export default function HomePage() {
             {Array.from({ length: 3 }).map((_, i) => (
               <div
                 key={i}
-                className="group relative overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition-all hover:shadow-md"
+                className="group relative overflow-hidden rounded-lg border border-slate-200 bg-white dark:bg-blue-950 shadow-sm transition-all hover:shadow-md"
               >
                 <div className="relative h-48 w-full overflow-hidden">
                   <img
@@ -356,7 +356,7 @@ export default function HomePage() {
                     <span>Category</span>
                   </div>
                   <h3 className="mt-2 text-xl font-bold">The Future of AI in Business</h3>
-                  <p className="mt-2 text-slate-700 line-clamp-3">
+                  <p className="mt-2 text-slate-700 dark:text-blue-50 line-clamp-3">
                     Exploring how artificial intelligence is reshaping business operations and driving innovation
                     across industries.
                   </p>
@@ -369,9 +369,9 @@ export default function HomePage() {
                         height={24}
                         className="rounded-full"
                       />
-                      <span className="text-sm text-slate-600">Author Name</span>
+                      <span className="text-sm text-slate-600 dark:text-blue-50">Author Name</span>
                     </div>
-                    <span className="text-sm text-slate-600">5 min read</span>
+                    <span className="text-sm text-slate-600 dark:text-blue-50">5 min read</span>
                   </div>
                 </div>
               </div>

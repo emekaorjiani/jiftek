@@ -71,19 +71,19 @@ export default function FrontLayout({ children }: FrontLayoutProps) {
       </main>
 
       {/* Footer */}
-      <footer className="w-full border-t border-gray-700 bg-gray-800">
+      <footer className="w-full border-t border-gray-700 bg-gray-800 dark:bg-gray-950">
         <div className="container mx-auto px-4 md:px-6 py-12">
           <div className="grid gap-8 lg:grid-cols-4 max-w-7xl mx-auto">
             <div className="space-y-4">
               <Link href="/" className="flex items-center gap-2">
                 <img
-                  src="/placeholder.svg?height=40&width=40"
+                  src="/logo.png"
                   alt="Jiftek Logo"
                   width={40}
                   height={40}
                   className="h-10 w-10"
                 />
-                <span className="text-xl font-bold tracking-tight text-gray-200">Jiftek</span>
+                <span className="text-xl font-bold tracking-tight text-gray-200">Jiftek Digital Solutions</span>
               </Link>
               <p className="text-sm text-gray-400">
                 Delivering innovative technology solutions that drive business transformation and growth.

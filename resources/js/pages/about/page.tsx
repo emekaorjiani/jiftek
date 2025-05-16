@@ -7,17 +7,17 @@ export default function AboutPage() {
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-slate-50 to-blue-50 dark:bg-blue-100">
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-blue-950">
           <div className="container mx-auto px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
               <div className="space-y-4">
                 <div className="inline-flex items-center rounded-lg bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800">
                   <span>Our Story</span>
                 </div>
-                <h1 className="text-3xl font-bold text-blue-800 tracking-tighter sm:text-4xl md:text-5xl/tight">
+                <h1 className="text-3xl font-bold text-blue-500 tracking-tighter sm:text-4xl md:text-5xl/tight">
                   Driving Innovation Through Technology
                 </h1>
-                <p className="text-slate-700 md:text-xl/relaxed">
+                <p className="text-slate-700 dark:text-blue-50 md:text-xl/relaxed">
                   Founded in 2010, Jiftek has grown from a small tech consultancy to a leading provider of innovative
                   technology solutions for businesses worldwide.
                 </p>
@@ -66,12 +66,12 @@ export default function AboutPage() {
         </section>
 
         {/* Values */}
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-slate-50">
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-blue-950">
           <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Our Core Values</h2>
-                <p className="mx-auto max-w-[700px] text-slate-700 md:text-xl/relaxed">
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-blue-500">Our Core Values</h2>
+                <p className="mx-auto max-w-[700px] text-slate-700 dark:text-blue-50 md:text-xl/relaxed">
                   The principles that guide everything we do at Jiftek.
                 </p>
               </div>
@@ -103,7 +103,7 @@ export default function AboutPage() {
                 <div key={i} className="flex flex-col items-center text-center space-y-2 p-6">
                   <div className="rounded-full bg-blue-50 p-3">{value.icon}</div>
                   <h3 className="text-xl font-bold">{value.title}</h3>
-                  <p className="text-slate-700">{value.description}</p>
+                  <p className="text-slate-700 dark:text-blue-50">{value.description}</p>
                 </div>
               ))}
             </div>
@@ -115,8 +115,8 @@ export default function AboutPage() {
           <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Our Journey</h2>
-                <p className="mx-auto max-w-[700px] text-slate-700 md:text-xl/relaxed">
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-blue-900">Our Journey</h2>
+                <p className="mx-auto max-w-[700px] text-slate-700 dark:text-blue-50 md:text-xl/relaxed">
                   From our humble beginnings to where we are today.
                 </p>
               </div>
@@ -165,9 +165,9 @@ export default function AboutPage() {
                       <div className="h-2 w-2 rounded-full bg-white"></div>
                     </div>
                     <div className="space-y-1">
-                      <div className="text-sm font-medium text-blue-600">{milestone.year}</div>
+                      <div className="text-sm font-medium text-blue-200">{milestone.year}</div>
                       <h3 className="text-lg font-bold">{milestone.title}</h3>
-                      <p className="text-slate-700">{milestone.description}</p>
+                      <p className="text-slate-700 dark:text-blue-50">{milestone.description}</p>
                     </div>
                   </div>
                 ))}
@@ -177,12 +177,12 @@ export default function AboutPage() {
         </section>
 
         {/* Leadership Team */}
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-slate-50">
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-blue-950">
           <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Our Leadership Team</h2>
-                <p className="mx-auto max-w-[700px] text-slate-700 md:text-xl/relaxed">
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-blue-500">Our Leadership Team</h2>
+                <p className="mx-auto max-w-[700px] text-slate-700 dark:text-blue-50 md:text-xl/relaxed">
                   Meet the experienced professionals guiding our company.
                 </p>
               </div>
@@ -228,7 +228,7 @@ export default function AboutPage() {
               ].map((leader, i) => (
                 <div
                   key={i}
-                  className="group relative overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"
+                  className="group relative overflow-hidden rounded-lg border border-slate-200 bg-white dark:bg-blue-950 shadow-sm"
                 >
                   <div className="aspect-square overflow-hidden">
                     <img
@@ -242,7 +242,7 @@ export default function AboutPage() {
                   <div className="p-6">
                     <h3 className="text-lg font-bold">{leader.name}</h3>
                     <p className="text-sm text-blue-600">{leader.title}</p>
-                    <p className="mt-2 text-sm text-slate-700">{leader.bio}</p>
+                    <p className="mt-2 text-sm text-slate-700 dark:text-blue-50">{leader.bio}</p>
                   </div>
                 </div>
               ))}

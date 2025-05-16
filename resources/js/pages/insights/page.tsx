@@ -9,12 +9,12 @@ export default function InsightsPage() {
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-slate-50 to-blue-50">
-          <div className="container px-4 md:px-6">
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-blue-950">
+          <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl">Insights & Resources</h1>
-                <p className="mx-auto max-w-[700px] text-slate-700 md:text-xl/relaxed">
+                <p className="mx-auto max-w-[700px] text-slate-700 dark:text-blue-50 md:text-xl/relaxed">
                   Stay informed with the latest technology trends, insights, and best practices from our experts.
                 </p>
               </div>
@@ -32,7 +32,7 @@ export default function InsightsPage() {
         </section>
 
         {/* Featured Article */}
-        <section className="w-full py-12 md:py-24 lg:py-32">
+        {/* <section className="w-full py-12 md:py-24 lg:py-32">
           <div className="container px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
               <div className="space-y-4">
@@ -79,7 +79,7 @@ export default function InsightsPage() {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Categories */}
         <section className="w-full py-8 border-y border-slate-200">
@@ -112,11 +112,11 @@ export default function InsightsPage() {
 
         {/* Latest Articles */}
         <section className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
+          <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-start space-y-4">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Latest Articles</h2>
-                <p className="max-w-[700px] text-slate-700 md:text-xl/relaxed">
+                <p className="max-w-[700px] text-slate-700 dark:text-blue-50 md:text-xl/relaxed">
                   Explore our most recent insights and thought leadership.
                 </p>
               </div>
@@ -125,7 +125,7 @@ export default function InsightsPage() {
               {Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={i}
-                  className="group relative overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition-all hover:shadow-md"
+                  className="group relative overflow-hidden rounded-lg border border-slate-200 bg-white dark:bg-blue-950 shadow-sm transition-all hover:shadow-md"
                 >
                   <div className="relative h-48 w-full overflow-hidden">
                     <img
@@ -140,11 +140,11 @@ export default function InsightsPage() {
                       <span>Category</span>
                     </div>
                     <h3 className="mt-2 text-xl font-bold">Cloud Migration Strategies for Enterprise</h3>
-                    <p className="mt-2 text-slate-700 line-clamp-3">
+                    <p className="mt-2 text-slate-700 dark:text-blue-50 line-clamp-3">
                       Learn the best practices for migrating your enterprise applications and infrastructure to the
                       cloud securely and efficiently.
                     </p>
-                    <div className="mt-4 flex items-center gap-4 text-sm text-slate-600">
+                    <div className="mt-4 flex items-center gap-4 text-sm text-slate-600 dark:text-blue-50">
                       <div className="flex items-center gap-1">
                         <User className="h-3 w-3" />
                         <span>Author</span>
@@ -176,12 +176,12 @@ export default function InsightsPage() {
         </section>
 
         {/* Case Studies */}
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-slate-50">
-          <div className="container px-4 md:px-6">
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-blue-950">
+          <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-start space-y-4">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Case Studies</h2>
-                <p className="max-w-[700px] text-slate-700 md:text-xl/relaxed">
+                <p className="max-w-[700px] text-slate-700 dark:text-blue-50 md:text-xl/relaxed">
                   Real-world examples of how our solutions have helped organizations overcome challenges and achieve
                   their goals.
                 </p>
@@ -191,7 +191,7 @@ export default function InsightsPage() {
               {Array.from({ length: 4 }).map((_, i) => (
                 <div
                   key={i}
-                  className="group relative overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition-all hover:shadow-md"
+                  className="group relative overflow-hidden rounded-lg border border-slate-200 bg-white dark:bg-blue-950 shadow-sm transition-all hover:shadow-md"
                 >
                   <div className="relative h-60 w-full overflow-hidden">
                     <img
@@ -206,7 +206,7 @@ export default function InsightsPage() {
                       <span>Industry</span>
                     </div>
                     <h3 className="mt-2 text-xl font-bold">Digital Transformation for Financial Services</h3>
-                    <p className="mt-2 text-slate-700">
+                    <p className="mt-2 text-slate-700 dark:text-blue-50">
                       How we helped a leading bank modernize their legacy systems and improve customer experience.
                     </p>
                     <div className="mt-4">
@@ -233,11 +233,11 @@ export default function InsightsPage() {
 
         {/* Resources */}
         <section className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
+          <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-start space-y-4">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Resources</h2>
-                <p className="max-w-[700px] text-slate-700 md:text-xl/relaxed">
+                <p className="max-w-[700px] text-slate-700 dark:text-blue-50 md:text-xl/relaxed">
                   Guides, whitepapers, and tools to help you navigate the technology landscape.
                 </p>
               </div>
@@ -262,11 +262,11 @@ export default function InsightsPage() {
               ].map((resource, i) => (
                 <div
                   key={i}
-                  className="flex flex-col items-center text-center p-6 rounded-lg border border-slate-200 bg-white shadow-sm"
+                  className="flex flex-col items-center text-center p-6 rounded-lg border border-slate-200 bg-white dark:bg-blue-950 shadow-sm"
                 >
-                  <div className="text-4xl mb-4">{resource.icon}</div>
-                  <h3 className="text-xl font-bold">{resource.title}</h3>
-                  <p className="mt-2 text-slate-700">{resource.description}</p>
+                  <div className="text-4xl mb-4 text-blue-600 dark:text-blue-50">{resource.icon}</div>
+                  <h3 className="text-xl font-bold text-slate-700 dark:text-blue-50">{resource.title}</h3>
+                  <p className="mt-2 text-slate-700 dark:text-blue-50">{resource.description}</p>
                   <div className="mt-4">
                     <Link
                       href={`/insights/${resource.title.toLowerCase()}`}
@@ -283,14 +283,14 @@ export default function InsightsPage() {
         </section>
 
         {/* Newsletter */}
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-blue-600 text-white">
-          <div className="container px-4 md:px-6">
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-blue-600 text-white dark:bg-blue-950">
+          <div className="container mx-auto px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
               <div className="space-y-4">
                 <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
                   Stay Updated with Our Newsletter
                 </h2>
-                <p className="text-blue-100 md:text-lg/relaxed">
+                <p className="text-blue-100 dark:text-blue-50 md:text-lg/relaxed">
                   Subscribe to receive the latest insights, articles, and resources directly in your inbox.
                 </p>
               </div>
@@ -299,7 +299,7 @@ export default function InsightsPage() {
                   <Input
                     type="email"
                     placeholder="Enter your email"
-                    className="bg-blue-700 border-blue-500 text-white placeholder:text-blue-300 focus:ring-blue-400"
+                    className="bg-blue-700 border-blue-500 text-white placeholder:text-blue-300 focus:ring-blue-400 dark:bg-blue-950 dark:border-blue-500 dark:text-white dark:placeholder:text-blue-300 dark:focus:ring-blue-400"
                   />
                   <Button className="bg-white text-blue-600 hover:bg-blue-50">Subscribe</Button>
                 </form>

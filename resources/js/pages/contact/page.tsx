@@ -10,12 +10,12 @@ export default function ContactPage() {
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-slate-50 to-blue-50">
-          <div className="container px-4 md:px-6">
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-blue-950">
+          <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl">Contact Us</h1>
-                <p className="mx-auto max-w-[700px] text-slate-700 md:text-xl/relaxed">
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl text-slate-700 dark:text-blue-50">Contact Us</h1>
+                <p className="mx-auto max-w-[700px] text-slate-700 dark:text-blue-50 md:text-xl/relaxed">
                   Have questions or ready to start your next project? Get in touch with our team.
                 </p>
               </div>
@@ -25,12 +25,12 @@ export default function ContactPage() {
 
         {/* Contact Form and Info */}
         <section className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
+          <div className="container mx-auto px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-2 lg:gap-12">
               <div className="space-y-8">
                 <div className="space-y-2">
-                  <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">Get in Touch</h2>
-                  <p className="text-slate-700 md:text-lg/relaxed">
+                  <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight text-slate-700 dark:text-blue-50">Get in Touch</h2>
+                  <p className="text-slate-700 dark:text-blue-50 md:text-lg/relaxed">
                     Fill out the form below and our team will get back to you within 24 hours.
                   </p>
                 </div>
@@ -84,54 +84,54 @@ export default function ContactPage() {
               </div>
               <div className="space-y-8">
                 <div className="space-y-2">
-                  <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">Contact Information</h2>
-                  <p className="text-slate-700 md:text-lg/relaxed">
+                  <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight text-slate-700 dark:text-blue-50">Contact Information</h2>
+                  <p className="text-slate-700 dark:text-blue-50 md:text-lg/relaxed">
                     Reach out to us directly using the information below.
                   </p>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+                  <div className="rounded-lg border border-slate-200 bg-white dark:bg-blue-950 p-6 shadow-sm">
                     <div className="flex items-start space-x-4">
                       <Phone className="h-6 w-6 text-blue-600" />
                       <div className="space-y-1">
                         <h3 className="font-medium">Phone</h3>
-                        <p className="text-sm text-slate-700">+1 (555) 123-4567</p>
-                        <p className="text-sm text-slate-500">Mon-Fri, 9am-5pm EST</p>
+                        <p className="text-sm text-slate-700 dark:text-blue-50">+1 (555) 123-4567</p>
+                        <p className="text-sm text-slate-500 dark:text-blue-50">Mon-Fri, 9am-5pm EST</p>
                       </div>
                     </div>
                   </div>
-                  <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+                  <div className="rounded-lg border border-slate-200 bg-white dark:bg-blue-950 p-6 shadow-sm">
                     <div className="flex items-start space-x-4">
                       <Mail className="h-6 w-6 text-blue-600" />
                       <div className="space-y-1">
                         <h3 className="font-medium">Email</h3>
-                        <p className="text-sm text-slate-700">info@jiftek.com</p>
-                        <p className="text-sm text-slate-500">We'll respond within 24 hours</p>
+                        <p className="text-sm text-slate-700 dark:text-blue-50">info@jiftek.com</p>
+                        <p className="text-sm text-slate-500 dark:text-blue-50">We'll respond within 24 hours</p>
                       </div>
                     </div>
                   </div>
-                  <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+                  <div className="rounded-lg border border-slate-200 bg-white dark:bg-blue-950 p-6 shadow-sm">
                     <div className="flex items-start space-x-4">
                       <MapPin className="h-6 w-6 text-blue-600" />
                       <div className="space-y-1">
                         <h3 className="font-medium">Headquarters</h3>
-                        <p className="text-sm text-slate-700">123 Tech Plaza, Suite 400</p>
-                        <p className="text-sm text-slate-700">San Francisco, CA 94105</p>
+                        <p className="text-sm text-slate-700 dark:text-blue-50">123 Tech Plaza, Suite 400</p>
+                        <p className="text-sm text-slate-700 dark:text-blue-50">San Francisco, CA 94105</p>
                       </div>
                     </div>
                   </div>
-                  <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+                  <div className="rounded-lg border border-slate-200 bg-white dark:bg-blue-950 p-6 shadow-sm">
                     <div className="flex items-start space-x-4">
                       <Clock className="h-6 w-6 text-blue-600" />
                       <div className="space-y-1">
                         <h3 className="font-medium">Business Hours</h3>
-                        <p className="text-sm text-slate-700">Monday-Friday: 9am-5pm</p>
-                        <p className="text-sm text-slate-700">Saturday-Sunday: Closed</p>
+                        <p className="text-sm text-slate-700 dark:text-blue-50">Monday-Friday: 9am-5pm</p>
+                        <p className="text-sm text-slate-700 dark:text-blue-50">Saturday-Sunday: Closed</p>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="rounded-lg border border-slate-200 bg-white dark:bg-blue-950 p-6 shadow-sm">
                   <h3 className="font-medium mb-4">Our Locations</h3>
                   <div className="aspect-video overflow-hidden rounded-lg">
                     <img
@@ -148,7 +148,7 @@ export default function ContactPage() {
                   <div className="flex gap-4">
                     <Link
                       href="#"
-                      className="rounded-full bg-slate-100 p-2 text-slate-600 hover:bg-slate-200 hover:text-slate-900"
+                      className="rounded-full bg-slate-100 dark:bg-blue-950 p-2 text-slate-600 dark:text-blue-50 hover:bg-slate-200 hover:text-slate-900"
                     >
                       <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path
@@ -161,7 +161,7 @@ export default function ContactPage() {
                     </Link>
                     <Link
                       href="#"
-                      className="rounded-full bg-slate-100 p-2 text-slate-600 hover:bg-slate-200 hover:text-slate-900"
+                      className="rounded-full bg-slate-100 dark:bg-blue-950 p-2 text-slate-600 dark:text-blue-50 hover:bg-slate-200 hover:text-slate-900"
                     >
                       <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.073 4.073 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.093 4.093 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.615 11.615 0 006.29 1.84" />
@@ -170,7 +170,7 @@ export default function ContactPage() {
                     </Link>
                     <Link
                       href="#"
-                      className="rounded-full bg-slate-100 p-2 text-slate-600 hover:bg-slate-200 hover:text-slate-900"
+                      className="rounded-full bg-slate-100 dark:bg-blue-950 p-2 text-slate-600 dark:text-blue-50 hover:bg-slate-200 hover:text-slate-900"
                     >
                       <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path
@@ -183,7 +183,7 @@ export default function ContactPage() {
                     </Link>
                     <Link
                       href="#"
-                      className="rounded-full bg-slate-100 p-2 text-slate-600 hover:bg-slate-200 hover:text-slate-900"
+                      className="rounded-full bg-slate-100 dark:bg-blue-950 p-2 text-slate-600 dark:text-blue-50 hover:bg-slate-200 hover:text-slate-900"
                     >
                       <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path
@@ -196,7 +196,7 @@ export default function ContactPage() {
                     </Link>
                     <Link
                       href="#"
-                      className="rounded-full bg-slate-100 p-2 text-slate-600 hover:bg-slate-200 hover:text-slate-900"
+                      className="rounded-full bg-slate-100 dark:bg-blue-950 p-2 text-slate-600 dark:text-blue-50 hover:bg-slate-200 hover:text-slate-900"
                     >
                       <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path
@@ -215,14 +215,14 @@ export default function ContactPage() {
         </section>
 
         {/* FAQ Section */}
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-slate-50">
-          <div className="container px-4 md:px-6">
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-slate-50 dark:bg-blue-950">
+          <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
                   Frequently Asked Questions
                 </h2>
-                <p className="mx-auto max-w-[700px] text-slate-700 md:text-xl/relaxed">
+                <p className="mx-auto max-w-[700px] text-slate-700 dark:text-blue-50 md:text-xl/relaxed">
                   Find answers to common questions about working with us.
                 </p>
               </div>
@@ -250,9 +250,9 @@ export default function ContactPage() {
                     "Security is built into every solution we develop. We implement industry best practices, conduct regular security audits, use encryption for sensitive data, and ensure compliance with relevant regulations. Our team stays updated on the latest security threats and mitigation strategies.",
                 },
               ].map((faq, i) => (
-                <div key={i} className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+                <div key={i} className="rounded-lg border border-slate-200 bg-white dark:bg-blue-950 p-6 shadow-sm">
                   <h3 className="text-lg font-bold">{faq.question}</h3>
-                  <p className="mt-2 text-slate-700">{faq.answer}</p>
+                  <p className="mt-2 text-slate-700 dark:text-blue-50">{faq.answer}</p>
                 </div>
               ))}
             </div>
