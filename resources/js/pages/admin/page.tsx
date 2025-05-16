@@ -12,9 +12,11 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import AdminLayout from "@/layouts/admin/layout"
 
 export default function AdminDashboard() {
   return (
+    <AdminLayout>
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
@@ -221,6 +223,7 @@ export default function AdminDashboard() {
         </Card>
       </div>
     </div>
+    </AdminLayout>
   )
 }
 
