@@ -8,12 +8,12 @@ export default function ServicesPage() {
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-slate-50 to-blue-50">
-          <div className="container px-4 md:px-6">
+        <section className="w-full py-12 md:py-24 lg:py-24 bg-gradient-to-r from-blue-500 to-blue-950">
+          <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl">Our Services</h1>
-                <p className="mx-auto max-w-[700px] text-slate-700 md:text-xl/relaxed">
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl text-blue-500">Our Services</h1>
+                <p className="mx-auto max-w-[700px] text-gray-100 md:text-xl/relaxed">
                   Comprehensive technology solutions tailored to your business needs. We help you innovate, transform,
                   and grow.
                 </p>
@@ -30,15 +30,15 @@ export default function ServicesPage() {
                 <div className="inline-flex items-center rounded-lg bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800">
                   <span>Technology Consulting</span>
                 </div>
-                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
+                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight text-blue-500">
                   Strategic Technology Consulting
                 </h2>
-                <p className="text-slate-700 md:text-lg/relaxed">
+                <p className="text-gray-100 md:text-lg/relaxed">
                   Our expert consultants work with you to understand your business challenges and develop technology
                   strategies that align with your goals. We provide roadmaps for digital transformation, technology
                   adoption, and innovation.
                 </p>
-                <ul className="grid gap-2">
+                <ul className="grid gap-2 dark:text-gray-100 t">
                   {[
                     "IT Strategy Development",
                     "Digital Transformation Planning",

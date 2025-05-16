@@ -11,50 +11,50 @@ export default function FrontLayout({ children }: FrontLayoutProps) {
   return (
     <div className="flex min-h-screen flex-col bg-gray-900">
       {/* Header */}
-      <header className="sticky top-0 z-50 w-full bg-gray-800/95 backdrop-blur supports-[backdrop-filter]:bg-gray-800/60 border-b border-gray-700">
+      <header className="sticky top-0 z-50 w-full bg-gray-100 backdrop-blur supports-[backdrop-filter]:bg-gray-100 border-b border-100-ray-700 dark:bg-gray-900">
         <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6 max-w-7xl">
           <div className="flex items-center gap-2">
             <Link href="/" className="flex items-center gap-2">
               <img
-                src="/placeholder.svg?height=40&width=40"
+                src="/logo.png"
                 alt="Jiftek Logo"
                 width={40}
                 height={40}
                 className="h-10 w-10"
               />
-              <span className="text-xl font-bold tracking-tight text-gray-200">Jiftek</span>
+              <span className="text-xl font-bold tracking-tight text-blue-600">Jiftek Digital Solutions</span>
             </Link>
           </div>
 
           <nav className="hidden md:flex gap-6 items-center">
-            <Link href="/about" className="text-sm font-medium text-gray-300 transition-colors hover:text-gray-100">
+            <Link href="/about" className="text-sm font-medium text-blue-500 transition-colors hover:text-orange-600">
               About Us
             </Link>
             <Link
               href="/solutions"
-              className="text-sm font-medium text-gray-300 transition-colors hover:text-gray-100"
+              className="text-sm font-medium text-blue-500 transition-colors hover:text-orange-600"
             >
               Solutions
             </Link>
             <Link
               href="/services"
-              className="text-sm font-medium text-gray-300 transition-colors hover:text-gray-100"
+              className="text-sm font-medium text-blue-500 transition-colors hover:text-orange-600"
             >
               Services
             </Link>
             <Link
               href="/insights"
-              className="text-sm font-medium text-gray-300 transition-colors hover:text-gray-100"
+              className="text-sm font-medium text-blue-500 transition-colors hover:text-orange-600"
             >
               Insights
             </Link>
-            <Link href="/contact" className="text-sm font-medium text-gray-300 transition-colors hover:text-gray-100">
+            <Link href="/contact" className="text-sm font-medium text-blue-500 transition-colors hover:text-orange-600">
               Contact
             </Link>
           </nav>
 
           <div className="flex items-center gap-4">
-            <Button variant="outline" className="hidden md:inline-flex bg-amber-400 text-gray-200 border-gray-600 hover:bg-amber-700 cursor-pointer">
+            <Button variant="outline" className="hidden md:inline-flex bg-amber-500 text-gray-100 border-gray-200 hover:bg-amber-700 cursor-pointer">
               Request a Demo
             </Button>
             <Button className="hidden md:inline-flex bg-blue-700 hover:bg-blue-600 text-gray-200 cursor-pointer">Contact Us</Button>

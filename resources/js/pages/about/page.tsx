@@ -7,14 +7,14 @@ export default function AboutPage() {
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-slate-50 to-blue-50">
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-slate-50 to-blue-50 dark:bg-blue-100">
           <div className="container mx-auto px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
               <div className="space-y-4">
                 <div className="inline-flex items-center rounded-lg bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800">
                   <span>Our Story</span>
                 </div>
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl/tight">
+                <h1 className="text-3xl font-bold text-blue-800 tracking-tighter sm:text-4xl md:text-5xl/tight">
                   Driving Innovation Through Technology
                 </h1>
                 <p className="text-slate-700 md:text-xl/relaxed">
