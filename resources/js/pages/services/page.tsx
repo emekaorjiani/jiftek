@@ -23,7 +23,7 @@ export default function ServicesPage() {
         </section>
 
         {/* Services Overview */}
-        <section className="w-full py-12 md:py-24 lg:py-32">
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-slate-50 dark:bg-slate-900">
           <div className="container mx-auto px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
               <div className="space-y-4">
@@ -33,7 +33,7 @@ export default function ServicesPage() {
                 <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight text-blue-500">
                   Strategic Technology Consulting
                 </h2>
-                <p className="text-gray-100 md:text-lg/relaxed">
+                <p className="text-gray-800 dark:text-gray-100 md:text-lg/relaxed">
                   Our expert consultants work with you to understand your business challenges and develop technology
                   strategies that align with your goals. We provide roadmaps for digital transformation, technology
                   adoption, and innovation.
@@ -73,12 +73,12 @@ export default function ServicesPage() {
         </section>
 
         {/* Service Cards */}
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-slate-50">
-          <div className="container px-4 md:px-6">
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-slate-50 dark:bg-gradient-to-r from-blue-500 to-blue-950">
+          <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Our Core Services</h2>
-                <p className="mx-auto max-w-[700px] text-slate-700 md:text-xl/relaxed">
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-blue-500">Our Core Services</h2>
+                <p className="mx-auto max-w-[700px] text-slate-700 dark:text-gray-100 md:text-xl/relaxed">
                   Comprehensive solutions designed to address your most complex technology challenges.
                 </p>
               </div>
@@ -129,14 +129,14 @@ export default function ServicesPage() {
               ].map((service, i) => (
                 <div
                   key={i}
-                  className="group relative overflow-hidden rounded-lg border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-md"
+                  className="group relative overflow-hidden rounded-lg border border-slate-200 bg-white dark:bg-slate-800 p-6 shadow-sm transition-all hover:shadow-md"
                 >
                   <div className="space-y-4">
-                    <h3 className="text-xl font-bold">{service.title}</h3>
-                    <p className="text-slate-700">{service.description}</p>
+                    <h3 className="text-xl font-bold text-blue-500">{service.title}</h3>
+                    <p className="text-slate-700 dark:text-gray-100">{service.description}</p>
                     <ul className="space-y-2">
                       {service.features.map((feature, j) => (
-                        <li key={j} className="flex items-center gap-2 text-sm">
+                        <li key={j} className="flex items-center gap-2 text-sm text-gray-800 dark:text-gray-100">
                           <CheckCircle className="h-4 w-4 text-blue-600" />
                           <span>{feature}</span>
                         </li>
@@ -159,12 +159,12 @@ export default function ServicesPage() {
         </section>
 
         {/* Service Process */}
-        <section className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-slate-50 dark:bg-gradient-to-r from-yellow-500 to-orange-950">
+          <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Our Service Process</h2>
-                <p className="mx-auto max-w-[700px] text-slate-700 md:text-xl/relaxed">
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-blue-500">Our Service Process</h2>
+                <p className="mx-auto max-w-[700px] text-slate-700 dark:text-gray-100 md:text-xl/relaxed">
                   A structured approach to delivering exceptional results for your business.
                 </p>
               </div>
@@ -198,12 +198,12 @@ export default function ServicesPage() {
                   <div className="absolute top-0 left-0 -mt-2 -ml-2 flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-white">
                     {step.step}
                   </div>
-                  <div className="rounded-lg border border-slate-200 bg-white p-6 pl-8 shadow-sm">
-                    <h3 className="text-xl font-bold">{step.title}</h3>
-                    <p className="mt-2 text-slate-700">{step.description}</p>
+                  <div className="rounded-lg border border-yellow-500 bg-white dark:bg-yellow-800 p-6 pl-8 shadow-sm">
+                    <h3 className="text-xl font-bold text-blue-500">{step.title}</h3>
+                    <p className="mt-2 text-slate-700 dark:text-gray-100">{step.description}</p>
                   </div>
                   {i < 3 && (
-                    <div className="hidden lg:block absolute top-1/2 right-0 h-0.5 w-8 bg-slate-200 translate-x-full"></div>
+                    <div className="hidden lg:block absolute top-1/2 right-0 h-0.5 w-8 bg-yellow-500 translate-x-full"></div>
                   )}
                 </div>
               ))}
@@ -213,7 +213,7 @@ export default function ServicesPage() {
 
         {/* CTA Section */}
         <section className="w-full py-12 md:py-24 lg:py-32 bg-blue-600 text-white">
-          <div className="container px-4 md:px-6">
+          <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
@@ -239,13 +239,13 @@ export default function ServicesPage() {
 
         {/* FAQ Section */}
         <section className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
+          <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                <h2 className="text-3xl font-bold text-blue-500 tracking-tighter sm:text-4xl md:text-5xl">
                   Frequently Asked Questions
                 </h2>
-                <p className="mx-auto max-w-[700px] text-slate-700 md:text-xl/relaxed">
+                <p className="mx-auto max-w-[700px] text-slate-700 dark:text-gray-100 md:text-xl/relaxed">
                   Find answers to common questions about our services.
                 </p>
               </div>
@@ -273,9 +273,9 @@ export default function ServicesPage() {
                     "Absolutely. We specialize in integrating with existing systems and technologies. Our team has experience working with a wide range of platforms, databases, and legacy systems to ensure seamless integration and data flow.",
                 },
               ].map((faq, i) => (
-                <div key={i} className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-                  <h3 className="text-lg font-bold">{faq.question}</h3>
-                  <p className="mt-2 text-slate-700">{faq.answer}</p>
+                <div key={i} className="rounded-lg border border-slate-200 bg-white dark:bg-slate-800 p-6 shadow-sm">
+                  <h3 className="text-lg font-bold text-blue-500">{faq.question}</h3>
+                  <p className="mt-2 text-slate-700 dark:text-gray-100">{faq.answer}</p>
                 </div>
               ))}
             </div>
