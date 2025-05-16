@@ -203,7 +203,7 @@ export default function HomePage() {
           <div className="mx-auto flex max-w-6xl flex-col items-center space-y-4 text-center">
             <div className="space-y-2">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">What Our Clients Say</h2>
-              <p className="max-w-[700px] text-slate-700 md:text-xl/relaxed">
+              <p className="max-w-[700px] text-gray-200 md:text-xl/relaxed">
                 Don't just take our word for it. Hear from the organizations we've helped transform.
               </p>
             </div>

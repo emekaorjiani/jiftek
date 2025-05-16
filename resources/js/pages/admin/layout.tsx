@@ -27,7 +27,7 @@ export default function AdminLayout({
 }) {
   // In a real app, this would redirect unauthenticated users
   if (!checkAuth()) {
-    router.visit("/login")
+    router.visit('/login')
   }
 
   return (
