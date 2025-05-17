@@ -55,7 +55,7 @@ export default function SolutionsPage() {
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-blue-600">
                 Technology Solutions for Modern Business
               </h2>
-              <p className="max-w-[700px] text-gray-300 md:text-xl/relaxed">
+              <p className="max-w-[700px] text-gray-500 dark:text-gray-200 md:text-xl/relaxed">
                 We offer a comprehensive suite of technology solutions designed to address your most complex business challenges.
               </p>
             </div>
@@ -98,18 +98,18 @@ export default function SolutionsPage() {
             ].map((item, i) => (
               <div
                 key={i}
-                className="group relative overflow-hidden rounded-lg border border-gray-700 bg-gray-800 p-6 shadow-sm transition-all hover:shadow-md"
+                className="group relative overflow-hidden rounded-lg border border-yellow-100 dark:border-orange-500 bg-blue-500 dark:bg-gray-800 p-6 shadow-sm transition-all hover:shadow-md"
               >
                 <div className="space-y-4">
-                  <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-700 text-blue-400">
+                  <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-blue-700 text-blue-400">
                     {item.icon}
                   </div>
-                  <h3 className="text-xl font-bold text-gray-100">{item.title}</h3>
-                  <p className="text-gray-300">{item.description}</p>
+                  <h3 className="text-xl font-bold text-gray-100 dark:text-gray-200">{item.title}</h3>
+                  <p className="text-gray-300 dark:text-gray-200">{item.description}</p>
                   <ul className="space-y-2">
                     {item.features.map((feature, j) => (
                       <li key={j} className="flex items-center gap-2 text-gray-300">
-                        <CheckCircle className="h-4 w-4 text-blue-400" />
+                        <CheckCircle className="h-4 w-4 text-blue-200" />
                         <span>{feature}</span>
                       </li>
                     ))}
@@ -118,7 +118,7 @@ export default function SolutionsPage() {
                 <div className="pt-4">
                   <Link
                     href={`/solutions/${item.title.toLowerCase().replace(/\s+/g, "-")}`}
-                    className="inline-flex items-center text-sm font-medium text-blue-400"
+                    className="inline-flex items-center text-sm font-medium text-blue-200"
                   >
                     Learn more
                     <ArrowRight className="ml-1 h-3 w-3" />
@@ -131,7 +131,7 @@ export default function SolutionsPage() {
       </section>
 
       {/* Why Choose Us Section */}
-      <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-900">
+      <section className="w-full py-12 md:py-24 lg:py-32 bg-blue-900">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
@@ -175,10 +175,10 @@ export default function SolutionsPage() {
             ].map((item, i) => (
               <div
                 key={i}
-                className="rounded-lg border border-gray-700 bg-gray-800 p-6 shadow-sm"
+                className="rounded-lg border border-blue-700 bg-blue-800 dark:bg-gray-800 p-6 shadow-sm"
               >
-                <h3 className="text-xl font-bold text-gray-100">{item.title}</h3>
-                <p className="mt-2 text-gray-300">{item.description}</p>
+                <h3 className="text-xl font-bold text-gray-100 dark:text-gray-200">{item.title}</h3>
+                <p className="mt-2 text-gray-300 dark:text-gray-200">{item.description}</p>
               </div>
             ))}
           </div>

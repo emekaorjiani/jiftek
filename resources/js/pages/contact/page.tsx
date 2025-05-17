@@ -10,12 +10,12 @@ export default function ContactPage() {
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-blue-950">
+        <section className="w-full py-12 md:py-24 lg:py-32 from-blue-800 to-blue-700 bg-gradient-to-r dark:bg-blue-950">
           <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl text-slate-700 dark:text-blue-50">Contact Us</h1>
-                <p className="mx-auto max-w-[700px] text-slate-700 dark:text-blue-50 md:text-xl/relaxed">
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl text-blue-400">Contact Us</h1>
+                <p className="mx-auto max-w-[700px] text-slate-200 dark:text-blue-50 md:text-xl/relaxed">
                   Have questions or ready to start your next project? Get in touch with our team.
                 </p>
               </div>

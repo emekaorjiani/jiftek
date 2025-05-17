@@ -45,7 +45,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Plus, Search, MoreHorizontal, UserPlus, Edit, Trash2, Lock, Mail, AlertTriangle } from "lucide-react"
-
+import AdminLayout from "@/layouts/admin/layout"
 export default function UsersPage() {
   // State for modals
   const [addUserOpen, setAddUserOpen] = useState(false)
@@ -126,6 +126,7 @@ export default function UsersPage() {
   }
 
   return (
+    <AdminLayout>
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
@@ -632,6 +633,7 @@ export default function UsersPage() {
         </AlertDialogContent>
       </AlertDialog>
     </div>
+    </AdminLayout>
   )
 }
 

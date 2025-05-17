@@ -23,9 +23,11 @@ export default function AdminDashboard() {
           <h2 className="text-2xl font-bold tracking-tight">Dashboard</h2>
           <p className="text-muted-foreground">Welcome back, Admin User</p>
         </div>
+        <Link href="/">
         <div className="flex items-center gap-2">
-          <Button>View Website</Button>
+          <Button className="bg-blue-500 hover:bg-blue-700 cursor-pointer">View Website</Button>
         </div>
+        </Link>
       </div>
 
       {/* Stats Overview */}

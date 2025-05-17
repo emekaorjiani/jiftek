@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { BarChart, LineChart, PieChart, AreaChart } from "@/components/ui/chart"
 import { Download, Calendar, TrendingUp, TrendingDown, Users, Eye, MousePointer, Clock, RefreshCw } from "lucide-react"
-
+import AdminLayout from "@/layouts/admin/layout"
 export default function AnalyticsPage() {
   // Sample data for charts
   const visitorData = {
@@ -95,6 +95,7 @@ export default function AnalyticsPage() {
   }
 
   return (
+    <AdminLayout>
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
@@ -579,6 +580,7 @@ export default function AnalyticsPage() {
         </CardContent>
       </Card>
     </div>
+    </AdminLayout>
   )
 }
 

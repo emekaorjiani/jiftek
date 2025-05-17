@@ -54,10 +54,12 @@ export default function FrontLayout({ children }: FrontLayoutProps) {
           </nav>
 
           <div className="flex items-center gap-4">
-            <Button variant="outline" className="hidden md:inline-flex bg-amber-500 text-gray-100 border-gray-200 hover:bg-amber-700 cursor-pointer">
+            {/* <Button variant="outline" className="hidden md:inline-flex bg-amber-500 text-gray-100 border-gray-200 hover:bg-amber-700 cursor-pointer">
               Request a Demo
-            </Button>
+            </Button> */}
+            <Link href="/contact">
             <Button className="hidden md:inline-flex bg-blue-700 hover:bg-blue-600 text-gray-200 cursor-pointer">Contact Us</Button>
+            </Link>
             <Button variant="ghost" size="icon" className="md:hidden text-gray-200 hover:bg-gray-700 cursor-pointer">
               <Menu className="h-5 w-5" />
               <span className="sr-only">Toggle menu</span>

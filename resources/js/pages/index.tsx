@@ -1,6 +1,6 @@
 import {Link} from "@inertiajs/react"
 import { Button } from "@/components/ui/button"
-import { ChevronRight, Award, BarChart, Shield, ExternalLink, ArrowRight, Menu } from "lucide-react"
+import { ChevronRight, Award, BarChart, Shield, ExternalLink, ArrowRight } from "lucide-react"
 import FrontLayout from "@/layouts/front-pages/front-layout"
 
 export default function HomePage() {
@@ -22,13 +22,17 @@ export default function HomePage() {
                 and growth for forward-thinking organizations.
               </p>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
+                <Link href="/solutions">
                 <Button size="lg" className="bg-blue-700 hover:bg-blue-900 cursor-pointer">
                   Explore Solutions
                   <ChevronRight className="ml-1 h-4 w-4" />
                 </Button>
+                </Link>
+                <Link href="/contact">
                 <Button size="lg" variant="outline" className="dark:text-white text-amber-600 hover:text-amber-400 border-white hover:bg-blue-700 cursor-pointer">
                   Request a Consultation
                 </Button>
+                </Link>
               </div>
             </div>
             <div className="mx-auto lg:mx-0 relative">
@@ -137,7 +141,7 @@ export default function HomePage() {
       </section>
 
       {/* Case Studies Section */}
-      <section className="w-full py-12 md:py-24 lg:py-32 dark:bg-blue-950 bg-gray-400">
+      <section className="w-full py-12 md:py-24 lg:py-32 dark:bg-blue-950 bg-gray-200">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
@@ -147,7 +151,7 @@ export default function HomePage() {
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-blue-500">
                 Our Client Success Stories
               </h2>
-              <p className="max-w-[700px] text-gray-300 md:text-xl/relaxed">
+              <p className="max-w-[700px] text-gray-500 dark:text-gray-400 md:text-xl/relaxed">
                 Discover how we've helped organizations overcome challenges and achieve their business goals.
               </p>
             </div>
@@ -322,17 +326,17 @@ export default function HomePage() {
       </section>
 
       {/* Blog/Insights Section */}
-      <section className="w-full py-12 md:py-24 lg:py-32">
+      <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-200 dark:bg-gradient-to-r from-blue-900 to-blue-800">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
               <div className="inline-flex items-center rounded-lg bg-slate-100 px-3 py-1 text-sm text-blue-500">
                 <span>Latest Insights</span>
               </div>
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-blue-500">
                 Stay Informed with Jiftek
               </h2>
-              <p className="max-w-[700px] text-gray-200 md:text-xl/relaxed">
+              <p className="max-w-[700px] text-gray-500 dark:text-gray-400 md:text-xl/relaxed">
                 Explore our latest articles, guides, and industry insights.
               </p>
             </div>
@@ -378,10 +382,13 @@ export default function HomePage() {
             ))}
           </div>
           <div className="flex justify-center mt-10">
-            <Button variant="outline" size="lg">
+            <Link href="/insights">
+            <Button variant="outline" size="lg" className="text-blue-500 hover:text-blue-500 border-gray-300 hover:bg-gray-700 cursor-pointer">
               View All Articles
               <ChevronRight className="ml-1 h-4 w-4" />
             </Button>
+            </Link>
+
           </div>
         </div>
       </section>

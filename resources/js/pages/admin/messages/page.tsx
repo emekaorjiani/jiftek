@@ -12,9 +12,10 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
 import { Search, Eye, Trash2, Mail, MailOpen, Star, Clock } from "lucide-react"
-
+import AdminLayout from "@/layouts/admin/layout"
 export default function MessagesPage() {
   return (
+    <AdminLayout>
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
@@ -205,6 +206,7 @@ export default function MessagesPage() {
         </CardContent>
       </Card>
     </div>
+    </AdminLayout>
   )
 }
 

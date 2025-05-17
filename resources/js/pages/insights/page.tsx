@@ -1,6 +1,6 @@
 import { Link } from "@inertiajs/react"
 import { Button } from "@/components/ui/button"
-import { ChevronRight, Search, Tag, Clock, User } from "lucide-react"
+import { ChevronRight, Search, Clock, User } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import FrontLayout from "@/layouts/front-pages/front-layout"
 export default function InsightsPage() {
@@ -9,12 +9,12 @@ export default function InsightsPage() {
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-blue-950">
+        <section className="w-full py-12 md:py-24 lg:py-32 from-blue-800 to-blue-700 bg-gradient-to-r dark:bg-blue-950">
           <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl">Insights & Resources</h1>
-                <p className="mx-auto max-w-[700px] text-slate-700 dark:text-blue-50 md:text-xl/relaxed">
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl text-blue-500">Insights & Resources</h1>
+                <p className="mx-auto max-w-[700px] text-slate-300 dark:text-blue-50 md:text-xl/relaxed">
                   Stay informed with the latest technology trends, insights, and best practices from our experts.
                 </p>
               </div>
@@ -82,7 +82,7 @@ export default function InsightsPage() {
         </section> */}
 
         {/* Categories */}
-        <section className="w-full py-8 border-y border-slate-200">
+        <section className="w-full py-8 border-y bg-gray-100 dark:bg-blue-950 border-slate-200">
           <div className="container px-4 md:px-6">
             <div className="flex flex-wrap items-center justify-center gap-4">
               {[
@@ -111,12 +111,12 @@ export default function InsightsPage() {
         </section>
 
         {/* Latest Articles */}
-        <section className="w-full py-12 md:py-24 lg:py-32">
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-blue-950">
           <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-start space-y-4">
               <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Latest Articles</h2>
-                <p className="max-w-[700px] text-slate-700 dark:text-blue-50 md:text-xl/relaxed">
+                <h2 className="text-3xl font-bold text-blue-500 tracking-tighter sm:text-4xl md:text-5xl">Latest Articles</h2>
+                <p className="max-w-[700px] text-slate-500 dark:text-blue-50 md:text-xl/relaxed">
                   Explore our most recent insights and thought leadership.
                 </p>
               </div>

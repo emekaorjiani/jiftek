@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { Link } from "@inertiajs/react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -13,9 +13,10 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
 import { Plus, Search, Edit, Trash2, Eye, FileText, FileImage, Clock } from "lucide-react"
-
+import AdminLayout from "@/layouts/admin/layout"
 export default function InsightsContentPage() {
   return (
+    <AdminLayout>
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
@@ -209,6 +210,7 @@ export default function InsightsContentPage() {
         </CardContent>
       </Card>
     </div>
+    </AdminLayout>
   )
 }
 

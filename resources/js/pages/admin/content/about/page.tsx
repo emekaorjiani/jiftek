@@ -6,9 +6,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Label } from "@/components/ui/label"
 import { Save, Plus, Trash2, Upload, MoveUp, MoveDown } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-
+import AdminLayout from "@/layouts/admin/layout"
 export default function AboutContentPage() {
   return (
+    <AdminLayout>
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
@@ -458,6 +459,7 @@ export default function AboutContentPage() {
         </TabsContent>
       </Tabs>
     </div>
+    </AdminLayout>
   )
 }
 

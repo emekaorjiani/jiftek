@@ -5,9 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Label } from "@/components/ui/label"
 import { Save, Plus, Trash2 } from "lucide-react"
-
+import AdminLayout from "@/layouts/admin/layout"
 export default function HomeContentPage() {
   return (
+    <AdminLayout>
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
@@ -376,6 +377,7 @@ export default function HomeContentPage() {
         </TabsContent>
       </Tabs>
     </div>
+    </AdminLayout>
   )
 }
 
