@@ -2,9 +2,91 @@ import { Link } from "@inertiajs/react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Phone, Mail, MapPin, Clock } from "lucide-react"
+import { Phone, Mail, MapPin, MessageCircle } from "lucide-react"
 import FrontLayout from "@/layouts/front-pages/front-layout"
-export default function ContactPage() {
+
+/**
+ * ContactInfoItem interface for type safety
+ */
+interface ContactInfoItem {
+  type: string
+  label: string
+  value: string
+  link?: string
+}
+
+/**
+ * ContactPage component props
+ */
+interface ContactPageProps {
+  contactInfo?: {
+    title?: string
+    items?: ContactInfoItem[]
+  }
+  mapInfo?: {
+    title?: string
+    latitude?: number
+    longitude?: number
+    zoom?: number
+    address?: string
+  }
+  heroSection?: {
+    title?: string
+    description?: string
+  }
+}
+
+/**
+ * Get icon component based on contact info type
+ */
+function getContactIcon(type: string) {
+  switch (type) {
+    case 'phone':
+      return Phone
+    case 'whatsapp':
+      return MessageCircle
+    case 'email':
+      return Mail
+    case 'address':
+      return MapPin
+    default:
+      return MapPin
+  }
+}
+
+/**
+ * ContactPage - Displays contact form and contact information
+ * 
+ * Fetches contact information from the database and displays it dynamically.
+ * Includes contact form, contact info cards, and interactive OpenStreetMap.
+ */
+export default function ContactPage({ 
+  contactInfo = { title: 'Contact Information', items: [] },
+  mapInfo = { title: 'Our Location', latitude: 6.6, longitude: 3.505, zoom: 15 },
+  heroSection = { title: 'Contact Us', description: 'Have questions or ready to start your next project? Get in touch with our team.' }
+}: ContactPageProps) {
+  // Generate OpenStreetMap embed URL with coordinates
+  const generateMapUrl = (lat: number, lon: number, zoom: number) => {
+    // Calculate bounding box for the map view
+    const latOffset = 0.02
+    const lonOffset = 0.02
+    const bbox = `${lon - lonOffset},${lat - latOffset},${lon + lonOffset},${lat + latOffset}`
+    return `https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(bbox)}&layer=mapnik&marker=${lat},${lon}`
+  }
+
+  // Generate link to view larger map
+  const generateMapLink = (lat: number, lon: number, zoom: number) => {
+    return `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=${zoom}/${lat}/${lon}`
+  }
+
+  const mapUrl = mapInfo.latitude && mapInfo.longitude 
+    ? generateMapUrl(mapInfo.latitude, mapInfo.longitude, mapInfo.zoom || 15)
+    : generateMapUrl(6.6, 3.505, 15)
+  
+  const mapLink = mapInfo.latitude && mapInfo.longitude
+    ? generateMapLink(mapInfo.latitude, mapInfo.longitude, mapInfo.zoom || 15)
+    : generateMapLink(6.6, 3.505, 15)
+
   return (
     <FrontLayout>
     <div className="flex min-h-screen flex-col">
@@ -14,9 +96,11 @@ export default function ContactPage() {
           <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl text-blue-400">Contact Us</h1>
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl text-blue-400">
+                  {heroSection.title || 'Contact Us'}
+                </h1>
                 <p className="mx-auto max-w-[700px] text-slate-200 dark:text-blue-50 md:text-xl/relaxed">
-                  Have questions or ready to start your next project? Get in touch with our team.
+                  {heroSection.description || 'Have questions or ready to start your next project? Get in touch with our team.'}
                 </p>
               </div>
             </div>
@@ -84,65 +168,86 @@ export default function ContactPage() {
               </div>
               <div className="space-y-8">
                 <div className="space-y-2">
-                  <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight text-slate-700 dark:text-blue-50">Contact Information</h2>
+                  <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight text-slate-700 dark:text-blue-50">
+                    {contactInfo.title || 'Contact Information'}
+                  </h2>
                   <p className="text-slate-700 dark:text-blue-50 md:text-lg/relaxed">
                     Reach out to us directly using the information below.
                   </p>
                 </div>
-                <div className="grid gap-4 sm:grid-cols-2">
+                {/* Contact Information Items - Dynamically rendered from database */}
+                {contactInfo.items && contactInfo.items.length > 0 ? (
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {contactInfo.items.map((item, index) => {
+                      const IconComponent = getContactIcon(item.type)
+                      const isLink = item.link && item.link.trim() !== ''
+                      const isExternal = item.link?.startsWith('http')
+                      
+                      return (
+                        <div key={index} className="rounded-lg border border-slate-200 bg-white dark:bg-blue-950 p-6 shadow-sm">
+                          <div className="flex items-start space-x-4">
+                            <IconComponent className="h-6 w-6 text-blue-600" />
+                            <div className="space-y-1">
+                              <h3 className="font-medium">{item.label}</h3>
+                              {isLink ? (
+                                <a 
+                                  href={item.link} 
+                                  target={isExternal ? "_blank" : undefined}
+                                  rel={isExternal ? "noopener noreferrer" : undefined}
+                                  className="text-sm text-slate-700 dark:text-blue-50 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                                >
+                                  {item.value}
+                                </a>
+                              ) : (
+                                <p className="text-sm text-slate-700 dark:text-blue-50">
+                                  {item.value}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-slate-500 dark:text-slate-400">
+                    No contact information available.
+                  </div>
+                )}
+                {/* Map Section - Dynamically rendered with coordinates from database */}
+                {mapInfo && (
                   <div className="rounded-lg border border-slate-200 bg-white dark:bg-blue-950 p-6 shadow-sm">
-                    <div className="flex items-start space-x-4">
-                      <Phone className="h-6 w-6 text-blue-600" />
-                      <div className="space-y-1">
-                        <h3 className="font-medium">Phone</h3>
-                        <p className="text-sm text-slate-700 dark:text-blue-50">+1 (555) 123-4567</p>
-                        <p className="text-sm text-slate-500 dark:text-blue-50">Mon-Fri, 9am-5pm EST</p>
-                      </div>
+                    <h3 className="font-medium mb-4">{mapInfo.title || 'Our Location'}</h3>
+                    <div className="aspect-video overflow-hidden rounded-lg border border-slate-200">
+                      <iframe
+                        width="100%"
+                        height="100%"
+                        frameBorder="0"
+                        scrolling="no"
+                        marginHeight={0}
+                        marginWidth={0}
+                        src={mapUrl}
+                        className="w-full h-full"
+                        title="Office Location Map"
+                      />
                     </div>
-                  </div>
-                  <div className="rounded-lg border border-slate-200 bg-white dark:bg-blue-950 p-6 shadow-sm">
-                    <div className="flex items-start space-x-4">
-                      <Mail className="h-6 w-6 text-blue-600" />
-                      <div className="space-y-1">
-                        <h3 className="font-medium">Email</h3>
-                        <p className="text-sm text-slate-700 dark:text-blue-50">info@jiftek.com</p>
-                        <p className="text-sm text-slate-500 dark:text-blue-50">We'll respond within 24 hours</p>
-                      </div>
+                    <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                      <a 
+                        href={mapLink}
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                      >
+                        View larger map
+                      </a>
                     </div>
+                    {mapInfo.address && (
+                      <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+                        {mapInfo.address}
+                      </p>
+                    )}
                   </div>
-                  <div className="rounded-lg border border-slate-200 bg-white dark:bg-blue-950 p-6 shadow-sm">
-                    <div className="flex items-start space-x-4">
-                      <MapPin className="h-6 w-6 text-blue-600" />
-                      <div className="space-y-1">
-                        <h3 className="font-medium">Headquarters</h3>
-                        <p className="text-sm text-slate-700 dark:text-blue-50">123 Tech Plaza, Suite 400</p>
-                        <p className="text-sm text-slate-700 dark:text-blue-50">San Francisco, CA 94105</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="rounded-lg border border-slate-200 bg-white dark:bg-blue-950 p-6 shadow-sm">
-                    <div className="flex items-start space-x-4">
-                      <Clock className="h-6 w-6 text-blue-600" />
-                      <div className="space-y-1">
-                        <h3 className="font-medium">Business Hours</h3>
-                        <p className="text-sm text-slate-700 dark:text-blue-50">Monday-Friday: 9am-5pm</p>
-                        <p className="text-sm text-slate-700 dark:text-blue-50">Saturday-Sunday: Closed</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="rounded-lg border border-slate-200 bg-white dark:bg-blue-950 p-6 shadow-sm">
-                  <h3 className="font-medium mb-4">Our Locations</h3>
-                  <div className="aspect-video overflow-hidden rounded-lg">
-                    <img
-                      src="/placeholder.svg?height=300&width=600&text=Map"
-                      alt="Office Locations Map"
-                      width={600}
-                      height={300}
-                      className="object-cover"
-                    />
-                  </div>
-                </div>
+                )}
                 <div className="space-y-2">
                   <h3 className="font-medium">Connect With Us</h3>
                   <div className="flex gap-4">

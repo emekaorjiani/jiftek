@@ -14,6 +14,7 @@ import {
   Briefcase,
   BookOpen,
   Mail,
+  FileText,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -53,9 +54,12 @@ const navigationItems = [
     href: '/admin/content',
     children: [
       { name: 'Homepage', href: '/admin/content/home', icon: Home },
-      { name: 'Services', href: '/admin/content/services', icon: Briefcase },
+      { name: 'Services Page', href: '/admin/content/services', icon: Briefcase },
+      { name: 'Services Management', href: '/admin/content/services/list', icon: Briefcase },
       { name: 'About Us', href: '/admin/content/about', icon: Users },
+      { name: 'Team Members', href: '/admin/content/team-members', icon: Users },
       { name: 'Insights', href: '/admin/content/insights', icon: BookOpen },
+      { name: 'Case Studies', href: '/admin/content/case-studies', icon: FileText },
       { name: 'Contact', href: '/admin/content/contact', icon: Mail },
     ]
   },

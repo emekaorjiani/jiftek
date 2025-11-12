@@ -1,9 +1,115 @@
-import { Link } from "@inertiajs/react"
+import { Link, router } from "@inertiajs/react"
 import { Button } from "@/components/ui/button"
 import { ChevronRight, Search, Clock, User } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import FrontLayout from "@/layouts/front-pages/front-layout"
-export default function InsightsPage() {
+import { useState } from "react"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
+
+/**
+ * Insight Interface
+ */
+interface Insight {
+  id: number
+  title: string
+  slug: string
+  excerpt: string | null
+  featured_image: string | null
+  category: string | null
+  type: string
+  author: string
+  published_at: string | null
+  tags: string | null
+}
+
+/**
+ * InsightsPage Component
+ * 
+ * Displays a listing of all published insights with filtering, search, and pagination.
+ * Insights are fetched from the database and displayed in a responsive grid layout.
+ */
+/**
+ * CaseStudy Interface
+ */
+interface CaseStudy {
+  id: number
+  title: string
+  slug: string
+  description: string | null
+  image: string | null
+  client_industry: string | null
+}
+
+interface Props {
+  insights?: {
+    data: Insight[]
+    links: any[]
+    current_page: number
+    last_page: number
+  }
+  categories?: string[]
+  caseStudies?: CaseStudy[]
+  filters?: {
+    type: string
+    category: string
+    search: string
+  }
+}
+
+export default function InsightsPage({ insights, categories = [], caseStudies = [], filters = { type: 'all', category: '', search: '' } }: Props) {
+  const [searchQuery, setSearchQuery] = useState(filters.search || '')
+
+  /**
+   * Handle search input change with debounce
+   */
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value)
+    
+    const timeoutId = setTimeout(() => {
+      router.get('/insights', {
+        ...filters,
+        search: value,
+      }, {
+        preserveState: true,
+        preserveScroll: true,
+      })
+    }, 500)
+
+    return () => clearTimeout(timeoutId)
+  }
+
+  /**
+   * Handle category filter change
+   */
+  const handleCategoryChange = (category: string) => {
+    router.get('/insights', {
+      ...filters,
+      category: category === 'All' ? '' : category,
+    }, {
+      preserveState: true,
+      preserveScroll: true,
+    })
+  }
+
+  /**
+   * Handle type filter change
+   */
+  const handleTypeChange = (type: string) => {
+    router.get('/insights', {
+      ...filters,
+      type: type,
+    }, {
+      preserveState: true,
+      preserveScroll: true,
+    })
+  }
   return (
     <FrontLayout>
     <div className="flex min-h-screen flex-col">
@@ -19,13 +125,18 @@ export default function InsightsPage() {
                 </p>
               </div>
               <div className="w-full max-w-sm space-y-2">
-                <form className="flex space-x-2">
+                <div className="flex space-x-2">
                   <div className="relative flex-1">
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-500" />
-                    <Input type="search" placeholder="Search articles..." className="w-full bg-white pl-8 shadow-sm" />
+                    <Input 
+                      type="search" 
+                      placeholder="Search articles..." 
+                      className="w-full bg-white pl-8 shadow-sm"
+                      value={searchQuery}
+                      onChange={(e) => handleSearchChange(e.target.value)}
+                    />
                   </div>
-                  <Button type="submit">Search</Button>
-                </form>
+                </div>
               </div>
             </div>
           </div>
@@ -85,26 +196,28 @@ export default function InsightsPage() {
         <section className="w-full py-8 border-y bg-gray-100 dark:bg-blue-950 border-slate-200">
           <div className="container px-4 md:px-6">
             <div className="flex flex-wrap items-center justify-center gap-4">
-              {[
-                "All",
-                "Artificial Intelligence",
-                "Cloud Computing",
-                "Cybersecurity",
-                "Digital Transformation",
-                "Software Development",
-                "Data Analytics",
-              ].map((category, i) => (
-                <Link
+              <button
+                onClick={() => handleCategoryChange('All')}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                  !filters.category || filters.category === ''
+                    ? "bg-blue-600 text-white hover:bg-blue-700"
+                    : "bg-slate-100 text-slate-900 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200"
+                }`}
+              >
+                All
+              </button>
+              {categories.map((category, i) => (
+                <button
                   key={i}
-                  href={`/insights/category/${category.toLowerCase().replace(/\s+/g, "-")}`}
-                  className={`rounded-full px-4 py-2 text-sm font-medium ${
-                    i === 0
+                  onClick={() => handleCategoryChange(category)}
+                  className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                    filters.category === category
                       ? "bg-blue-600 text-white hover:bg-blue-700"
-                      : "bg-slate-100 text-slate-900 hover:bg-slate-200"
+                      : "bg-slate-100 text-slate-900 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200"
                   }`}
                 >
                   {category}
-                </Link>
+                </button>
               ))}
             </div>
           </div>
@@ -122,56 +235,108 @@ export default function InsightsPage() {
               </div>
             </div>
             <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 mt-12">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="group relative overflow-hidden rounded-lg border border-slate-200 bg-white dark:bg-blue-950 shadow-sm transition-all hover:shadow-md"
-                >
-                  <div className="relative h-48 w-full overflow-hidden">
-                    <img
-                      src={`/placeholder.svg?height=200&width=400&text=Article+${i + 1}`}
-                      alt={`Article ${i + 1}`}
-                      className="object-cover transition-all group-hover:scale-105"
-                      // fill
-                    />
-                  </div>
-                  <div className="p-6">
-                    <div className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
-                      <span>Category</span>
+              {insights && insights.data && insights.data.length > 0 ? (
+                insights.data.map((insight) => (
+                  <Link
+                    key={insight.id}
+                    href={`/insights/${insight.slug}`}
+                    className="group relative overflow-hidden rounded-lg border border-slate-200 bg-white dark:bg-blue-950 shadow-sm transition-all hover:shadow-md"
+                  >
+                    <div className="relative h-48 w-full overflow-hidden">
+                      <img
+                        src={insight.featured_image || "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=300&fit=crop&q=80"}
+                        alt={insight.title}
+                        className="object-cover transition-all group-hover:scale-105 w-full h-full"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement
+                          target.src = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=300&fit=crop&q=80"
+                        }}
+                      />
                     </div>
-                    <h3 className="mt-2 text-xl font-bold">Cloud Migration Strategies for Enterprise</h3>
-                    <p className="mt-2 text-slate-700 dark:text-blue-50 line-clamp-3">
-                      Learn the best practices for migrating your enterprise applications and infrastructure to the
-                      cloud securely and efficiently.
-                    </p>
-                    <div className="mt-4 flex items-center gap-4 text-sm text-slate-600 dark:text-blue-50">
-                      <div className="flex items-center gap-1">
-                        <User className="h-3 w-3" />
-                        <span>Author</span>
+                    <div className="p-6">
+                      {insight.category && (
+                        <div className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
+                          <span>{insight.category}</span>
+                        </div>
+                      )}
+                      <h3 className="mt-2 text-xl font-bold">{insight.title}</h3>
+                      {insight.excerpt && (
+                        <p className="mt-2 text-slate-700 dark:text-blue-50 line-clamp-3">
+                          {insight.excerpt}
+                        </p>
+                      )}
+                      <div className="mt-4 flex items-center gap-4 text-sm text-slate-600 dark:text-blue-50">
+                        {insight.author && (
+                          <div className="flex items-center gap-1">
+                            <User className="h-3 w-3" />
+                            <span>{insight.author}</span>
+                          </div>
+                        )}
+                        {insight.published_at && (
+                          <div className="flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            <span>{insight.published_at}</span>
+                          </div>
+                        )}
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        <span>5 min read</span>
+                      <div className="mt-4">
+                        <span className="inline-flex items-center text-sm font-medium text-blue-600">
+                          Read more
+                          <ChevronRight className="ml-1 h-3 w-3" />
+                        </span>
                       </div>
                     </div>
-                    <div className="mt-4">
-                      <Link
-                        href={`/insights/article-${i + 1}`}
-                        className="inline-flex items-center text-sm font-medium text-blue-600"
-                      >
-                        Read more
-                        <ChevronRight className="ml-1 h-3 w-3" />
-                      </Link>
-                    </div>
-                  </div>
+                  </Link>
+                ))
+              ) : (
+                <div className="col-span-full text-center py-12">
+                  <p className="text-slate-600 dark:text-slate-400">No insights available at the moment. Please check back later.</p>
                 </div>
-              ))}
+              )}
             </div>
-            <div className="flex justify-center mt-10">
-              <Button variant="outline" size="lg">
-                Load More Articles
-              </Button>
-            </div>
+            
+            {/* Pagination */}
+            {insights && insights.links && insights.links.length > 3 && (
+              <div className="flex justify-center mt-10">
+                <Pagination>
+                  <PaginationContent>
+                    {insights.links.map((link: any, index: number) => {
+                      if (index === 0) {
+                        return (
+                          <PaginationItem key={index}>
+                            <PaginationPrevious
+                              href={link.url || '#'}
+                              className={!link.url ? 'pointer-events-none opacity-50' : ''}
+                            />
+                          </PaginationItem>
+                        )
+                      }
+                      if (index === insights.links.length - 1) {
+                        return (
+                          <PaginationItem key={index}>
+                            <PaginationNext
+                              href={link.url || '#'}
+                              className={!link.url ? 'pointer-events-none opacity-50' : ''}
+                            />
+                          </PaginationItem>
+                        )
+                      }
+                      return (
+                        <PaginationItem key={index}>
+                          <PaginationLink
+                            href={link.url || '#'}
+                            isActive={link.active}
+                            className={!link.url ? 'pointer-events-none opacity-50' : ''}
+                          >
+                            {link.label.replace(/[^0-9]/g, '') || index}
+                          </PaginationLink>
+                        </PaginationItem>
+                      )
+                    })}
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            )}
           </div>
         </section>
 
@@ -188,46 +353,61 @@ export default function InsightsPage() {
               </div>
             </div>
             <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-2 mt-12">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="group relative overflow-hidden rounded-lg border border-slate-200 bg-white dark:bg-blue-950 shadow-sm transition-all hover:shadow-md"
-                >
-                  <div className="relative h-60 w-full overflow-hidden">
-                    <img
-                      src={`/placeholder.svg?height=300&width=600&text=Case+Study+${i + 1}`}
-                      alt={`Case Study ${i + 1}`}
-                      className="object-cover transition-all group-hover:scale-105"
-                      // fill
-                    />
-                  </div>
-                  <div className="p-6">
-                    <div className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
-                      <span>Industry</span>
+              {caseStudies && caseStudies.length > 0 ? (
+                caseStudies.map((caseStudy) => (
+                  <Link
+                    key={caseStudy.id}
+                    href={`/case-studies/${caseStudy.slug}`}
+                    className="group relative overflow-hidden rounded-lg border border-slate-200 bg-white dark:bg-blue-950 shadow-sm transition-all hover:shadow-md"
+                  >
+                    <div className="relative h-60 w-full overflow-hidden">
+                      <img
+                        src={caseStudy.image || "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&h=300&fit=crop&q=80"}
+                        alt={caseStudy.title}
+                        className="object-cover transition-all group-hover:scale-105 w-full h-full"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement
+                          target.src = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&h=300&fit=crop&q=80"
+                        }}
+                      />
                     </div>
-                    <h3 className="mt-2 text-xl font-bold">Digital Transformation for Financial Services</h3>
-                    <p className="mt-2 text-slate-700 dark:text-blue-50">
-                      How we helped a leading bank modernize their legacy systems and improve customer experience.
-                    </p>
-                    <div className="mt-4">
-                      <Link
-                        href={`/insights/case-study-${i + 1}`}
-                        className="inline-flex items-center text-sm font-medium text-blue-600"
-                      >
-                        Read case study
-                        <ChevronRight className="ml-1 h-3 w-3" />
-                      </Link>
+                    <div className="p-6">
+                      {caseStudy.client_industry && (
+                        <div className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
+                          <span>{caseStudy.client_industry}</span>
+                        </div>
+                      )}
+                      <h3 className="mt-2 text-xl font-bold">{caseStudy.title}</h3>
+                      {caseStudy.description && (
+                        <p className="mt-2 text-slate-700 dark:text-blue-50">
+                          {caseStudy.description}
+                        </p>
+                      )}
+                      <div className="mt-4">
+                        <span className="inline-flex items-center text-sm font-medium text-blue-600">
+                          Read case study
+                          <ChevronRight className="ml-1 h-3 w-3" />
+                        </span>
+                      </div>
                     </div>
-                  </div>
+                  </Link>
+                ))
+              ) : (
+                <div className="col-span-full text-center py-12">
+                  <p className="text-slate-600 dark:text-slate-400">No case studies available at the moment. Please check back later.</p>
                 </div>
-              ))}
+              )}
             </div>
-            <div className="flex justify-center mt-10">
-              <Button className="bg-blue-600 hover:bg-blue-700">
-                View All Case Studies
-                <ChevronRight className="ml-1 h-4 w-4" />
-              </Button>
-            </div>
+            {caseStudies && caseStudies.length > 0 && (
+              <div className="flex justify-center mt-10">
+                <Link href="/insights?type=case-study">
+                  <Button className="bg-blue-600 hover:bg-blue-700">
+                    View All Case Studies
+                    <ChevronRight className="ml-1 h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
         </section>
 
