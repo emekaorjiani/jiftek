@@ -9,24 +9,46 @@ use App\Http\Controllers\Admin\MessagesController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\UsersController;
 
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
-    Route::get('/messages', [MessagesController::class, 'index'])->name('messages');
-    Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
-    Route::get('/users', [UsersController::class, 'index'])->name('users');
-});
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
+        Route::get('/messages', [MessagesController::class, 'index'])->name('messages');
+        Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
+        Route::get('/users', [UsersController::class, 'index'])->name('users');
+    });
 
-Route::prefix('admin/content')->name('admin.content.')->group(function () {
+    Route::prefix('admin/content')->name('admin.content.')->group(function () {
     // Page content management routes
     Route::get('/home', [ContentController::class, 'home'])->name('home');
     Route::put('/home', [ContentController::class, 'updateHome'])->name('home.update');
 
+    // Home page section routes (dedicated pages instead of tabs)
+    Route::get('/home/hero', [ContentController::class, 'homeHero'])->name('home.hero');
+    Route::put('/home/hero', [ContentController::class, 'updateHomeHero'])->name('home.hero.update');
+    Route::get('/home/trusted', [ContentController::class, 'homeTrusted'])->name('home.trusted');
+    Route::put('/home/trusted', [ContentController::class, 'updateHomeTrusted'])->name('home.trusted.update');
+    Route::get('/home/solutions', [ContentController::class, 'homeSolutions'])->name('home.solutions');
+    Route::put('/home/solutions', [ContentController::class, 'updateHomeSolutions'])->name('home.solutions.update');
+    Route::get('/home/case-studies', [ContentController::class, 'homeCaseStudies'])->name('home.case-studies');
+    Route::put('/home/case-studies', [ContentController::class, 'updateHomeCaseStudies'])->name('home.case-studies.update');
+    Route::get('/home/cta', [ContentController::class, 'homeCta'])->name('home.cta');
+    Route::put('/home/cta', [ContentController::class, 'updateHomeCta'])->name('home.cta.update');
+
     Route::get('/about', [ContentController::class, 'about'])->name('about');
     Route::put('/about', [ContentController::class, 'updateAbout'])->name('about.update');
 
+    // Solutions page content management (for the solutions page itself)
     Route::get('/solutions', [ContentController::class, 'solutions'])->name('solutions');
     Route::put('/solutions', [ContentController::class, 'updateSolutions'])->name('solutions.update');
+
+    // Solutions management routes (for managing individual solutions)
+    Route::get('/solutions/list', [ContentController::class, 'solutionsList'])->name('solutions.list');
+    Route::get('/solutions/new', [ContentController::class, 'createSolution'])->name('solutions.create');
+    Route::post('/solutions/store', [ContentController::class, 'storeSolution'])->name('solutions.store');
+    Route::get('/solutions/{id}/edit', [ContentController::class, 'editSolution'])->name('solutions.edit');
+    Route::put('/solutions/{id}', [ContentController::class, 'updateSolution'])->name('solutions.update-item');
+    Route::delete('/solutions/{id}', [ContentController::class, 'destroySolution'])->name('solutions.destroy');
 
     // Services page content management (for the services page itself)
     Route::get('/services', [ContentController::class, 'services'])->name('services');
@@ -37,7 +59,7 @@ Route::prefix('admin/content')->name('admin.content.')->group(function () {
     Route::get('/services/new', [ContentController::class, 'createService'])->name('services.create');
     Route::post('/services/store', [ContentController::class, 'storeService'])->name('services.store');
     Route::get('/services/{id}/edit', [ContentController::class, 'editService'])->name('services.edit');
-    Route::put('/services/{id}', [ContentController::class, 'updateService'])->name('services.update');
+    Route::put('/services/{id}', [ContentController::class, 'updateService'])->name('services.update-item');
     Route::delete('/services/{id}', [ContentController::class, 'destroyService'])->name('services.destroy');
 
     Route::get('/contact', [ContentController::class, 'contact'])->name('contact');
@@ -82,16 +104,12 @@ Route::prefix('admin/content')->name('admin.content.')->group(function () {
     Route::get('/case-studies/{id}/edit', [ContentController::class, 'editCaseStudy'])->name('case-studies.edit');
     Route::put('/case-studies/{id}', [ContentController::class, 'updateCaseStudy'])->name('case-studies.update');
     Route::delete('/case-studies/{id}', [ContentController::class, 'destroyCaseStudy'])->name('case-studies.destroy');
-});
+    });
 
-Route::prefix('admin/users')->name('admin.users.')->group(function () {
-    Route::get('/', [UsersController::class, 'index'])->name('index');
-    Route::get('/create', [UsersController::class, 'create'])->name('create');
-    Route::get('/{id}/edit', [UsersController::class, 'edit'])->name('edit');
-    Route::get('/{id}/profile', [UsersController::class, 'profile'])->name('profile');
-});
-
-
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-// Route::get?
+    Route::prefix('admin/users')->name('admin.users.')->group(function () {
+        Route::get('/', [UsersController::class, 'index'])->name('index');
+        Route::get('/create', [UsersController::class, 'create'])->name('create');
+        Route::get('/{id}/edit', [UsersController::class, 'edit'])->name('edit');
+        Route::get('/{id}/profile', [UsersController::class, 'profile'])->name('profile');
+    });
 });

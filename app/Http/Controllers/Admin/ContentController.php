@@ -7,17 +7,17 @@ use App\Models\Page;
 use App\Models\Insight;
 use App\Models\ContentSection;
 use App\Models\Service;
+use App\Models\Solution;
 use App\Models\TeamMember;
 use App\Models\Testimonial;
 use App\Models\Partner;
 use App\Models\CaseStudy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Inertia\Inertia;
 
 /**
  * ContentController
- * 
+ *
  * Handles all content management operations for pages and insights.
  * Supports flexible content structure with proper data validation and isset checks.
  */
@@ -25,30 +25,11 @@ class ContentController extends Controller
 {
     /**
      * Display the home page content management interface.
-     * Fetches existing page data and passes it to the view.
+     * Returns Blade view with links to dedicated section pages.
      */
     public function home()
     {
-        $page = Page::where('slug', 'home')->first();
-        $sections = [];
-        
-        if ($page) {
-            $sections = $page->sections()->get()->keyBy('section_key')->map(function ($section) {
-                return $section->content ?? [];
-            })->toArray();
-        }
-
-        return inertia('admin/content/home/page', [
-            'page' => $page ? [
-                'id' => $page->id,
-                'slug' => $page->slug,
-                'content' => $page->content ?? [],
-                'meta_title' => $page->meta_title ?? '',
-                'meta_description' => $page->meta_description ?? '',
-                'meta_keywords' => $page->meta_keywords ?? '',
-            ] : null,
-            'sections' => $sections,
-        ]);
+        return view('admin.home.index');
     }
 
     /**
@@ -66,7 +47,7 @@ class ContentController extends Controller
         ]);
 
         $page = Page::firstOrCreate(['slug' => 'home']);
-        
+
         // Update page-level content if provided
         if (isset($validated['content'])) {
             $page->content = $validated['content'];
@@ -86,10 +67,13 @@ class ContentController extends Controller
         // Update sections if provided
         if (isset($validated['sections']) && is_array($validated['sections'])) {
             foreach ($validated['sections'] as $sectionKey => $sectionContent) {
+                // Normalize section key (caseStudies -> case-studies for consistency)
+                $normalizedKey = $sectionKey === 'caseStudies' ? 'case-studies' : $sectionKey;
+
                 ContentSection::updateOrCreate(
                     [
                         'page_id' => $page->id,
-                        'section_key' => $sectionKey,
+                        'section_key' => $normalizedKey,
                     ],
                     [
                         'content' => $sectionContent,
@@ -103,13 +87,268 @@ class ContentController extends Controller
     }
 
     /**
+     * Display the home hero section management interface.
+     * Returns Blade view.
+     */
+    public function homeHero()
+    {
+        $page = Page::where('slug', 'home')->first();
+        $sections = [];
+
+        if ($page) {
+            $sections = $page->sections()->get()->keyBy('section_key')->map(function ($section) {
+                return $section->content ?? [];
+            })->toArray();
+        }
+
+        return view('admin.home.hero', [
+            'sections' => $sections,
+        ]);
+    }
+
+    /**
+     * Update the home hero section.
+     */
+    public function updateHomeHero(Request $request)
+    {
+        $validated = $request->validate([
+            'sections' => 'required|array',
+            'sections.hero' => 'required|array',
+        ]);
+
+        $page = Page::firstOrCreate(['slug' => 'home']);
+
+        if (isset($validated['sections']['hero'])) {
+            ContentSection::updateOrCreate(
+                [
+                    'page_id' => $page->id,
+                    'section_key' => 'hero',
+                ],
+                [
+                    'content' => $validated['sections']['hero'],
+                    'order' => 0,
+                ]
+            );
+        }
+
+        return redirect()->back()->with('success', 'Hero section updated successfully.');
+    }
+
+    /**
+     * Display the home trusted section management interface.
+     * Loads actual partners from database and section configuration.
+     * Returns Blade view.
+     */
+    public function homeTrusted()
+    {
+        $page = Page::where('slug', 'home')->first();
+        $sections = [];
+
+        if ($page) {
+            $sections = $page->sections()->get()->keyBy('section_key')->map(function ($section) {
+                return $section->content ?? [];
+            })->toArray();
+        }
+
+        // Load all active partners from database
+        $partners = Partner::active()->ordered()->get();
+
+        return view('admin.home.trusted', [
+            'sections' => $sections,
+            'partners' => $partners,
+        ]);
+    }
+
+    /**
+     * Update the home trusted section.
+     */
+    public function updateHomeTrusted(Request $request)
+    {
+        $validated = $request->validate([
+            'sections' => 'required|array',
+            'sections.trusted' => 'required|array',
+        ]);
+
+        $page = Page::firstOrCreate(['slug' => 'home']);
+
+        if (isset($validated['sections']['trusted'])) {
+            ContentSection::updateOrCreate(
+                [
+                    'page_id' => $page->id,
+                    'section_key' => 'trusted',
+                ],
+                [
+                    'content' => $validated['sections']['trusted'],
+                    'order' => 1,
+                ]
+            );
+        }
+
+        return redirect()->back()->with('success', 'Trusted section updated successfully.');
+    }
+
+    /**
+     * Display the home solutions section management interface.
+     * Loads actual solutions from database for selection.
+     * Returns Blade view.
+     */
+    public function homeSolutions()
+    {
+        $page = Page::where('slug', 'home')->first();
+        $sections = [];
+
+        if ($page) {
+            $sections = $page->sections()->get()->keyBy('section_key')->map(function ($section) {
+                return $section->content ?? [];
+            })->toArray();
+        }
+
+        // Load all active solutions from database
+        $solutions = Solution::active()->ordered()->get();
+
+        return view('admin.home.solutions', [
+            'sections' => $sections,
+            'solutions' => $solutions,
+        ]);
+    }
+
+    /**
+     * Update the home solutions section.
+     */
+    public function updateHomeSolutions(Request $request)
+    {
+        $validated = $request->validate([
+            'sections' => 'required|array',
+            'sections.solutions' => 'required|array',
+        ]);
+
+        $page = Page::firstOrCreate(['slug' => 'home']);
+
+        if (isset($validated['sections']['solutions'])) {
+            ContentSection::updateOrCreate(
+                [
+                    'page_id' => $page->id,
+                    'section_key' => 'solutions',
+                ],
+                [
+                    'content' => $validated['sections']['solutions'],
+                    'order' => 2,
+                ]
+            );
+        }
+
+        return redirect()->back()->with('success', 'Solutions section updated successfully.');
+    }
+
+    /**
+     * Display the home case studies section management interface.
+     * Loads actual case studies from database for selection.
+     * Returns Blade view.
+     */
+    public function homeCaseStudies()
+    {
+        $page = Page::where('slug', 'home')->first();
+        $sections = [];
+
+        if ($page) {
+            $sections = $page->sections()->get()->keyBy('section_key')->map(function ($section) {
+                return $section->content ?? [];
+            })->toArray();
+        }
+
+        // Load all active case studies from database
+        $caseStudies = CaseStudy::active()->ordered()->get();
+
+        return view('admin.home.case-studies', [
+            'sections' => $sections,
+            'caseStudies' => $caseStudies,
+        ]);
+    }
+
+    /**
+     * Update the home case studies section.
+     */
+    public function updateHomeCaseStudies(Request $request)
+    {
+        $validated = $request->validate([
+            'sections' => 'required|array',
+            'sections.case-studies' => 'required|array',
+        ]);
+
+        $page = Page::firstOrCreate(['slug' => 'home']);
+
+        if (isset($validated['sections']['case-studies'])) {
+            ContentSection::updateOrCreate(
+                [
+                    'page_id' => $page->id,
+                    'section_key' => 'case-studies',
+                ],
+                [
+                    'content' => $validated['sections']['case-studies'],
+                    'order' => 3,
+                ]
+            );
+        }
+
+        return redirect()->back()->with('success', 'Case studies section updated successfully.');
+    }
+
+    /**
+     * Display the home CTA section management interface.
+     * Returns Blade view.
+     */
+    public function homeCta()
+    {
+        $page = Page::where('slug', 'home')->first();
+        $sections = [];
+
+        if ($page) {
+            $sections = $page->sections()->get()->keyBy('section_key')->map(function ($section) {
+                return $section->content ?? [];
+            })->toArray();
+        }
+
+        return view('admin.home.cta', [
+            'sections' => $sections,
+        ]);
+    }
+
+    /**
+     * Update the home CTA section.
+     */
+    public function updateHomeCta(Request $request)
+    {
+        $validated = $request->validate([
+            'sections' => 'required|array',
+            'sections.cta' => 'required|array',
+        ]);
+
+        $page = Page::firstOrCreate(['slug' => 'home']);
+
+        if (isset($validated['sections']['cta'])) {
+            ContentSection::updateOrCreate(
+                [
+                    'page_id' => $page->id,
+                    'section_key' => 'cta',
+                ],
+                [
+                    'content' => $validated['sections']['cta'],
+                    'order' => 4,
+                ]
+            );
+        }
+
+        return redirect()->back()->with('success', 'CTA section updated successfully.');
+    }
+
+    /**
      * Display the about page content management interface.
      */
     public function about()
     {
         $page = Page::where('slug', 'about')->first();
         $sections = [];
-        
+
         if ($page) {
             $sections = $page->sections()->get()->keyBy('section_key')->map(function ($section) {
                 return $section->content ?? [];
@@ -143,7 +382,7 @@ class ContentController extends Controller
         ]);
 
         $page = Page::firstOrCreate(['slug' => 'about']);
-        
+
         if (isset($validated['content'])) {
             $page->content = $validated['content'];
         }
@@ -184,7 +423,7 @@ class ContentController extends Controller
     {
         $page = Page::where('slug', 'solutions')->first();
         $sections = [];
-        
+
         if ($page) {
             $sections = $page->sections()->get()->keyBy('section_key')->map(function ($section) {
                 return $section->content ?? [];
@@ -218,7 +457,7 @@ class ContentController extends Controller
         ]);
 
         $page = Page::firstOrCreate(['slug' => 'solutions']);
-        
+
         if (isset($validated['content'])) {
             $page->content = $validated['content'];
         }
@@ -259,7 +498,7 @@ class ContentController extends Controller
     {
         $page = Page::where('slug', 'services')->first();
         $sections = [];
-        
+
         if ($page) {
             $sections = $page->sections()->get()->keyBy('section_key')->map(function ($section) {
                 return $section->content ?? [];
@@ -293,7 +532,7 @@ class ContentController extends Controller
         ]);
 
         $page = Page::firstOrCreate(['slug' => 'services']);
-        
+
         if (isset($validated['content'])) {
             $page->content = $validated['content'];
         }
@@ -334,7 +573,7 @@ class ContentController extends Controller
     {
         $page = Page::where('slug', 'contact')->first();
         $sections = [];
-        
+
         if ($page) {
             $sections = $page->sections()->get()->keyBy('section_key')->map(function ($section) {
                 return $section->content ?? [];
@@ -368,7 +607,7 @@ class ContentController extends Controller
         ]);
 
         $page = Page::firstOrCreate(['slug' => 'contact']);
-        
+
         if (isset($validated['content'])) {
             $page->content = $validated['content'];
         }
@@ -404,6 +643,7 @@ class ContentController extends Controller
 
     /**
      * Display a listing of insights (blog posts, case studies, etc.).
+     * Returns Blade view.
      */
     public function insights(Request $request)
     {
@@ -430,19 +670,8 @@ class ContentController extends Controller
 
         $insights = $query->paginate(15);
 
-        return inertia('admin/content/insights/page', [
-            'insights' => $insights->through(function ($insight) {
-                return [
-                    'id' => $insight->id,
-                    'title' => $insight->title,
-                    'slug' => $insight->slug,
-                    'type' => $insight->type,
-                    'status' => $insight->status,
-                    'author' => $insight->author ? $insight->author->name : 'Unknown',
-                    'published_at' => $insight->published_at ? $insight->published_at->format('Y-m-d') : null,
-                    'created_at' => $insight->created_at->format('Y-m-d'),
-                ];
-            }),
+        return view('admin.insights.index', [
+            'insights' => $insights,
             'filters' => [
                 'type' => $request->type ?? 'all',
                 'status' => $request->status ?? 'all',
@@ -453,39 +682,23 @@ class ContentController extends Controller
 
     /**
      * Show the form for creating a new insight.
+     * Returns Blade view.
      */
     public function createInsight()
     {
-        return inertia('admin/content/insights/new/page', [
-            'insight' => null,
-        ]);
+        return view('admin.insights.create');
     }
 
     /**
      * Show the form for editing an existing insight.
+     * Returns Blade view.
      */
     public function editInsight($id)
     {
         $insight = Insight::findOrFail($id);
 
-        return inertia('admin/content/insights/new/page', [
-            'insight' => [
-                'id' => $insight->id,
-                'title' => $insight->title,
-                'slug' => $insight->slug,
-                'excerpt' => $insight->excerpt ?? '',
-                'content' => $insight->content ?? '',
-                'type' => $insight->type,
-                'status' => $insight->status,
-                'author_id' => $insight->author_id,
-                'category' => $insight->category ?? '',
-                'tags' => $insight->tags ?? '',
-                'featured_image' => $insight->featured_image ?? '',
-                'seo_title' => $insight->seo_title ?? '',
-                'seo_description' => $insight->seo_description ?? '',
-                'seo_keywords' => $insight->seo_keywords ?? '',
-                'published_at' => $insight->published_at ? $insight->published_at->format('Y-m-d') : '',
-            ],
+        return view('admin.insights.edit', [
+            'insight' => $insight,
         ]);
     }
 
@@ -516,13 +729,13 @@ class ContentController extends Controller
             $baseSlug = Str::slug($validated['title']);
             $slug = $baseSlug;
             $counter = 1;
-            
+
             // Ensure uniqueness
             while (Insight::where('slug', $slug)->exists()) {
                 $slug = $baseSlug . '-' . $counter;
                 $counter++;
             }
-            
+
             $validated['slug'] = $slug;
         }
 
@@ -570,13 +783,13 @@ class ContentController extends Controller
             $baseSlug = Str::slug($validated['title']);
             $slug = $baseSlug;
             $counter = 1;
-            
+
             // Ensure uniqueness (excluding current record)
             while (Insight::where('slug', $slug)->where('id', '!=', $id)->exists()) {
                 $slug = $baseSlug . '-' . $counter;
                 $counter++;
             }
-            
+
             $validated['slug'] = $slug;
         }
 
@@ -603,10 +816,11 @@ class ContentController extends Controller
 
     /**
      * Display a listing of services.
+     * Returns Blade view for better CRUD experience.
      */
     public function servicesList(Request $request)
     {
-        $query = Service::with(['creator', 'updater'])->latest();
+        $query = Service::with(['creator', 'updater', 'solution'])->latest();
 
         // Search functionality
         if ($request->has('search') && !empty($request->search)) {
@@ -623,22 +837,8 @@ class ContentController extends Controller
 
         $services = $query->paginate(15);
 
-        return inertia('admin/content/services/list', [
-            'services' => $services->through(function ($service) {
-                return [
-                    'id' => $service->id,
-                    'title' => $service->title,
-                    'slug' => $service->slug,
-                    'description' => $service->description,
-                    'image' => $service->image,
-                    'is_active' => $service->is_active,
-                    'order' => $service->order,
-                    'created_by' => $service->creator ? $service->creator->name : 'Unknown',
-                    'updated_by' => $service->updater ? $service->updater->name : 'Unknown',
-                    'created_at' => $service->created_at->format('Y-m-d'),
-                    'updated_at' => $service->updated_at->format('Y-m-d'),
-                ];
-            }),
+        return view('admin.services.index', [
+            'services' => $services,
             'filters' => [
                 'status' => $request->status ?? 'all',
                 'search' => $request->search ?? '',
@@ -648,36 +848,32 @@ class ContentController extends Controller
 
     /**
      * Show the form for creating a new service.
+     * Returns Blade view.
      */
     public function createService()
     {
-        return inertia('admin/content/services/new/page', [
-            'service' => null,
+        // Load all active solutions for the dropdown
+        $solutions = Solution::active()->ordered()->get();
+
+        return view('admin.services.create', [
+            'solutions' => $solutions,
         ]);
     }
 
     /**
      * Show the form for editing an existing service.
+     * Returns Blade view.
      */
     public function editService($id)
     {
         $service = Service::findOrFail($id);
 
-        return inertia('admin/content/services/new/page', [
-            'service' => [
-                'id' => $service->id,
-                'title' => $service->title,
-                'slug' => $service->slug,
-                'description' => $service->description ?? '',
-                'content' => $service->content ?? '',
-                'image' => $service->image ?? '',
-                'features' => $service->features ?? [],
-                'order' => $service->order,
-                'is_active' => $service->is_active,
-                'seo_title' => $service->seo_title ?? '',
-                'seo_description' => $service->seo_description ?? '',
-                'seo_keywords' => $service->seo_keywords ?? '',
-            ],
+        // Load all active solutions for the dropdown
+        $solutions = Solution::active()->ordered()->get();
+
+        return view('admin.services.edit', [
+            'service' => $service,
+            'solutions' => $solutions,
         ]);
     }
 
@@ -696,6 +892,7 @@ class ContentController extends Controller
             'features.*' => 'string',
             'order' => 'nullable|integer|min:0',
             'is_active' => 'nullable|boolean',
+            'solution_id' => 'nullable|exists:solutions,id',
             'seo_title' => 'nullable|string|max:255',
             'seo_description' => 'nullable|string|max:500',
             'seo_keywords' => 'nullable|string|max:255',
@@ -704,7 +901,7 @@ class ContentController extends Controller
         // Auto-generate slug if not provided
         if (empty($validated['slug']) && isset($validated['title'])) {
             $validated['slug'] = Str::slug($validated['title']);
-            
+
             // Ensure uniqueness
             $baseSlug = $validated['slug'];
             $counter = 1;
@@ -744,6 +941,7 @@ class ContentController extends Controller
             'features.*' => 'string',
             'order' => 'nullable|integer|min:0',
             'is_active' => 'nullable|boolean',
+            'solution_id' => 'nullable|exists:solutions,id',
             'seo_title' => 'nullable|string|max:255',
             'seo_description' => 'nullable|string|max:500',
             'seo_keywords' => 'nullable|string|max:255',
@@ -752,7 +950,7 @@ class ContentController extends Controller
         // Auto-generate slug if not provided and title changed
         if (empty($validated['slug']) && isset($validated['title']) && $service->title !== $validated['title']) {
             $validated['slug'] = Str::slug($validated['title']);
-            
+
             // Ensure uniqueness
             $baseSlug = $validated['slug'];
             $counter = 1;
@@ -779,7 +977,157 @@ class ContentController extends Controller
     }
 
     /**
+     * Display a listing of solutions.
+     * Returns Blade view.
+     */
+    public function solutionsList(Request $request)
+    {
+        $query = Solution::with(['creator', 'updater'])->latest();
+
+        // Search functionality
+        if ($request->has('search') && !empty($request->search)) {
+            $query->where(function ($q) use ($request) {
+                $q->where('title', 'like', '%' . $request->search . '%')
+                  ->orWhere('description', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        // Filter by active status
+        if ($request->has('status') && $request->status !== 'all') {
+            $query->where('is_active', $request->status === 'active');
+        }
+
+        $solutions = $query->paginate(15);
+
+        return view('admin.solutions.index', [
+            'solutions' => $solutions,
+            'filters' => [
+                'status' => $request->status ?? 'all',
+                'search' => $request->search ?? '',
+            ],
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new solution.
+     * Returns Blade view.
+     */
+    public function createSolution()
+    {
+        return view('admin.solutions.create');
+    }
+
+    /**
+     * Show the form for editing an existing solution.
+     * Returns Blade view.
+     */
+    public function editSolution($id)
+    {
+        $solution = Solution::findOrFail($id);
+
+        return view('admin.solutions.edit', [
+            'solution' => $solution,
+        ]);
+    }
+
+    /**
+     * Store a newly created solution.
+     */
+    public function storeSolution(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:solutions,slug',
+            'description' => 'nullable|string',
+            'content' => 'nullable|string',
+            'image' => 'nullable|string',
+            'icon' => 'nullable|string|max:255',
+            'order' => 'nullable|integer|min:0',
+            'is_active' => 'nullable|boolean',
+            'seo_title' => 'nullable|string|max:255',
+            'seo_description' => 'nullable|string|max:500',
+            'seo_keywords' => 'nullable|string|max:255',
+        ]);
+
+        // Auto-generate slug if not provided
+        if (empty($validated['slug']) && isset($validated['title'])) {
+            $validated['slug'] = Str::slug($validated['title']);
+
+            // Ensure uniqueness
+            $baseSlug = $validated['slug'];
+            $counter = 1;
+            while (Solution::where('slug', $validated['slug'])->exists()) {
+                $validated['slug'] = $baseSlug . '-' . $counter;
+                $counter++;
+            }
+        }
+
+        // Set defaults
+        if (!isset($validated['order'])) {
+            $validated['order'] = 0;
+        }
+        if (!isset($validated['is_active'])) {
+            $validated['is_active'] = true;
+        }
+
+        $solution = Solution::create($validated);
+
+        return redirect()->route('admin.content.solutions.list')->with('success', 'Solution created successfully.');
+    }
+
+    /**
+     * Update an existing solution.
+     */
+    public function updateSolution(Request $request, $id)
+    {
+        $solution = Solution::findOrFail($id);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:solutions,slug,' . $id,
+            'description' => 'nullable|string',
+            'content' => 'nullable|string',
+            'image' => 'nullable|string',
+            'icon' => 'nullable|string|max:255',
+            'order' => 'nullable|integer|min:0',
+            'is_active' => 'nullable|boolean',
+            'seo_title' => 'nullable|string|max:255',
+            'seo_description' => 'nullable|string|max:500',
+            'seo_keywords' => 'nullable|string|max:255',
+        ]);
+
+        // Auto-generate slug if not provided and title changed
+        if (empty($validated['slug']) && isset($validated['title']) && $solution->title !== $validated['title']) {
+            $validated['slug'] = Str::slug($validated['title']);
+
+            // Ensure uniqueness
+            $baseSlug = $validated['slug'];
+            $counter = 1;
+            while (Solution::where('slug', $validated['slug'])->where('id', '!=', $id)->exists()) {
+                $validated['slug'] = $baseSlug . '-' . $counter;
+                $counter++;
+            }
+        }
+
+        $solution->update($validated);
+
+        return redirect()->route('admin.content.solutions.list')->with('success', 'Solution updated successfully.');
+    }
+
+    /**
+     * Delete a solution.
+     */
+    public function destroySolution($id)
+    {
+        $solution = Solution::findOrFail($id);
+        $solution->delete();
+
+        return redirect()->route('admin.content.solutions.list')->with('success', 'Solution deleted successfully.');
+    }
+
+    /**
      * Display a listing of team members.
+     * Returns Blade view.
      */
     public function teamMembers(Request $request)
     {
@@ -801,22 +1149,8 @@ class ContentController extends Controller
 
         $teamMembers = $query->paginate(15);
 
-        return inertia('admin/content/team-members/page', [
-            'teamMembers' => $teamMembers->through(function ($member) {
-                return [
-                    'id' => $member->id,
-                    'name' => $member->name,
-                    'title' => $member->title,
-                    'bio' => $member->bio,
-                    'image' => $member->image,
-                    'is_active' => $member->is_active,
-                    'order' => $member->order,
-                    'created_by' => $member->creator ? $member->creator->name : 'Unknown',
-                    'updated_by' => $member->updater ? $member->updater->name : 'Unknown',
-                    'created_at' => $member->created_at->format('Y-m-d'),
-                    'updated_at' => $member->updated_at->format('Y-m-d'),
-                ];
-            }),
+        return view('admin.team-members.index', [
+            'teamMembers' => $teamMembers,
             'filters' => [
                 'status' => $request->status ?? 'all',
                 'search' => $request->search ?? '',
@@ -826,31 +1160,23 @@ class ContentController extends Controller
 
     /**
      * Show the form for creating a new team member.
+     * Returns Blade view.
      */
     public function createTeamMember()
     {
-        return inertia('admin/content/team-members/new/page', [
-            'teamMember' => null,
-        ]);
+        return view('admin.team-members.create');
     }
 
     /**
      * Show the form for editing an existing team member.
+     * Returns Blade view.
      */
     public function editTeamMember($id)
     {
         $teamMember = TeamMember::findOrFail($id);
 
-        return inertia('admin/content/team-members/new/page', [
-            'teamMember' => [
-                'id' => $teamMember->id,
-                'name' => $teamMember->name,
-                'title' => $teamMember->title,
-                'bio' => $teamMember->bio ?? '',
-                'image' => $teamMember->image ?? '',
-                'order' => $teamMember->order,
-                'is_active' => $teamMember->is_active,
-            ],
+        return view('admin.team-members.edit', [
+            'teamMember' => $teamMember,
         ]);
     }
 
@@ -914,7 +1240,8 @@ class ContentController extends Controller
     }
 
     /**
-     * Display a listing of testimonials/case studies.
+     * Display a listing of testimonials.
+     * Returns Blade view.
      */
     public function testimonials(Request $request)
     {
@@ -945,24 +1272,8 @@ class ContentController extends Controller
         // Get unique industries for filter
         $industries = Testimonial::distinct()->whereNotNull('client_industry')->pluck('client_industry')->sort()->values();
 
-        return inertia('admin/content/testimonials/page', [
-            'testimonials' => $testimonials->through(function ($testimonial) {
-                return [
-                    'id' => $testimonial->id,
-                    'title' => $testimonial->title,
-                    'slug' => $testimonial->slug,
-                    'description' => $testimonial->description,
-                    'image' => $testimonial->image,
-                    'client_name' => $testimonial->client_name,
-                    'client_industry' => $testimonial->client_industry,
-                    'is_active' => $testimonial->is_active,
-                    'order' => $testimonial->order,
-                    'created_by' => $testimonial->creator ? $testimonial->creator->name : 'Unknown',
-                    'updated_by' => $testimonial->updater ? $testimonial->updater->name : 'Unknown',
-                    'created_at' => $testimonial->created_at->format('Y-m-d'),
-                    'updated_at' => $testimonial->updated_at->format('Y-m-d'),
-                ];
-            }),
+        return view('admin.testimonials.index', [
+            'testimonials' => $testimonials,
             'filters' => [
                 'status' => $request->status ?? 'all',
                 'industry' => $request->industry ?? 'all',
@@ -974,38 +1285,23 @@ class ContentController extends Controller
 
     /**
      * Show the form for creating a new testimonial.
+     * Returns Blade view.
      */
     public function createTestimonial()
     {
-        return inertia('admin/content/testimonials/new/page', [
-            'testimonial' => null,
-        ]);
+        return view('admin.testimonials.create');
     }
 
     /**
      * Show the form for editing an existing testimonial.
+     * Returns Blade view.
      */
     public function editTestimonial($id)
     {
         $testimonial = Testimonial::findOrFail($id);
 
-        return inertia('admin/content/testimonials/new/page', [
-            'testimonial' => [
-                'id' => $testimonial->id,
-                'title' => $testimonial->title,
-                'slug' => $testimonial->slug,
-                'description' => $testimonial->description ?? '',
-                'content' => $testimonial->content ?? '',
-                'image' => $testimonial->image ?? '',
-                'client_name' => $testimonial->client_name ?? '',
-                'client_industry' => $testimonial->client_industry ?? '',
-                'results' => $testimonial->results ?? '',
-                'order' => $testimonial->order,
-                'is_active' => $testimonial->is_active,
-                'seo_title' => $testimonial->seo_title ?? '',
-                'seo_description' => $testimonial->seo_description ?? '',
-                'seo_keywords' => $testimonial->seo_keywords ?? '',
-            ],
+        return view('admin.testimonials.edit', [
+            'testimonial' => $testimonial,
         ]);
     }
 
@@ -1033,7 +1329,7 @@ class ContentController extends Controller
         // Auto-generate slug if not provided
         if (empty($validated['slug']) && isset($validated['title'])) {
             $validated['slug'] = Str::slug($validated['title']);
-            
+
             // Ensure uniqueness
             $baseSlug = $validated['slug'];
             $counter = 1;
@@ -1082,7 +1378,7 @@ class ContentController extends Controller
         // Auto-generate slug if not provided and title changed
         if (empty($validated['slug']) && isset($validated['title']) && $testimonial->title !== $validated['title']) {
             $validated['slug'] = Str::slug($validated['title']);
-            
+
             // Ensure uniqueness
             $baseSlug = $validated['slug'];
             $counter = 1;
@@ -1110,6 +1406,7 @@ class ContentController extends Controller
 
     /**
      * Display a listing of partners/company logos.
+     * Returns Blade view.
      */
     public function partners(Request $request)
     {
@@ -1130,21 +1427,8 @@ class ContentController extends Controller
 
         $partners = $query->paginate(15);
 
-        return inertia('admin/content/partners/page', [
-            'partners' => $partners->through(function ($partner) {
-                return [
-                    'id' => $partner->id,
-                    'name' => $partner->name,
-                    'logo' => $partner->logo,
-                    'website' => $partner->website,
-                    'is_active' => $partner->is_active,
-                    'order' => $partner->order,
-                    'created_by' => $partner->creator ? $partner->creator->name : 'Unknown',
-                    'updated_by' => $partner->updater ? $partner->updater->name : 'Unknown',
-                    'created_at' => $partner->created_at->format('Y-m-d'),
-                    'updated_at' => $partner->updated_at->format('Y-m-d'),
-                ];
-            }),
+        return view('admin.partners.index', [
+            'partners' => $partners,
             'filters' => [
                 'status' => $request->status ?? 'all',
                 'search' => $request->search ?? '',
@@ -1154,30 +1438,23 @@ class ContentController extends Controller
 
     /**
      * Show the form for creating a new partner.
+     * Returns Blade view.
      */
     public function createPartner()
     {
-        return inertia('admin/content/partners/new/page', [
-            'partner' => null,
-        ]);
+        return view('admin.partners.create');
     }
 
     /**
      * Show the form for editing an existing partner.
+     * Returns Blade view.
      */
     public function editPartner($id)
     {
         $partner = Partner::findOrFail($id);
 
-        return inertia('admin/content/partners/new/page', [
-            'partner' => [
-                'id' => $partner->id,
-                'name' => $partner->name,
-                'logo' => $partner->logo ?? '',
-                'website' => $partner->website ?? '',
-                'order' => $partner->order,
-                'is_active' => $partner->is_active,
-            ],
+        return view('admin.partners.edit', [
+            'partner' => $partner,
         ]);
     }
 
@@ -1240,6 +1517,7 @@ class ContentController extends Controller
 
     /**
      * Display a listing of case studies.
+     * Returns Blade view.
      */
     public function caseStudies(Request $request)
     {
@@ -1270,24 +1548,8 @@ class ContentController extends Controller
         // Get unique industries for filter
         $industries = CaseStudy::distinct()->whereNotNull('client_industry')->pluck('client_industry')->sort()->values();
 
-        return inertia('admin/content/case-studies/page', [
-            'caseStudies' => $caseStudies->through(function ($caseStudy) {
-                return [
-                    'id' => $caseStudy->id,
-                    'title' => $caseStudy->title,
-                    'slug' => $caseStudy->slug,
-                    'description' => $caseStudy->description,
-                    'image' => $caseStudy->image,
-                    'client_name' => $caseStudy->client_name,
-                    'client_industry' => $caseStudy->client_industry,
-                    'is_active' => $caseStudy->is_active,
-                    'order' => $caseStudy->order,
-                    'created_by' => $caseStudy->creator ? $caseStudy->creator->name : 'Unknown',
-                    'updated_by' => $caseStudy->updater ? $caseStudy->updater->name : 'Unknown',
-                    'created_at' => $caseStudy->created_at->format('Y-m-d'),
-                    'updated_at' => $caseStudy->updated_at->format('Y-m-d'),
-                ];
-            }),
+        return view('admin.case-studies.index', [
+            'caseStudies' => $caseStudies,
             'filters' => [
                 'status' => $request->status ?? 'all',
                 'industry' => $request->industry ?? 'all',
@@ -1299,38 +1561,23 @@ class ContentController extends Controller
 
     /**
      * Show the form for creating a new case study.
+     * Returns Blade view.
      */
     public function createCaseStudy()
     {
-        return inertia('admin/content/case-studies/new/page', [
-            'caseStudy' => null,
-        ]);
+        return view('admin.case-studies.create');
     }
 
     /**
      * Show the form for editing an existing case study.
+     * Returns Blade view.
      */
     public function editCaseStudy($id)
     {
         $caseStudy = CaseStudy::findOrFail($id);
 
-        return inertia('admin/content/case-studies/new/page', [
-            'caseStudy' => [
-                'id' => $caseStudy->id,
-                'title' => $caseStudy->title,
-                'slug' => $caseStudy->slug,
-                'description' => $caseStudy->description ?? '',
-                'content' => $caseStudy->content ?? '',
-                'image' => $caseStudy->image ?? '',
-                'client_name' => $caseStudy->client_name ?? '',
-                'client_industry' => $caseStudy->client_industry ?? '',
-                'results' => $caseStudy->results ?? '',
-                'order' => $caseStudy->order,
-                'is_active' => $caseStudy->is_active,
-                'seo_title' => $caseStudy->seo_title ?? '',
-                'seo_description' => $caseStudy->seo_description ?? '',
-                'seo_keywords' => $caseStudy->seo_keywords ?? '',
-            ],
+        return view('admin.case-studies.edit', [
+            'caseStudy' => $caseStudy,
         ]);
     }
 
@@ -1358,7 +1605,7 @@ class ContentController extends Controller
         // Auto-generate slug if not provided
         if (empty($validated['slug']) && isset($validated['title'])) {
             $validated['slug'] = Str::slug($validated['title']);
-            
+
             // Ensure uniqueness
             $baseSlug = $validated['slug'];
             $counter = 1;
@@ -1407,7 +1654,7 @@ class ContentController extends Controller
         // Auto-generate slug if not provided and title changed
         if (empty($validated['slug']) && isset($validated['title']) && $caseStudy->title !== $validated['title']) {
             $validated['slug'] = Str::slug($validated['title']);
-            
+
             // Ensure uniqueness
             $baseSlug = $validated['slug'];
             $counter = 1;
