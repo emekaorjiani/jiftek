@@ -1,8 +1,8 @@
-import {Link} from "@inertiajs/react"
+import {Link, useForm, router} from "@inertiajs/react"
 import { Button } from "@/components/ui/button"
 import { ChevronRight, Award, BarChart, Shield, ExternalLink, ArrowRight } from "lucide-react"
 import FrontLayout from "@/layouts/front-pages/front-layout"
-import { useState, useEffect } from "react"
+import { useState, useEffect, FormEventHandler } from "react"
 
 /**
  * Default hero items fallback (used if no data from backend)
@@ -139,6 +139,220 @@ interface Insight {
   type: string
   author: string
   published_at: string | null
+}
+
+/**
+ * Contact Form Component with CAPTCHA
+ */
+function ContactForm() {
+  const [captcha, setCaptcha] = useState<{ question: string; token: string } | null>(null)
+  const [captchaAnswer, setCaptchaAnswer] = useState('')
+  const [loadingCaptcha, setLoadingCaptcha] = useState(false)
+
+  const { data, setData, processing, errors, reset } = useForm({
+    name: '',
+    email: '',
+    message: '',
+    captcha_answer: 0,
+    captcha_token: '',
+  })
+
+  const loadCaptcha = async () => {
+    setLoadingCaptcha(true)
+    try {
+      const response = await fetch('/captcha/generate', {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        credentials: 'same-origin', // Important: include cookies/session
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to generate CAPTCHA')
+      }
+
+      const result = await response.json()
+      setCaptcha(result)
+      setData('captcha_token', result.token)
+      console.log('CAPTCHA loaded:', result.question, 'Token:', result.token.substring(0, 20) + '...')
+    } catch (error) {
+      console.error('Failed to load CAPTCHA:', error)
+      alert('Failed to load CAPTCHA. Please refresh the page.')
+    } finally {
+      setLoadingCaptcha(false)
+    }
+  }
+
+  // Load CAPTCHA on component mount
+  useEffect(() => {
+    loadCaptcha()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const submit: FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault()
+
+    // Ensure we have the current token
+    if (!captcha || !captcha.token) {
+      alert('Please wait for CAPTCHA to load')
+      loadCaptcha()
+      return
+    }
+
+    // Update form data with CAPTCHA answer and token
+    const captchaAnswerInt = parseInt(captchaAnswer, 10)
+
+    if (isNaN(captchaAnswerInt)) {
+      alert('Please enter a valid CAPTCHA answer')
+      return
+    }
+
+    // Prepare complete form data with CAPTCHA
+    const formData = {
+      name: data.name,
+      email: data.email,
+      message: data.message,
+      captcha_answer: captchaAnswerInt,
+      captcha_token: captcha.token,
+    }
+
+    console.log('Submitting form with:', {
+      name: formData.name,
+      email: formData.email,
+      captcha_answer: formData.captcha_answer,
+      captcha_token: formData.captcha_token.substring(0, 20) + '...',
+    })
+
+    // Use router.post directly to ensure all data is sent
+    router.post('/contact/submit', formData, {
+      preserveScroll: true,
+      preserveState: false,
+      onStart: () => {
+        // Update form processing state
+      },
+      onSuccess: () => {
+        reset()
+        setCaptchaAnswer('')
+        loadCaptcha() // Generate new CAPTCHA
+        // Toast notification will be shown via flash message
+      },
+      onError: (errors: Record<string, string>) => {
+        console.error('Form errors:', errors)
+        // Reload CAPTCHA on error
+        loadCaptcha()
+        setCaptchaAnswer('')
+      },
+      onFinish: () => {
+        // Form submission finished
+      },
+    })
+  }
+
+  return (
+    <div className="space-y-4 bg-blue-800 rounded-lg p-6 lg:p-8">
+      <h3 className="text-2xl font-bold">Contact Us</h3>
+      <form onSubmit={submit} className="grid gap-4">
+        <div className="grid gap-2">
+          <label htmlFor="home-name" className="text-sm font-medium leading-none">
+            Name *
+          </label>
+          <input
+            id="home-name"
+            name="name"
+            value={data.name}
+            onChange={(e) => setData('name', e.target.value)}
+            required
+            className="h-10 rounded-md border border-blue-400 bg-blue-600 px-3 py-2 text-sm text-white placeholder:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-blue-600"
+            placeholder="Enter your name"
+          />
+          {errors.name && <p className="text-xs text-red-300">{errors.name}</p>}
+        </div>
+        <div className="grid gap-2">
+          <label htmlFor="home-email" className="text-sm font-medium leading-none">
+            Email *
+          </label>
+          <input
+            id="home-email"
+            name="email"
+            type="email"
+            value={data.email}
+            onChange={(e) => setData('email', e.target.value)}
+            required
+            className="h-10 rounded-md border border-blue-400 bg-blue-600 px-3 py-2 text-sm text-white placeholder:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-blue-600"
+            placeholder="Enter your email"
+          />
+          {errors.email && <p className="text-xs text-red-300">{errors.email}</p>}
+        </div>
+        <div className="grid gap-2">
+          <label htmlFor="home-message" className="text-sm font-medium leading-none">
+            Message *
+          </label>
+          <textarea
+            id="home-message"
+            name="message"
+            value={data.message}
+            onChange={(e) => setData('message', e.target.value)}
+            required
+            className="min-h-[100px] rounded-md border border-blue-400 bg-blue-600 px-3 py-2 text-sm text-white placeholder:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-blue-600"
+            placeholder="Enter your message"
+          />
+          {errors.message && <p className="text-xs text-red-300">{errors.message}</p>}
+        </div>
+
+        {/* CAPTCHA */}
+        <div className="grid gap-2">
+          <label htmlFor="home-captcha" className="text-sm font-medium leading-none">
+            Security Check *
+          </label>
+          <div className="flex items-center gap-3">
+            <div className="flex-1">
+              {loadingCaptcha ? (
+                <div className="h-10 rounded-md border border-blue-400 bg-blue-700 px-3 py-2 text-sm text-blue-200 flex items-center">
+                  Loading...
+                </div>
+              ) : captcha ? (
+                <div className="h-10 rounded-md border border-blue-400 bg-blue-700 px-3 py-2 text-sm text-white font-semibold flex items-center">
+                  What is {captcha.question}?
+                </div>
+              ) : (
+                <div className="h-10 rounded-md border border-blue-400 bg-blue-700 px-3 py-2 text-sm text-blue-200 flex items-center">
+                  Loading CAPTCHA...
+                </div>
+              )}
+            </div>
+            <input
+              id="home-captcha"
+              type="number"
+              value={captchaAnswer}
+              onChange={(e) => setCaptchaAnswer(e.target.value)}
+              required
+              className="w-24 h-10 rounded-md border border-blue-400 bg-blue-600 px-3 py-2 text-sm text-white placeholder:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-blue-600"
+              placeholder="Answer"
+            />
+            <button
+              type="button"
+              onClick={loadCaptcha}
+              className="px-3 py-2 text-xs text-blue-200 hover:text-white border border-blue-400 rounded-md hover:bg-blue-700 transition-colors"
+              title="Refresh CAPTCHA"
+            >
+              ↻
+            </button>
+          </div>
+          {errors.captcha_answer && <p className="text-xs text-red-300">{errors.captcha_answer}</p>}
+        </div>
+
+        <button
+          type="submit"
+          disabled={processing || loadingCaptcha}
+          className="bg-white text-blue-600 hover:bg-blue-50 w-full py-2 rounded-md font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          {processing ? 'Submitting...' : 'Submit'}
+        </button>
+      </form>
+    </div>
+  )
 }
 
 export default function HomePage({
@@ -352,12 +566,12 @@ export default function HomePage({
         </div>
       </section>
 
-      {/* Trusted By Section */}
+      {/* Technologies We Use Section */}
       <section className="w-full py-8 border-y border-gray-700 bg-gradient-to-r from-blue-900 to-blue-800">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
-              <h2 className="text-xl font-medium tracking-tight text-gray-200">Trusted by industry leaders</h2>
+              <h2 className="text-xl font-medium tracking-tight text-gray-200">Technologies We Use</h2>
             </div>
             {partners && partners.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 items-center justify-center w-full">
@@ -729,52 +943,20 @@ export default function HomePage({
                 goals.
               </p>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50">
-                  Get Started Today
-                  <ChevronRight className="ml-1 h-4 w-4" />
-                </Button>
-                <Button size="lg" variant="outline" className="text-white border-white hover:bg-blue-700">
-                  Learn More
-                </Button>
+                <Link href="/contact">
+                  <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50">
+                    Get Started Today
+                    <ChevronRight className="ml-1 h-4 w-4" />
+                  </Button>
+                </Link>
+                <Link href="/about">
+                  <Button size="lg" variant="outline" className="text-white border-white hover:bg-blue-700">
+                    Learn More
+                  </Button>
+                </Link>
               </div>
             </div>
-            <div className="space-y-4 bg-blue-800 rounded-lg p-6 lg:p-8">
-              <h3 className="text-2xl font-bold">Contact Us</h3>
-              <div className="grid gap-4">
-                <div className="grid gap-2">
-                  <label htmlFor="name" className="text-sm font-medium leading-none">
-                    Name
-                  </label>
-                  <input
-                    id="name"
-                    className="h-10 rounded-md border border-blue-400 bg-blue-600 px-3 py-2 text-sm placeholder:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-blue-600"
-                    placeholder="Enter your name"
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <label htmlFor="email" className="text-sm font-medium leading-none">
-                    Email
-                  </label>
-                  <input
-                    id="email"
-                    type="email"
-                    className="h-10 rounded-md border border-blue-400 bg-blue-600 px-3 py-2 text-sm placeholder:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-blue-600"
-                    placeholder="Enter your email"
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <label htmlFor="message" className="text-sm font-medium leading-none">
-                    Message
-                  </label>
-                  <textarea
-                    id="message"
-                    className="min-h-[100px] rounded-md border border-blue-400 bg-blue-600 px-3 py-2 text-sm placeholder:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-blue-600"
-                    placeholder="Enter your message"
-                  ></textarea>
-                </div>
-                <Button className="bg-white text-blue-600 hover:bg-blue-50 w-full">Submit</Button>
-              </div>
-            </div>
+            <ContactForm />
           </div>
         </div>
       </section>

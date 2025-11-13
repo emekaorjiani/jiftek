@@ -1,8 +1,8 @@
 @extends('admin.layout')
 
 @section('title', 'Edit Partner')
-@section('page-title', 'Edit Partner')
-@section('page-description', 'Update partner information')
+@section('page-title', 'Edit Partner (Technologies We Use)')
+@section('page-description', 'Update technology logo information')
 
 @section('content')
 <div class="bg-white rounded-lg shadow">
@@ -14,10 +14,10 @@
             <!-- Main Content -->
             <div class="lg:col-span-2 space-y-6">
                 <div>
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Partner Information</h3>
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Technology Information</h3>
                     <div class="space-y-4">
                         <div>
-                            <label for="name" class="block text-sm font-medium text-gray-700">Company Name *</label>
+                            <label for="name" class="block text-sm font-medium text-gray-700">Technology Name *</label>
                             <input type="text" name="name" id="name" value="{{ old('name', $partner->name) }}" required
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('name') border-red-300 @enderror">
                             @error('name')
@@ -28,7 +28,7 @@
                         <div>
                             <x-image-upload 
                                 name="logo" 
-                                label="Company Logo"
+                                label="Technology Logo"
                                 :value="old('logo', $partner->logo)"
                                 :required="true"
                                 helpText="Enter a logo URL or upload a file (JPG, PNG, GIF, SVG, WebP)"

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet"
 import { Menu, X } from "lucide-react"
 import { ReactNode } from "react"
+import { ToastContainer } from "@/components/toast"
 
 interface FrontLayoutProps {
   children: ReactNode
@@ -61,7 +62,7 @@ export default function FrontLayout({ children }: FrontLayoutProps) {
             <Link href="/contact">
             <Button className="hidden md:inline-flex bg-blue-700 hover:bg-blue-600 text-gray-200 cursor-pointer">Contact Us</Button>
             </Link>
-            
+
             {/* Mobile Menu */}
             <Sheet>
               <SheetTrigger asChild>
@@ -70,8 +71,8 @@ export default function FrontLayout({ children }: FrontLayoutProps) {
                   <span className="sr-only">Toggle menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent 
-                side="right" 
+              <SheetContent
+                side="right"
                 className="w-full max-w-none sm:max-w-[400px] bg-gray-900 border-gray-700 p-0 flex flex-col h-full"
               >
                 <SheetHeader className="p-6 border-b border-gray-700">
@@ -94,44 +95,44 @@ export default function FrontLayout({ children }: FrontLayoutProps) {
                     </SheetClose>
                   </div>
                 </SheetHeader>
-                
+
                 {/* Navigation Links */}
                 <nav className="flex-1 p-6 space-y-2 overflow-y-auto">
                   <SheetClose asChild>
-                    <Link 
-                      href="/about" 
+                    <Link
+                      href="/about"
                       className="block py-4 px-4 text-lg font-medium text-gray-200 hover:bg-gray-800 hover:text-blue-400 rounded-lg transition-all duration-200 active:scale-95"
                     >
                       About Us
                     </Link>
                   </SheetClose>
                   <SheetClose asChild>
-                    <Link 
-                      href="/solutions" 
+                    <Link
+                      href="/solutions"
                       className="block py-4 px-4 text-lg font-medium text-gray-200 hover:bg-gray-800 hover:text-blue-400 rounded-lg transition-all duration-200 active:scale-95"
                     >
                       Solutions
                     </Link>
                   </SheetClose>
                   <SheetClose asChild>
-                    <Link 
-                      href="/services" 
+                    <Link
+                      href="/services"
                       className="block py-4 px-4 text-lg font-medium text-gray-200 hover:bg-gray-800 hover:text-blue-400 rounded-lg transition-all duration-200 active:scale-95"
                     >
                       Services
                     </Link>
                   </SheetClose>
                   <SheetClose asChild>
-                    <Link 
-                      href="/insights" 
+                    <Link
+                      href="/insights"
                       className="block py-4 px-4 text-lg font-medium text-gray-200 hover:bg-gray-800 hover:text-blue-400 rounded-lg transition-all duration-200 active:scale-95"
                     >
                       Insights
                     </Link>
                   </SheetClose>
                   <SheetClose asChild>
-                    <Link 
-                      href="/contact" 
+                    <Link
+                      href="/contact"
                       className="block py-4 px-4 text-lg font-medium text-gray-200 hover:bg-gray-800 hover:text-blue-400 rounded-lg transition-all duration-200 active:scale-95"
                     >
                       Contact
@@ -217,22 +218,22 @@ export default function FrontLayout({ children }: FrontLayoutProps) {
                 <h3 className="text-sm font-medium text-gray-200">Solutions</h3>
                 <ul className="space-y-2">
                   <li>
-                    <Link href="#" className="text-sm text-gray-200 hover:text-slate-900">
+                    <Link href="/solutions" className="text-sm text-gray-200 hover:text-slate-900">
                       Digital Transformation
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-sm text-gray-200 hover:text-slate-900">
+                    <Link href="/solutions" className="text-sm text-gray-200 hover:text-slate-900">
                       Cloud Services
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-sm text-gray-200 hover:text-slate-900">
+                    <Link href="/services" className="text-sm text-gray-200 hover:text-slate-900">
                       Custom Software
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-sm text-gray-200 hover:text-slate-900">
+                    <Link href="/solutions" className="text-sm text-gray-200 hover:text-slate-900">
                       Data Analytics
                     </Link>
                   </li>
@@ -242,22 +243,22 @@ export default function FrontLayout({ children }: FrontLayoutProps) {
                 <h3 className="text-sm font-medium text-gray-200">Company</h3>
                 <ul className="space-y-2">
                   <li>
-                    <Link href="#" className="text-sm text-gray-200 hover:text-slate-900">
+                    <Link href="/about" className="text-sm text-gray-200 hover:text-slate-900">
                       About
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-sm text-gray-200 hover:text-slate-900">
+                    <Link href="/contact" className="text-sm text-gray-200 hover:text-slate-900">
                       Careers
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-sm text-gray-200 hover:text-slate-900">
+                    <Link href="/" className="text-sm text-gray-200 hover:text-slate-900">
                       Partners
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-sm text-gray-200 hover:text-slate-900">
+                    <Link href="/contact" className="text-sm text-gray-200 hover:text-slate-900">
                       Contact
                     </Link>
                   </li>
@@ -267,22 +268,22 @@ export default function FrontLayout({ children }: FrontLayoutProps) {
                 <h3 className="text-sm font-medium text-gray-200">Resources</h3>
                 <ul className="space-y-2">
                   <li>
-                    <Link href="#" className="text-sm text-gray-200 hover:text-slate-900">
+                    <Link href="/insights" className="text-sm text-gray-200 hover:text-slate-900">
                       Blog
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-sm text-gray-200 hover:text-slate-900">
+                    <Link href="/case-studies" className="text-sm text-gray-200 hover:text-slate-900">
                       Case Studies
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-sm text-gray-200 hover:text-slate-900">
+                    <Link href="/insights" className="text-sm text-gray-200 hover:text-slate-900">
                       Whitepapers
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-sm text-gray-200 hover:text-slate-900">
+                    <Link href="/insights" className="text-sm text-gray-200 hover:text-slate-900">
                       Webinars
                     </Link>
                   </li>
@@ -308,6 +309,9 @@ export default function FrontLayout({ children }: FrontLayoutProps) {
           </div>
         </div>
       </footer>
+
+      {/* Toast Notifications */}
+      <ToastContainer />
     </div>
   )
 }

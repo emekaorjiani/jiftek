@@ -1,4 +1,5 @@
-import { Link } from "@inertiajs/react"
+import { Link, useForm, router } from "@inertiajs/react"
+import { useState, useEffect, FormEventHandler } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -55,18 +56,282 @@ function getContactIcon(type: string) {
 }
 
 /**
+ * Contact Form Component with CAPTCHA
+ */
+function ContactFormComponent() {
+  const [captcha, setCaptcha] = useState<{ question: string; token: string } | null>(null)
+  const [captchaAnswer, setCaptchaAnswer] = useState('')
+  const [loadingCaptcha, setLoadingCaptcha] = useState(false)
+
+  const { data, setData, processing, errors, reset } = useForm({
+    name: '',
+    email: '',
+    phone: '',
+    company: '',
+    subject: '',
+    message: '',
+    captcha_answer: 0,
+    captcha_token: '',
+  })
+
+  const loadCaptcha = async () => {
+    setLoadingCaptcha(true)
+    try {
+      const response = await fetch('/captcha/generate', {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        credentials: 'same-origin', // Important: include cookies/session
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to generate CAPTCHA')
+      }
+
+      const result = await response.json()
+      setCaptcha(result)
+      setData('captcha_token', result.token)
+      console.log('CAPTCHA loaded:', result.question, 'Token:', result.token.substring(0, 20) + '...')
+    } catch (error) {
+      console.error('Failed to load CAPTCHA:', error)
+      alert('Failed to load CAPTCHA. Please refresh the page.')
+    } finally {
+      setLoadingCaptcha(false)
+    }
+  }
+
+  // Load CAPTCHA on component mount
+  useEffect(() => {
+    loadCaptcha()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const submit: FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault()
+
+    // Ensure we have the current token
+    if (!captcha || !captcha.token) {
+      alert('Please wait for CAPTCHA to load')
+      loadCaptcha()
+      return
+    }
+
+    // Update form data with CAPTCHA answer and token
+    const captchaAnswerInt = parseInt(captchaAnswer, 10)
+
+    if (isNaN(captchaAnswerInt)) {
+      alert('Please enter a valid CAPTCHA answer')
+      return
+    }
+
+    // Prepare complete form data with CAPTCHA
+    const formData = {
+      name: data.name,
+      email: data.email,
+      phone: data.phone || '',
+      company: data.company || '',
+      subject: data.subject || '',
+      message: data.message,
+      captcha_answer: captchaAnswerInt,
+      captcha_token: captcha.token,
+    }
+
+    console.log('Submitting form with:', {
+      name: formData.name,
+      email: formData.email,
+      captcha_answer: formData.captcha_answer,
+      captcha_token: formData.captcha_token.substring(0, 20) + '...',
+    })
+
+    // Use router.post directly to ensure all data is sent
+    router.post('/contact/submit', formData, {
+      preserveScroll: true,
+      preserveState: false,
+      onStart: () => {
+        // Update form processing state
+      },
+      onSuccess: () => {
+        reset()
+        setCaptchaAnswer('')
+        loadCaptcha() // Generate new CAPTCHA
+        // Toast notification will be shown via flash message
+      },
+      onError: (errors: Record<string, string>) => {
+        console.error('Form errors:', errors)
+        // Reload CAPTCHA on error
+        loadCaptcha()
+        setCaptchaAnswer('')
+      },
+      onFinish: () => {
+        // Form submission finished
+      },
+    })
+  }
+
+  return (
+    <form onSubmit={submit} className="space-y-4">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="space-y-2">
+          <label htmlFor="first-name" className="text-sm font-medium leading-none">
+            First name
+          </label>
+          <Input
+            id="first-name"
+            value={data.name.split(' ')[0] || ''}
+            onChange={(e) => {
+              const parts = data.name.split(' ')
+              parts[0] = e.target.value
+              setData('name', parts.join(' ').trim())
+            }}
+            placeholder="Enter your first name"
+          />
+        </div>
+        <div className="space-y-2">
+          <label htmlFor="last-name" className="text-sm font-medium leading-none">
+            Last name
+          </label>
+          <Input
+            id="last-name"
+            value={data.name.split(' ').slice(1).join(' ') || ''}
+            onChange={(e) => {
+              const first = data.name.split(' ')[0] || ''
+              setData('name', `${first} ${e.target.value}`.trim())
+            }}
+            placeholder="Enter your last name"
+          />
+        </div>
+      </div>
+      <div className="space-y-2">
+        <label htmlFor="email" className="text-sm font-medium leading-none">
+          Email *
+        </label>
+        <Input
+          id="email"
+          type="email"
+          value={data.email}
+          onChange={(e) => setData('email', e.target.value)}
+          required
+          placeholder="Enter your email"
+        />
+        {errors.email && <p className="text-xs text-red-600">{errors.email}</p>}
+      </div>
+      <div className="space-y-2">
+        <label htmlFor="phone" className="text-sm font-medium leading-none">
+          Phone
+        </label>
+        <Input
+          id="phone"
+          type="tel"
+          value={data.phone}
+          onChange={(e) => setData('phone', e.target.value)}
+          placeholder="Enter your phone number"
+        />
+      </div>
+      <div className="space-y-2">
+        <label htmlFor="company" className="text-sm font-medium leading-none">
+          Company
+        </label>
+        <Input
+          id="company"
+          value={data.company}
+          onChange={(e) => setData('company', e.target.value)}
+          placeholder="Enter your company name"
+        />
+      </div>
+      <div className="space-y-2">
+        <label htmlFor="subject" className="text-sm font-medium leading-none">
+          Subject
+        </label>
+        <Input
+          id="subject"
+          value={data.subject}
+          onChange={(e) => setData('subject', e.target.value)}
+          placeholder="Enter the subject"
+        />
+      </div>
+      <div className="space-y-2">
+        <label htmlFor="message" className="text-sm font-medium leading-none">
+          Message *
+        </label>
+        <Textarea
+          id="message"
+          value={data.message}
+          onChange={(e) => setData('message', e.target.value)}
+          required
+          placeholder="Enter your message"
+          className="min-h-[150px] resize-y"
+        />
+        {errors.message && <p className="text-xs text-red-600">{errors.message}</p>}
+      </div>
+
+      {/* CAPTCHA */}
+      <div className="space-y-2">
+        <label htmlFor="captcha" className="text-sm font-medium leading-none">
+          Security Check *
+        </label>
+        <div className="flex items-center gap-3">
+          <div className="flex-1">
+            {loadingCaptcha ? (
+              <div className="h-10 rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-500 flex items-center">
+                Loading...
+              </div>
+            ) : captcha ? (
+              <div className="h-10 rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-900 font-semibold flex items-center">
+                What is {captcha.question}?
+              </div>
+            ) : (
+              <div className="h-10 rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-500 flex items-center">
+                Loading CAPTCHA...
+              </div>
+            )}
+          </div>
+          <Input
+            id="captcha"
+            type="number"
+            value={captchaAnswer}
+            onChange={(e) => setCaptchaAnswer(e.target.value)}
+            required
+            className="w-24"
+            placeholder="Answer"
+          />
+          <button
+            type="button"
+            onClick={loadCaptcha}
+            className="px-3 py-2 text-xs text-gray-600 hover:text-gray-900 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+            title="Refresh CAPTCHA"
+          >
+            ↻
+          </button>
+        </div>
+        {errors.captcha_answer && <p className="text-xs text-red-600">{errors.captcha_answer}</p>}
+      </div>
+
+      <Button
+        type="submit"
+        className="w-full bg-blue-600 hover:bg-blue-700"
+        disabled={processing || loadingCaptcha}
+      >
+        {processing ? 'Sending...' : 'Send Message'}
+      </Button>
+    </form>
+  )
+}
+
+/**
  * ContactPage - Displays contact form and contact information
- * 
+ *
  * Fetches contact information from the database and displays it dynamically.
  * Includes contact form, contact info cards, and interactive OpenStreetMap.
  */
-export default function ContactPage({ 
+export default function ContactPage({
   contactInfo = { title: 'Contact Information', items: [] },
-  mapInfo = { title: 'Our Location', latitude: 6.6, longitude: 3.505, zoom: 15 },
+  mapInfo = { title: 'Our Location', latitude: 6.6, longitude: 3.505 },
   heroSection = { title: 'Contact Us', description: 'Have questions or ready to start your next project? Get in touch with our team.' }
 }: ContactPageProps) {
   // Generate OpenStreetMap embed URL with coordinates
-  const generateMapUrl = (lat: number, lon: number, zoom: number) => {
+  const generateMapUrl = (lat: number, lon: number) => {
     // Calculate bounding box for the map view
     const latOffset = 0.02
     const lonOffset = 0.02
@@ -75,17 +340,17 @@ export default function ContactPage({
   }
 
   // Generate link to view larger map
-  const generateMapLink = (lat: number, lon: number, zoom: number) => {
-    return `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=${zoom}/${lat}/${lon}`
+  const generateMapLink = (lat: number, lon: number) => {
+    return `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=15/${lat}/${lon}`
   }
 
-  const mapUrl = mapInfo.latitude && mapInfo.longitude 
-    ? generateMapUrl(mapInfo.latitude, mapInfo.longitude, mapInfo.zoom || 15)
-    : generateMapUrl(6.6, 3.505, 15)
-  
+  const mapUrl = mapInfo.latitude && mapInfo.longitude
+    ? generateMapUrl(mapInfo.latitude, mapInfo.longitude)
+    : generateMapUrl(6.6, 3.505)
+
   const mapLink = mapInfo.latitude && mapInfo.longitude
-    ? generateMapLink(mapInfo.latitude, mapInfo.longitude, mapInfo.zoom || 15)
-    : generateMapLink(6.6, 3.505, 15)
+    ? generateMapLink(mapInfo.latitude, mapInfo.longitude)
+    : generateMapLink(6.6, 3.505)
 
   return (
     <FrontLayout>
@@ -118,53 +383,7 @@ export default function ContactPage({
                     Fill out the form below and our team will get back to you within 24 hours.
                   </p>
                 </div>
-                <form className="space-y-4">
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="space-y-2">
-                      <label htmlFor="first-name" className="text-sm font-medium leading-none">
-                        First name
-                      </label>
-                      <Input id="first-name" placeholder="Enter your first name" />
-                    </div>
-                    <div className="space-y-2">
-                      <label htmlFor="last-name" className="text-sm font-medium leading-none">
-                        Last name
-                      </label>
-                      <Input id="last-name" placeholder="Enter your last name" />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="email" className="text-sm font-medium leading-none">
-                      Email
-                    </label>
-                    <Input id="email" type="email" placeholder="Enter your email" />
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="phone" className="text-sm font-medium leading-none">
-                      Phone
-                    </label>
-                    <Input id="phone" type="tel" placeholder="Enter your phone number" />
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="company" className="text-sm font-medium leading-none">
-                      Company
-                    </label>
-                    <Input id="company" placeholder="Enter your company name" />
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="subject" className="text-sm font-medium leading-none">
-                      Subject
-                    </label>
-                    <Input id="subject" placeholder="Enter the subject" />
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="message" className="text-sm font-medium leading-none">
-                      Message
-                    </label>
-                    <Textarea id="message" placeholder="Enter your message" className="min-h-[150px] resize-y" />
-                  </div>
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700">Send Message</Button>
-                </form>
+                <ContactFormComponent />
               </div>
               <div className="space-y-8">
                 <div className="space-y-2">
@@ -182,7 +401,7 @@ export default function ContactPage({
                       const IconComponent = getContactIcon(item.type)
                       const isLink = item.link && item.link.trim() !== ''
                       const isExternal = item.link?.startsWith('http')
-                      
+
                       return (
                         <div key={index} className="rounded-lg border border-slate-200 bg-white dark:bg-blue-950 p-6 shadow-sm">
                           <div className="flex items-start space-x-4">
@@ -190,8 +409,8 @@ export default function ContactPage({
                             <div className="space-y-1">
                               <h3 className="font-medium">{item.label}</h3>
                               {isLink ? (
-                                <a 
-                                  href={item.link} 
+                                <a
+                                  href={item.link}
                                   target={isExternal ? "_blank" : undefined}
                                   rel={isExternal ? "noopener noreferrer" : undefined}
                                   className="text-sm text-slate-700 dark:text-blue-50 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
@@ -232,9 +451,9 @@ export default function ContactPage({
                       />
                     </div>
                     <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                      <a 
+                      <a
                         href={mapLink}
-                        target="_blank" 
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                       >

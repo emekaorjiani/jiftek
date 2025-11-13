@@ -15,6 +15,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
         Route::get('/messages', [MessagesController::class, 'index'])->name('messages');
+        Route::get('/messages/{id}', [MessagesController::class, 'show'])->name('messages.show');
+        Route::post('/messages/{id}/mark-read', [MessagesController::class, 'markAsRead'])->name('messages.mark-read');
+        Route::post('/messages/{id}/mark-unread', [MessagesController::class, 'markAsUnread'])->name('messages.mark-unread');
+        Route::delete('/messages/{id}', [MessagesController::class, 'destroy'])->name('messages.destroy');
         Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
         Route::get('/users', [UsersController::class, 'index'])->name('users');
     });

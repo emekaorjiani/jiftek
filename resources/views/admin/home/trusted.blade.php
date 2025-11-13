@@ -1,8 +1,8 @@
 @extends('admin.layout')
 
-@section('title', 'Home Trusted By Section')
-@section('page-title', 'Home Trusted By Section')
-@section('page-description', 'Manage partner logos displayed on the homepage')
+@section('title', 'Home Technologies We Use Section')
+@section('page-title', 'Home Technologies We Use Section')
+@section('page-description', 'Manage technology logos displayed on the homepage')
 
 @section('content')
 <div class="bg-white rounded-lg shadow">
@@ -25,8 +25,8 @@
             
             <div>
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-medium text-gray-900">Select Partners</h3>
-                    <a href="{{ route('admin.content.partners') }}" class="text-sm text-blue-600 hover:text-blue-800">Manage Partners →</a>
+                    <h3 class="text-lg font-medium text-gray-900">Select Technologies We Use</h3>
+                    <a href="{{ route('admin.content.partners') }}" class="text-sm text-blue-600 hover:text-blue-800">Manage Partners (Technologies We Use) →</a>
                 </div>
                 
                 <div class="border border-gray-200 rounded-lg p-4 max-h-96 overflow-y-auto">
@@ -52,7 +52,7 @@
                             </label>
                         @empty
                             <div class="text-center py-8 text-gray-500">
-                                <p>No partners available. <a href="{{ route('admin.content.partners.create') }}" class="text-blue-600 hover:text-blue-800">Create one first</a></p>
+                                <p>No technologies available. <a href="{{ route('admin.content.partners.create') }}" class="text-blue-600 hover:text-blue-800">Create one first</a></p>
                             </div>
                         @endforelse
                     </div>

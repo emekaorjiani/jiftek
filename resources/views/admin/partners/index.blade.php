@@ -1,15 +1,15 @@
 @extends('admin.layout')
 
 @section('title', 'Partners Management')
-@section('page-title', 'Partners & Company Logos')
-@section('page-description', 'Manage company logos displayed on the homepage')
+@section('page-title', 'Partners (Technologies We Use)')
+@section('page-description', 'Manage technology logos displayed on the Technologies We Use section')
 
 @section('content')
 <div class="bg-white rounded-lg shadow">
     <div class="p-6 border-b border-gray-200 flex justify-between items-center">
-        <h2 class="text-xl font-semibold text-gray-900">All Partners</h2>
+        <h2 class="text-xl font-semibold text-gray-900">All Partners (Technologies We Use)</h2>
         <a href="{{ route('admin.content.partners.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
-            + Add New Partner
+            + Add New Technology
         </a>
     </div>
     
@@ -17,7 +17,7 @@
     <div class="p-6 border-b border-gray-200 bg-gray-50">
         <form method="GET" action="{{ route('admin.content.partners') }}" class="flex gap-4">
             <div class="flex-1">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search partners..."
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search technologies..."
                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
             </div>
             <div class="w-48">
@@ -89,7 +89,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <div class="flex justify-end space-x-2">
                                 <a href="{{ route('admin.content.partners.edit', $partner->id) }}" class="text-blue-600 hover:text-blue-900">Edit</a>
-                                <form method="POST" action="{{ route('admin.content.partners.destroy', $partner->id) }}" class="inline" onsubmit="return confirm('Are you sure you want to delete this partner?');">
+                                <form method="POST" action="{{ route('admin.content.partners.destroy', $partner->id) }}" class="inline" onsubmit="return confirm('Are you sure you want to delete this technology?');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
@@ -100,10 +100,10 @@
                 @empty
                     <tr>
                         <td colspan="7" class="px-6 py-12 text-center text-gray-500">
-                            <p class="text-lg font-medium">No partners found</p>
-                            <p class="mt-2">Get started by creating a new partner.</p>
+                            <p class="text-lg font-medium">No technologies found</p>
+                            <p class="mt-2">Get started by creating your first technology logo.</p>
                             <a href="{{ route('admin.content.partners.create') }}" class="mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
-                                Create Your First Partner
+                                Create Technology
                             </a>
                         </td>
                     </tr>

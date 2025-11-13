@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\FrontPagesController;
+use App\Http\Controllers\ContactController;
 
 
 Route::get('/', [FrontPagesController::class, 'index'])->name('home');
@@ -17,6 +18,10 @@ Route::get('/case-studies/{slug}', [FrontPagesController::class, 'showCaseStudy'
 Route::get('/testimonials', [FrontPagesController::class, 'testimonials'])->name('testimonials');
 Route::get('/testimonials/{slug}', [FrontPagesController::class, 'showTestimonial'])->name('testimonials.show');
 Route::get('/contact', [FrontPagesController::class, 'contact'])->name('contact');
+
+// Contact form routes
+Route::get('/captcha/generate', [ContactController::class, 'generateCaptcha'])->name('captcha.generate');
+Route::post('/contact/submit', [ContactController::class, 'submit'])->name('contact.submit');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
