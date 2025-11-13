@@ -58,19 +58,12 @@
                 <!-- Image -->
                 <div>
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Service Image</h3>
-                    <div>
-                        <label for="image" class="block text-sm font-medium text-gray-700">Image URL or SVG Data URI</label>
-                        <textarea name="image" id="image" rows="4"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('image') border-red-300 @enderror">{{ old('image', $service->image) }}</textarea>
-                        @error('image')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    @if($service->image)
-                        <div class="mt-4">
-                            <img src="{{ $service->image }}" alt="Preview" class="h-48 w-auto rounded border border-gray-200">
-                        </div>
-                    @endif
+                    <x-image-upload 
+                        name="image" 
+                        label="Service Image"
+                        :value="old('image', $service->image)"
+                        helpText="Enter an image URL or upload a file (JPG, PNG, GIF, SVG, WebP)"
+                    />
                 </div>
                 
                 <!-- Features -->
