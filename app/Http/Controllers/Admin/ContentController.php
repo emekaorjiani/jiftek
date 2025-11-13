@@ -33,24 +33,24 @@ class ContentController extends Controller
         // Check if a file was uploaded
         if ($request->hasFile($fieldName . '_file')) {
             $file = $request->file($fieldName . '_file');
-            
+
             if ($file->isValid()) {
                 // Generate unique filename
                 $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
-                
+
                 // Store in public/images directory
                 $path = $file->storeAs('images', $filename, 'public');
-                
+
                 // Return full URL path
                 return Storage::url($path);
             }
         }
-        
+
         // If no file uploaded, check for URL input
         if ($request->has($fieldName) && !empty($request->input($fieldName))) {
             return $request->input($fieldName);
         }
-        
+
         // Return existing value if nothing new provided
         return $existingValue;
     }
@@ -179,6 +179,7 @@ class ContentController extends Controller
             'sections.hero.items.*.secondaryButton' => 'nullable|string|max:255',
             'sections.hero.items.*.secondaryButtonLink' => 'nullable|string|max:255',
             'sections.hero.items.*.image' => 'nullable|string|max:500',
+            'sections.hero.items.*.image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
             'sections.hero.items.*.imageAlt' => 'nullable|string|max:255',
         ]);
 
@@ -190,11 +191,23 @@ class ContentController extends Controller
             // If items array is provided, use it; otherwise keep existing structure
             if (isset($heroContent['items']) && is_array($heroContent['items'])) {
                 // Filter out empty items and ensure all required fields have defaults
-                $heroContent['items'] = array_values(array_filter(array_map(function ($item) {
+                $heroContent['items'] = array_values(array_filter(array_map(function ($item, $index) use ($request) {
                     // Only include non-empty items
                     if (empty($item['title']) && empty($item['badge']) && empty($item['description'])) {
                         return null;
                     }
+                    
+                    // Handle image upload for this item
+                    $imagePath = $item['image'] ?? '';
+                    if ($request->hasFile("sections.hero.items.{$index}.image_file")) {
+                        $file = $request->file("sections.hero.items.{$index}.image_file");
+                        if ($file->isValid()) {
+                            $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
+                            $path = $file->storeAs('images', $filename, 'public');
+                            $imagePath = Storage::url($path);
+                        }
+                    }
+                    
                     return [
                         'badge' => $item['badge'] ?? '',
                         'title' => $item['title'] ?? '',
@@ -204,10 +217,10 @@ class ContentController extends Controller
                         'primaryButtonLink' => $item['primaryButtonLink'] ?? '',
                         'secondaryButton' => $item['secondaryButton'] ?? '',
                         'secondaryButtonLink' => $item['secondaryButtonLink'] ?? '',
-                        'image' => $item['image'] ?? '',
+                        'image' => $imagePath,
                         'imageAlt' => $item['imageAlt'] ?? '',
                     ];
-                }, $heroContent['items'])));
+                }, $heroContent['items'], array_keys($heroContent['items']))));
             }
 
             ContentSection::updateOrCreate(
@@ -1273,9 +1286,13 @@ class ContentController extends Controller
             'title' => 'required|string|max:255',
             'bio' => 'nullable|string',
             'image' => 'nullable|string',
+            'image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
             'order' => 'nullable|integer|min:0',
             'is_active' => 'nullable|boolean',
         ]);
+
+        // Handle image upload
+        $validated['image'] = $this->handleImageUpload($request, 'image');
 
         // Set defaults
         if (!isset($validated['order'])) {
@@ -1302,9 +1319,13 @@ class ContentController extends Controller
             'title' => 'required|string|max:255',
             'bio' => 'nullable|string',
             'image' => 'nullable|string',
+            'image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
             'order' => 'nullable|integer|min:0',
             'is_active' => 'nullable|boolean',
         ]);
+
+        // Handle image upload
+        $validated['image'] = $this->handleImageUpload($request, 'image', $teamMember->image);
 
         $teamMember->update($validated);
 
@@ -1565,7 +1586,7 @@ class ContentController extends Controller
 
         // Handle logo upload
         $validated['logo'] = $this->handleImageUpload($request, 'logo');
-        
+
         if (empty($validated['logo'])) {
             return redirect()->back()->withErrors(['logo' => 'Logo is required. Please provide a URL or upload a file.'])->withInput();
         }
@@ -1601,7 +1622,7 @@ class ContentController extends Controller
 
         // Handle logo upload
         $validated['logo'] = $this->handleImageUpload($request, 'logo', $partner->logo);
-        
+
         if (empty($validated['logo'])) {
             $validated['logo'] = $partner->logo; // Keep existing if nothing new provided
         }

@@ -6,7 +6,7 @@
 
 @section('content')
 <div class="bg-white rounded-lg shadow">
-    <form method="POST" action="{{ route('admin.content.home.hero.update') }}" class="p-6" id="hero-form">
+    <form method="POST" action="{{ route('admin.content.home.hero.update') }}" enctype="multipart/form-data" class="p-6" id="hero-form">
         @csrf
         @method('PUT')
 
@@ -54,19 +54,20 @@
                             </div>
 
                             <div class="space-y-4">
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Badge Text</label>
-                                        <input type="text" name="sections[hero][items][{{ $index }}][badge]" value="{{ old("sections.hero.items.{$index}.badge", $item['badge'] ?? '') }}"
-                                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                            placeholder="e.g., Welcome, New Feature">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-                                        <input type="text" name="sections[hero][items][{{ $index }}][image]" value="{{ old("sections.hero.items.{$index}.image", $item['image'] ?? '') }}"
-                                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                            placeholder="https://example.com/hero-image.jpg">
-                                    </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Badge Text</label>
+                                    <input type="text" name="sections[hero][items][{{ $index }}][badge]" value="{{ old("sections.hero.items.{$index}.badge", $item['badge'] ?? '') }}"
+                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                        placeholder="e.g., Welcome, New Feature">
+                                </div>
+                                
+                                <div>
+                                    <x-image-upload 
+                                        name="sections[hero][items][{{ $index }}][image]" 
+                                        label="Hero Image"
+                                        :value="old("sections.hero.items.{$index}.image", $item['image'] ?? '')"
+                                        helpText="Enter an image URL or upload a file (JPG, PNG, GIF, SVG, WebP)"
+                                    />
                                 </div>
 
                                 <div>
@@ -126,15 +127,6 @@
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                         placeholder="Hero image description">
                                 </div>
-
-                                @if(!empty($item['image']))
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Image Preview</label>
-                                        <div class="w-full h-48 rounded-md border border-gray-200 overflow-hidden bg-gray-100">
-                                            <img src="{{ $item['image'] }}" alt="{{ $item['imageAlt'] ?? 'Preview' }}" class="w-full h-full object-cover" onerror="this.style.display='none'">
-                                        </div>
-                                    </div>
-                                @endif
                             </div>
                         </div>
                     @endforeach
@@ -197,18 +189,59 @@
                 </div>
 
                 <div class="space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Badge Text</label>
-                            <input type="text" name="sections[hero][items][${itemCounter}][badge]" value=""
-                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                placeholder="e.g., Welcome, New Feature">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-                            <input type="text" name="sections[hero][items][${itemCounter}][image]" value=""
-                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                placeholder="https://example.com/hero-image.jpg">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Badge Text</label>
+                        <input type="text" name="sections[hero][items][${itemCounter}][badge]" value=""
+                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            placeholder="e.g., Welcome, New Feature">
+                    </div>
+                    
+                    <div id="hero-image-upload-${itemCounter}">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Hero Image</label>
+                        <div class="border border-gray-300 rounded-md">
+                            <div class="flex border-b border-gray-300">
+                                <button type="button" onclick="showUrlInput('hero_${itemCounter}')" 
+                                    id="hero_${itemCounter}_url_tab"
+                                    class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border-b-2 border-blue-500">
+                                    Image URL
+                                </button>
+                                <button type="button" onclick="showFileUpload('hero_${itemCounter}')" 
+                                    id="hero_${itemCounter}_upload_tab"
+                                    class="flex-1 px-4 py-2 text-sm font-medium text-gray-500 bg-gray-50">
+                                    Upload File
+                                </button>
+                            </div>
+                            
+                            <div id="hero_${itemCounter}_url_section" class="p-4">
+                                <input type="text" 
+                                    name="sections[hero][items][${itemCounter}][image]" 
+                                    id="hero_${itemCounter}_url" 
+                                    value=""
+                                    placeholder="https://example.com/image.jpg"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <p class="mt-1 text-xs text-gray-500">Enter an image URL or upload a file (JPG, PNG, GIF, SVG, WebP)</p>
+                                
+                                <div id="hero_${itemCounter}_url_preview" class="mt-3 hidden">
+                                    <p class="text-xs text-gray-500 mb-2">Preview:</p>
+                                    <img src="" alt="Preview" class="max-w-full h-48 object-contain border border-gray-200 rounded" onerror="this.style.display='none'">
+                                </div>
+                            </div>
+                            
+                            <div id="hero_${itemCounter}_upload_section" class="p-4 hidden">
+                                <input type="file" 
+                                    name="sections[hero][items][${itemCounter}][image_file]" 
+                                    id="hero_${itemCounter}_file" 
+                                    accept="image/*"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <p class="mt-1 text-xs text-gray-500">Upload an image file (JPG, PNG, GIF, etc.)</p>
+                                
+                                <input type="hidden" name="sections[hero][items][${itemCounter}][image]" id="hero_${itemCounter}_uploaded_path" value="">
+                                
+                                <div id="hero_${itemCounter}_file_preview" class="mt-3 hidden">
+                                    <p class="text-xs text-gray-500 mb-2">Preview:</p>
+                                    <img src="" alt="Preview" class="max-w-full h-48 object-contain border border-gray-200 rounded">
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -269,6 +302,40 @@
                             class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                             placeholder="Hero image description">
                     </div>
+                    
+                    <script>
+                    // Initialize image upload for new item
+                    (function() {
+                        const counter = ${itemCounter};
+                        const name = 'hero_' + counter;
+                        
+                        // URL input preview
+                        const urlInput = document.getElementById(name + '_url');
+                        if (urlInput) {
+                            urlInput.addEventListener('input', function() {
+                                updateUrlPreview(name, this.value);
+                            });
+                        }
+                        
+                        // File upload preview
+                        const fileInput = document.getElementById(name + '_file');
+                        if (fileInput) {
+                            fileInput.addEventListener('change', function(e) {
+                                const file = e.target.files[0];
+                                if (file) {
+                                    const reader = new FileReader();
+                                    reader.onload = function(e) {
+                                        const preview = document.getElementById(name + '_file_preview');
+                                        const img = preview.querySelector('img');
+                                        img.src = e.target.result;
+                                        preview.classList.remove('hidden');
+                                    };
+                                    reader.readAsDataURL(file);
+                                }
+                            });
+                        }
+                    })();
+                    </script>
                 </div>
             </div>
         `;
@@ -367,6 +434,51 @@
                 }
             });
         });
+    }
+    
+    /**
+     * Show URL input tab for hero image upload
+     */
+    function showUrlInput(name) {
+        document.getElementById(name + '_url_section').classList.remove('hidden');
+        document.getElementById(name + '_upload_section').classList.add('hidden');
+        document.getElementById(name + '_url_tab').classList.add('border-blue-500', 'bg-white', 'text-gray-700');
+        document.getElementById(name + '_url_tab').classList.remove('bg-gray-50', 'text-gray-500');
+        document.getElementById(name + '_upload_tab').classList.remove('border-blue-500', 'bg-white', 'text-gray-700');
+        document.getElementById(name + '_upload_tab').classList.add('bg-gray-50', 'text-gray-500');
+        
+        const urlInput = document.getElementById(name + '_url');
+        if (urlInput && urlInput.value) {
+            updateUrlPreview(name, urlInput.value);
+        }
+    }
+    
+    /**
+     * Show file upload tab for hero image upload
+     */
+    function showFileUpload(name) {
+        document.getElementById(name + '_url_section').classList.add('hidden');
+        document.getElementById(name + '_upload_section').classList.remove('hidden');
+        document.getElementById(name + '_upload_tab').classList.add('border-blue-500', 'bg-white', 'text-gray-700');
+        document.getElementById(name + '_upload_tab').classList.remove('bg-gray-50', 'text-gray-500');
+        document.getElementById(name + '_url_tab').classList.remove('border-blue-500', 'bg-white', 'text-gray-700');
+        document.getElementById(name + '_url_tab').classList.add('bg-gray-50', 'text-gray-500');
+    }
+    
+    /**
+     * Update URL preview for hero image
+     */
+    function updateUrlPreview(name, url) {
+        const preview = document.getElementById(name + '_url_preview');
+        if (preview) {
+            const img = preview.querySelector('img');
+            if (url && img) {
+                img.src = url;
+                preview.classList.remove('hidden');
+            } else {
+                preview.classList.add('hidden');
+            }
+        }
     }
 </script>
 @endpush

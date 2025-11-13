@@ -248,3 +248,5 @@ export default function InsightShowPage({ insight, relatedInsights = [] }: Props
   )
 }
 
+
+

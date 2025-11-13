@@ -249,3 +249,5 @@ class InsightSeeder extends Seeder
     }
 }
 
+
+

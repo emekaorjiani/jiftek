@@ -8,7 +8,7 @@
 <div class="bg-white rounded-lg shadow">
     <form method="POST" action="{{ route('admin.content.insights.store') }}" enctype="multipart/form-data" class="p-6">
         @csrf
-        
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Main Content -->
             <div class="lg:col-span-2 space-y-6">
@@ -23,7 +23,7 @@
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
-                        
+
                         <div>
                             <label for="slug" class="block text-sm font-medium text-gray-700">Slug</label>
                             <input type="text" name="slug" id="slug" value="{{ old('slug') }}"
@@ -33,23 +33,23 @@
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
-                        
+
                         <div>
                             <label for="excerpt" class="block text-sm font-medium text-gray-700">Excerpt</label>
                             <textarea name="excerpt" id="excerpt" rows="3"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('excerpt') }}</textarea>
                         </div>
-                        
+
                         <div>
                             <label for="content" class="block text-sm font-medium text-gray-700">Content</label>
                             <textarea name="content" id="content" rows="15"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('content') }}</textarea>
                         </div>
-                        
+
                         <div>
                             <h4 class="text-md font-medium text-gray-900 mb-2">Featured Image</h4>
-                            <x-image-upload 
-                                name="featured_image" 
+                            <x-image-upload
+                                name="featured_image"
                                 label="Featured Image"
                                 :value="old('featured_image')"
                                 helpText="Enter an image URL or upload a file (JPG, PNG, GIF, SVG, WebP)"
@@ -58,7 +58,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Sidebar -->
             <div class="space-y-6">
                 <div class="bg-gray-50 rounded-lg p-4">
@@ -77,7 +77,7 @@
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
-                        
+
                         <div>
                             <label for="status" class="block text-sm font-medium text-gray-700">Status *</label>
                             <select name="status" id="status" required
@@ -90,19 +90,19 @@
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
-                        
+
                         <div>
                             <label for="published_at" class="block text-sm font-medium text-gray-700">Published Date</label>
                             <input type="date" name="published_at" id="published_at" value="{{ old('published_at') }}"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         </div>
-                        
+
                         <div>
                             <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
                             <input type="text" name="category" id="category" value="{{ old('category') }}"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         </div>
-                        
+
                         <div>
                             <label for="tags" class="block text-sm font-medium text-gray-700">Tags</label>
                             <input type="text" name="tags" id="tags" value="{{ old('tags') }}"
@@ -111,7 +111,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="bg-gray-50 rounded-lg p-4">
                     <h3 class="text-lg font-medium text-gray-900 mb-4">SEO Settings</h3>
                     <div class="space-y-4">
@@ -120,13 +120,13 @@
                             <input type="text" name="seo_title" id="seo_title" value="{{ old('seo_title') }}"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         </div>
-                        
+
                         <div>
                             <label for="seo_description" class="block text-sm font-medium text-gray-700">SEO Description</label>
                             <textarea name="seo_description" id="seo_description" rows="3"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('seo_description') }}</textarea>
                         </div>
-                        
+
                         <div>
                             <label for="seo_keywords" class="block text-sm font-medium text-gray-700">SEO Keywords</label>
                             <input type="text" name="seo_keywords" id="seo_keywords" value="{{ old('seo_keywords') }}"
@@ -136,7 +136,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="mt-6 flex justify-end space-x-3 border-t border-gray-200 pt-6">
             <a href="{{ route('admin.content.insights') }}" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
                 Cancel
