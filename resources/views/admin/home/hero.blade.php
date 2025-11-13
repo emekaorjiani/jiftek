@@ -60,14 +60,56 @@
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                         placeholder="e.g., Welcome, New Feature">
                                 </div>
-                                
+
                                 <div>
-                                    <x-image-upload 
-                                        name="sections[hero][items][{{ $index }}][image]" 
-                                        label="Hero Image"
-                                        :value="old("sections.hero.items.{$index}.image", $item['image'] ?? '')"
-                                        helpText="Enter an image URL or upload a file (JPG, PNG, GIF, SVG, WebP)"
-                                    />
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Hero Image</label>
+                                    <div class="border border-gray-300 rounded-md">
+                                        <div class="flex border-b border-gray-300">
+                                            <button type="button" onclick="showUrlInput('sections_hero_items_{{ $index }}_image')"
+                                                id="sections_hero_items_{{ $index }}_image_url_tab"
+                                                class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border-b-2 border-blue-500">
+                                                Image URL
+                                            </button>
+                                            <button type="button" onclick="showFileUpload('sections_hero_items_{{ $index }}_image')"
+                                                id="sections_hero_items_{{ $index }}_image_upload_tab"
+                                                class="flex-1 px-4 py-2 text-sm font-medium text-gray-500 bg-gray-50">
+                                                Upload File
+                                            </button>
+                                        </div>
+
+                                        <!-- URL Input Section -->
+                                        <div id="sections_hero_items_{{ $index }}_image_url_section" class="p-4">
+                                            <input type="text"
+                                                name="sections[hero][items][{{ $index }}][image]"
+                                                id="sections_hero_items_{{ $index }}_image_url"
+                                                value="{{ old("sections.hero.items.{$index}.image", $item['image'] ?? '') }}"
+                                                placeholder="https://example.com/image.jpg"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                            <p class="mt-1 text-xs text-gray-500">Enter an image URL or upload a file (JPG, PNG, GIF, SVG, WebP)</p>
+
+                                            <!-- Preview -->
+                                            <div id="sections_hero_items_{{ $index }}_image_url_preview" class="mt-3 {{ !empty($item['image']) ? '' : 'hidden' }}">
+                                                <p class="text-xs text-gray-500 mb-2">Preview:</p>
+                                                <img src="{{ old("sections.hero.items.{$index}.image", $item['image'] ?? '') }}" alt="Preview" class="max-w-full h-48 object-contain border border-gray-200 rounded" onerror="this.style.display='none'">
+                                            </div>
+                                        </div>
+
+                                        <!-- File Upload Section -->
+                                        <div id="sections_hero_items_{{ $index }}_image_upload_section" class="p-4 hidden">
+                                            <input type="file"
+                                                name="sections[hero][items][{{ $index }}][image_file]"
+                                                id="sections_hero_items_{{ $index }}_image_file"
+                                                accept="image/*"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                            <p class="mt-1 text-xs text-gray-500">Upload an image file (JPG, PNG, GIF, etc.)</p>
+
+                                            <!-- Preview -->
+                                            <div id="sections_hero_items_{{ $index }}_image_file_preview" class="mt-3 hidden">
+                                                <p class="text-xs text-gray-500 mb-2">Preview:</p>
+                                                <img src="" alt="Preview" class="max-w-full h-48 object-contain border border-gray-200 rounded">
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div>
@@ -153,6 +195,52 @@
 <script>
     let itemCounter = {{ !empty($heroItems) && is_array($heroItems) ? count($heroItems) : 0 }};
 
+    // Initialize existing hero items on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize URL previews for existing items
+        @if(!empty($heroItems) && is_array($heroItems))
+            @foreach($heroItems as $index => $item)
+                @if(!empty($item['image']))
+                    const existingValue{{ $index }} = '{{ $item['image'] }}';
+                    if (existingValue{{ $index }}.startsWith('http://') || existingValue{{ $index }}.startsWith('https://') || existingValue{{ $index }}.startsWith('/')) {
+                        showUrlInput('sections_hero_items_{{ $index }}_image');
+                        updateUrlPreview('sections_hero_items_{{ $index }}_image', existingValue{{ $index }});
+                    }
+                @endif
+
+                // URL input preview for existing items
+                const urlInput{{ $index }} = document.getElementById('sections_hero_items_{{ $index }}_image_url');
+                if (urlInput{{ $index }}) {
+                    urlInput{{ $index }}.addEventListener('input', function() {
+                        updateUrlPreview('sections_hero_items_{{ $index }}_image', this.value);
+                    });
+                }
+
+                // File upload preview for existing items
+                const fileInput{{ $index }} = document.getElementById('sections_hero_items_{{ $index }}_image_file');
+                if (fileInput{{ $index }}) {
+                    fileInput{{ $index }}.addEventListener('change', function(e) {
+                        const file = e.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                const preview = document.getElementById('sections_hero_items_{{ $index }}_image_file_preview');
+                                if (preview) {
+                                    const img = preview.querySelector('img');
+                                    if (img) {
+                                        img.src = e.target.result;
+                                        preview.classList.remove('hidden');
+                                    }
+                                }
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    });
+                }
+            @endforeach
+        @endif
+    });
+
     /**
      * Add a new hero item to the form
      */
@@ -195,48 +283,48 @@
                             class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                             placeholder="e.g., Welcome, New Feature">
                     </div>
-                    
+
                     <div id="hero-image-upload-${itemCounter}">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Hero Image</label>
                         <div class="border border-gray-300 rounded-md">
                             <div class="flex border-b border-gray-300">
-                                <button type="button" onclick="showUrlInput('hero_${itemCounter}')" 
+                                <button type="button" onclick="showUrlInput('hero_${itemCounter}')"
                                     id="hero_${itemCounter}_url_tab"
                                     class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border-b-2 border-blue-500">
                                     Image URL
                                 </button>
-                                <button type="button" onclick="showFileUpload('hero_${itemCounter}')" 
+                                <button type="button" onclick="showFileUpload('hero_${itemCounter}')"
                                     id="hero_${itemCounter}_upload_tab"
                                     class="flex-1 px-4 py-2 text-sm font-medium text-gray-500 bg-gray-50">
                                     Upload File
                                 </button>
                             </div>
-                            
+
                             <div id="hero_${itemCounter}_url_section" class="p-4">
-                                <input type="text" 
-                                    name="sections[hero][items][${itemCounter}][image]" 
-                                    id="hero_${itemCounter}_url" 
+                                <input type="text"
+                                    name="sections[hero][items][${itemCounter}][image]"
+                                    id="hero_${itemCounter}_url"
                                     value=""
                                     placeholder="https://example.com/image.jpg"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                 <p class="mt-1 text-xs text-gray-500">Enter an image URL or upload a file (JPG, PNG, GIF, SVG, WebP)</p>
-                                
+
                                 <div id="hero_${itemCounter}_url_preview" class="mt-3 hidden">
                                     <p class="text-xs text-gray-500 mb-2">Preview:</p>
                                     <img src="" alt="Preview" class="max-w-full h-48 object-contain border border-gray-200 rounded" onerror="this.style.display='none'">
                                 </div>
                             </div>
-                            
+
                             <div id="hero_${itemCounter}_upload_section" class="p-4 hidden">
-                                <input type="file" 
-                                    name="sections[hero][items][${itemCounter}][image_file]" 
-                                    id="hero_${itemCounter}_file" 
+                                <input type="file"
+                                    name="sections[hero][items][${itemCounter}][image_file]"
+                                    id="hero_${itemCounter}_file"
                                     accept="image/*"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                 <p class="mt-1 text-xs text-gray-500">Upload an image file (JPG, PNG, GIF, etc.)</p>
-                                
+
                                 <input type="hidden" name="sections[hero][items][${itemCounter}][image]" id="hero_${itemCounter}_uploaded_path" value="">
-                                
+
                                 <div id="hero_${itemCounter}_file_preview" class="mt-3 hidden">
                                     <p class="text-xs text-gray-500 mb-2">Preview:</p>
                                     <img src="" alt="Preview" class="max-w-full h-48 object-contain border border-gray-200 rounded">
@@ -302,47 +390,54 @@
                             class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                             placeholder="Hero image description">
                     </div>
-                    
-                    <script>
-                    // Initialize image upload for new item
-                    (function() {
-                        const counter = ${itemCounter};
-                        const name = 'hero_' + counter;
-                        
-                        // URL input preview
-                        const urlInput = document.getElementById(name + '_url');
-                        if (urlInput) {
-                            urlInput.addEventListener('input', function() {
-                                updateUrlPreview(name, this.value);
-                            });
-                        }
-                        
-                        // File upload preview
-                        const fileInput = document.getElementById(name + '_file');
-                        if (fileInput) {
-                            fileInput.addEventListener('change', function(e) {
-                                const file = e.target.files[0];
-                                if (file) {
-                                    const reader = new FileReader();
-                                    reader.onload = function(e) {
-                                        const preview = document.getElementById(name + '_file_preview');
-                                        const img = preview.querySelector('img');
-                                        img.src = e.target.result;
-                                        preview.classList.remove('hidden');
-                                    };
-                                    reader.readAsDataURL(file);
-                                }
-                            });
-                        }
-                    })();
-                    </script>
                 </div>
             </div>
         `;
 
         container.insertAdjacentHTML('beforeend', itemHtml);
+
+        // Initialize image upload for the newly added item
+        const currentCounter = itemCounter;
+        const name = 'hero_' + currentCounter;
+
+        // URL input preview
+        const urlInput = document.getElementById(name + '_url');
+        if (urlInput) {
+            urlInput.addEventListener('input', function() {
+                updateUrlPreview(name, this.value);
+            });
+        }
+
+        // File upload preview
+        const fileInput = document.getElementById(name + '_file');
+        if (fileInput) {
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const preview = document.getElementById(name + '_file_preview');
+                        if (preview) {
+                            const img = preview.querySelector('img');
+                            if (img) {
+                                img.src = e.target.result;
+                                preview.classList.remove('hidden');
+                            }
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
         itemCounter++;
         updateItemNumbers();
+
+        // Scroll to the newly added item
+        const newItem = container.querySelector(`[data-index="${currentCounter}"]`);
+        if (newItem) {
+            newItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
     }
 
     /**
@@ -359,6 +454,11 @@
 
         const item = container.querySelector(`[data-index="${index}"]`);
         if (item) {
+            // Confirm deletion
+            if (!confirm('Are you sure you want to remove this hero item?')) {
+                return;
+            }
+
             item.remove();
             updateItemNumbers();
             reindexFormFields();
@@ -367,6 +467,7 @@
         // Show empty message if no items left
         if (container.querySelectorAll('.hero-item').length === 0) {
             container.innerHTML = '<div class="text-center py-8 text-gray-500"><p>No hero items yet. Click "Add Hero Item" to create your first carousel slide.</p></div>';
+            itemCounter = 0;
         }
     }
 
@@ -378,6 +479,8 @@
         const items = Array.from(container.querySelectorAll('.hero-item'));
         const currentIndex = items.findIndex(item => item.getAttribute('data-index') == index);
 
+        if (currentIndex === -1) return;
+
         if (direction === 'up' && currentIndex > 0) {
             const prevItem = items[currentIndex - 1];
             const currentItem = items[currentIndex];
@@ -386,6 +489,8 @@
             const nextItem = items[currentIndex + 1];
             const currentItem = items[currentIndex];
             container.insertBefore(nextItem, currentItem);
+        } else {
+            return; // Can't move in that direction
         }
 
         updateItemNumbers();
@@ -415,6 +520,8 @@
 
         items.forEach((item, newIndex) => {
             item.setAttribute('data-index', newIndex);
+
+            // Update all inputs and textareas
             const inputs = item.querySelectorAll('input, textarea');
             inputs.forEach(input => {
                 const name = input.getAttribute('name');
@@ -422,6 +529,52 @@
                     // Replace the index in the name attribute
                     const newName = name.replace(/\[items\]\[\d+\]/, `[items][${newIndex}]`);
                     input.setAttribute('name', newName);
+
+                    // Update ID if it exists and contains the old index
+                    const id = input.getAttribute('id');
+                    if (id) {
+                        const oldIndexMatch = id.match(/hero_(\d+)/);
+                        if (oldIndexMatch) {
+                            const newId = id.replace(/hero_\d+/, `hero_${newIndex}`);
+                            input.setAttribute('id', newId);
+                        }
+                    }
+                }
+            });
+
+            // Update image upload IDs and related elements
+            // Handle both existing items (sections_hero_items_X_image pattern) and dynamically added items (hero_X pattern)
+            const allElementsWithIds = item.querySelectorAll('[id]');
+            allElementsWithIds.forEach(el => {
+                const oldId = el.getAttribute('id');
+                if (oldId) {
+                    // Update IDs that contain the old index pattern
+                    // Pattern: sections_hero_items_0_image_url -> sections_hero_items_1_image_url
+                    const oldIndexPattern = new RegExp(`sections_hero_items_\\d+`, 'g');
+                    if (oldIndexPattern.test(oldId)) {
+                        const newId = oldId.replace(/sections_hero_items_\d+/, `sections_hero_items_${newIndex}`);
+                        el.setAttribute('id', newId);
+                    }
+                    // Also handle hero_X pattern for dynamically added items
+                    const heroPattern = new RegExp(`hero_\\d+`, 'g');
+                    if (heroPattern.test(oldId)) {
+                        const newId = oldId.replace(/hero_\d+/, `hero_${newIndex}`);
+                        el.setAttribute('id', newId);
+                    }
+                }
+            });
+
+            // Update labels that reference IDs
+            const labels = item.querySelectorAll('label[for]');
+            labels.forEach(label => {
+                const forAttr = label.getAttribute('for');
+                if (forAttr) {
+                    if (/sections_hero_items_\d+/.test(forAttr)) {
+                        label.setAttribute('for', forAttr.replace(/sections_hero_items_\d+/, `sections_hero_items_${newIndex}`));
+                    }
+                    if (/hero_\d+/.test(forAttr)) {
+                        label.setAttribute('for', forAttr.replace(/hero_\d+/, `hero_${newIndex}`));
+                    }
                 }
             });
 
@@ -430,41 +583,86 @@
             buttons.forEach(button => {
                 const onclick = button.getAttribute('onclick');
                 if (onclick) {
-                    button.setAttribute('onclick', onclick.replace(/\d+/, newIndex));
+                    // Update moveItem and removeHeroItem calls
+                    let updatedOnclick = onclick
+                        .replace(/moveItem\(\d+,/g, `moveItem(${newIndex},`)
+                        .replace(/removeHeroItem\(\d+\)/g, `removeHeroItem(${newIndex})`)
+                        .replace(/showUrlInput\('hero_\d+'\)/g, `showUrlInput('hero_${newIndex}')`)
+                        .replace(/showFileUpload\('hero_\d+'\)/g, `showFileUpload('hero_${newIndex}')`);
+
+                    // Update onclick handlers for existing items (sections_hero_items_X_image pattern)
+                    updatedOnclick = updatedOnclick
+                        .replace(/showUrlInput\('sections_hero_items_\d+_image'\)/g, `showUrlInput('sections_hero_items_${newIndex}_image')`)
+                        .replace(/showFileUpload\('sections_hero_items_\d+_image'\)/g, `showFileUpload('sections_hero_items_${newIndex}_image')`);
+
+                    button.setAttribute('onclick', updatedOnclick);
                 }
             });
+
+            // Update move up/down button visibility
+            const moveUpBtn = item.querySelector('button[onclick*="moveItem"][onclick*="up"]');
+            const moveDownBtn = item.querySelector('button[onclick*="moveItem"][onclick*="down"]');
+
+            if (newIndex === 0) {
+                if (moveUpBtn) moveUpBtn.style.display = 'none';
+            } else {
+                if (moveUpBtn) moveUpBtn.style.display = '';
+            }
+
+            if (newIndex === items.length - 1) {
+                if (moveDownBtn) moveDownBtn.style.display = 'none';
+            } else {
+                if (moveDownBtn) moveDownBtn.style.display = '';
+            }
         });
+
+        // Update itemCounter to match the highest index + 1
+        itemCounter = items.length;
     }
-    
+
     /**
      * Show URL input tab for hero image upload
      */
     function showUrlInput(name) {
-        document.getElementById(name + '_url_section').classList.remove('hidden');
-        document.getElementById(name + '_upload_section').classList.add('hidden');
-        document.getElementById(name + '_url_tab').classList.add('border-blue-500', 'bg-white', 'text-gray-700');
-        document.getElementById(name + '_url_tab').classList.remove('bg-gray-50', 'text-gray-500');
-        document.getElementById(name + '_upload_tab').classList.remove('border-blue-500', 'bg-white', 'text-gray-700');
-        document.getElementById(name + '_upload_tab').classList.add('bg-gray-50', 'text-gray-500');
-        
-        const urlInput = document.getElementById(name + '_url');
-        if (urlInput && urlInput.value) {
-            updateUrlPreview(name, urlInput.value);
+        const urlSection = document.getElementById(name + '_url_section');
+        const uploadSection = document.getElementById(name + '_upload_section');
+        const urlTab = document.getElementById(name + '_url_tab');
+        const uploadTab = document.getElementById(name + '_upload_tab');
+
+        if (urlSection && uploadSection && urlTab && uploadTab) {
+            urlSection.classList.remove('hidden');
+            uploadSection.classList.add('hidden');
+            urlTab.classList.add('border-blue-500', 'bg-white', 'text-gray-700');
+            urlTab.classList.remove('bg-gray-50', 'text-gray-500');
+            uploadTab.classList.remove('border-blue-500', 'bg-white', 'text-gray-700');
+            uploadTab.classList.add('bg-gray-50', 'text-gray-500');
+
+            const urlInput = document.getElementById(name + '_url');
+            if (urlInput && urlInput.value) {
+                updateUrlPreview(name, urlInput.value);
+            }
         }
     }
-    
+
     /**
      * Show file upload tab for hero image upload
      */
     function showFileUpload(name) {
-        document.getElementById(name + '_url_section').classList.add('hidden');
-        document.getElementById(name + '_upload_section').classList.remove('hidden');
-        document.getElementById(name + '_upload_tab').classList.add('border-blue-500', 'bg-white', 'text-gray-700');
-        document.getElementById(name + '_upload_tab').classList.remove('bg-gray-50', 'text-gray-500');
-        document.getElementById(name + '_url_tab').classList.remove('border-blue-500', 'bg-white', 'text-gray-700');
-        document.getElementById(name + '_url_tab').classList.add('bg-gray-50', 'text-gray-500');
+        const urlSection = document.getElementById(name + '_url_section');
+        const uploadSection = document.getElementById(name + '_upload_section');
+        const urlTab = document.getElementById(name + '_url_tab');
+        const uploadTab = document.getElementById(name + '_upload_tab');
+
+        if (urlSection && uploadSection && urlTab && uploadTab) {
+            urlSection.classList.add('hidden');
+            uploadSection.classList.remove('hidden');
+            uploadTab.classList.add('border-blue-500', 'bg-white', 'text-gray-700');
+            uploadTab.classList.remove('bg-gray-50', 'text-gray-500');
+            urlTab.classList.remove('border-blue-500', 'bg-white', 'text-gray-700');
+            urlTab.classList.add('bg-gray-50', 'text-gray-500');
+        }
     }
-    
+
     /**
      * Update URL preview for hero image
      */

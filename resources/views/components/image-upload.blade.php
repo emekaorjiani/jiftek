@@ -68,79 +68,127 @@
 
 @push('scripts')
 <script>
-function showUrlInput(name) {
-    document.getElementById(name + '_url_section').classList.remove('hidden');
-    document.getElementById(name + '_upload_section').classList.add('hidden');
-    document.getElementById(name + '_url_tab').classList.add('border-blue-500', 'bg-white', 'text-gray-700');
-    document.getElementById(name + '_url_tab').classList.remove('bg-gray-50', 'text-gray-500');
-    document.getElementById(name + '_upload_tab').classList.remove('border-blue-500', 'bg-white', 'text-gray-700');
-    document.getElementById(name + '_upload_tab').classList.add('bg-gray-50', 'text-gray-500');
-    
-    // Show URL preview if there's a value
-    const urlInput = document.getElementById(name + '_url');
-    if (urlInput.value) {
-        updateUrlPreview(name, urlInput.value);
-    }
-}
-
-function showFileUpload(name) {
-    document.getElementById(name + '_url_section').classList.add('hidden');
-    document.getElementById(name + '_upload_section').classList.remove('hidden');
-    document.getElementById(name + '_upload_tab').classList.add('border-blue-500', 'bg-white', 'text-gray-700');
-    document.getElementById(name + '_upload_tab').classList.remove('bg-gray-50', 'text-gray-500');
-    document.getElementById(name + '_url_tab').classList.remove('border-blue-500', 'bg-white', 'text-gray-700');
-    document.getElementById(name + '_url_tab').classList.add('bg-gray-50', 'text-gray-500');
-}
-
-function updateUrlPreview(name, url) {
-    const preview = document.getElementById(name + '_url_preview');
-    const img = preview.querySelector('img');
-    if (url) {
-        img.src = url;
-        preview.classList.remove('hidden');
-    } else {
-        preview.classList.add('hidden');
-    }
-}
-
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', function() {
-    @if($value)
-        // If there's an existing value, check if it's a URL or path
-        const existingValue = '{{ $value }}';
-        if (existingValue.startsWith('http://') || existingValue.startsWith('https://') || existingValue.startsWith('data:')) {
-            showUrlInput('{{ $idSafe }}');
-            updateUrlPreview('{{ $idSafe }}', existingValue);
-        } else {
-            showFileUpload('{{ $idSafe }}');
-        }
-    @endif
-    
-    // URL input preview
-    const urlInput = document.getElementById('{{ $idSafe }}_url');
-    if (urlInput) {
-        urlInput.addEventListener('input', function() {
-            updateUrlPreview('{{ $idSafe }}', this.value);
-        });
-    }
-    
-    // File upload preview
-    const fileInput = document.getElementById('{{ $idSafe }}_file');
-    if (fileInput) {
-        fileInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const preview = document.getElementById('{{ $idSafe }}_file_preview');
-                    const img = preview.querySelector('img');
-                    img.src = e.target.result;
-                    preview.classList.remove('hidden');
-                };
-                reader.readAsDataURL(file);
+// Define functions only if they don't already exist (to avoid conflicts)
+if (typeof showUrlInput === 'undefined') {
+    window.showUrlInput = function(name) {
+        const urlSection = document.getElementById(name + '_url_section');
+        const uploadSection = document.getElementById(name + '_upload_section');
+        const urlTab = document.getElementById(name + '_url_tab');
+        const uploadTab = document.getElementById(name + '_upload_tab');
+        
+        if (urlSection && uploadSection && urlTab && uploadTab) {
+            urlSection.classList.remove('hidden');
+            uploadSection.classList.add('hidden');
+            urlTab.classList.add('border-blue-500', 'bg-white', 'text-gray-700');
+            urlTab.classList.remove('bg-gray-50', 'text-gray-500');
+            uploadTab.classList.remove('border-blue-500', 'bg-white', 'text-gray-700');
+            uploadTab.classList.add('bg-gray-50', 'text-gray-500');
+            
+            // Show URL preview if there's a value
+            const urlInput = document.getElementById(name + '_url');
+            if (urlInput && urlInput.value) {
+                if (typeof updateUrlPreview !== 'undefined') {
+                    updateUrlPreview(name, urlInput.value);
+                }
             }
-        });
+        }
+    };
+}
+
+if (typeof showFileUpload === 'undefined') {
+    window.showFileUpload = function(name) {
+        const urlSection = document.getElementById(name + '_url_section');
+        const uploadSection = document.getElementById(name + '_upload_section');
+        const urlTab = document.getElementById(name + '_url_tab');
+        const uploadTab = document.getElementById(name + '_upload_tab');
+        
+        if (urlSection && uploadSection && urlTab && uploadTab) {
+            urlSection.classList.add('hidden');
+            uploadSection.classList.remove('hidden');
+            uploadTab.classList.add('border-blue-500', 'bg-white', 'text-gray-700');
+            uploadTab.classList.remove('bg-gray-50', 'text-gray-500');
+            urlTab.classList.remove('border-blue-500', 'bg-white', 'text-gray-700');
+            urlTab.classList.add('bg-gray-50', 'text-gray-500');
+        }
+    };
+}
+
+if (typeof updateUrlPreview === 'undefined') {
+    window.updateUrlPreview = function(name, url) {
+        const preview = document.getElementById(name + '_url_preview');
+        if (preview) {
+            const img = preview.querySelector('img');
+            if (url && img) {
+                img.src = url;
+                preview.classList.remove('hidden');
+            } else {
+                preview.classList.add('hidden');
+            }
+        }
+    };
+}
+
+// Initialize this specific component instance on page load
+(function() {
+    const idSafe = '{{ $idSafe }}';
+    
+    function initializeComponent() {
+        @if($value)
+            // If there's an existing value, check if it's a URL or path
+            const existingValue = '{{ $value }}';
+            if (existingValue && (existingValue.startsWith('http://') || existingValue.startsWith('https://') || existingValue.startsWith('data:') || existingValue.startsWith('/'))) {
+                if (typeof showUrlInput !== 'undefined') {
+                    showUrlInput(idSafe);
+                }
+                if (typeof updateUrlPreview !== 'undefined') {
+                    updateUrlPreview(idSafe, existingValue);
+                }
+            } else if (existingValue) {
+                if (typeof showFileUpload !== 'undefined') {
+                    showFileUpload(idSafe);
+                }
+            }
+        @endif
+        
+        // URL input preview
+        const urlInput = document.getElementById(idSafe + '_url');
+        if (urlInput) {
+            urlInput.addEventListener('input', function() {
+                if (typeof updateUrlPreview !== 'undefined') {
+                    updateUrlPreview(idSafe, this.value);
+                }
+            });
+        }
+        
+        // File upload preview
+        const fileInput = document.getElementById(idSafe + '_file');
+        if (fileInput) {
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const preview = document.getElementById(idSafe + '_file_preview');
+                        if (preview) {
+                            const img = preview.querySelector('img');
+                            if (img) {
+                                img.src = e.target.result;
+                                preview.classList.remove('hidden');
+                            }
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
     }
-});
+    
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeComponent);
+    } else {
+        initializeComponent();
+    }
+})();
 </script>
 @endpush
