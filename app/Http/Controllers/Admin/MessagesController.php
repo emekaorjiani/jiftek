@@ -9,6 +9,6 @@ class MessagesController extends Controller
 {
     public function index()
     {
-        return inertia('admin/messages/page');
+        return view('admin.messages');
     }
 }

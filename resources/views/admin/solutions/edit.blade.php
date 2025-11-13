@@ -6,7 +6,7 @@
 
 @section('content')
 <div class="bg-white rounded-lg shadow">
-    <form method="POST" action="{{ route('admin.content.solutions.update-item', $solution->id) }}" class="p-6">
+    <form method="POST" action="{{ route('admin.content.solutions.update-item', $solution->id) }}" enctype="multipart/form-data" class="p-6">
         @csrf
         @method('PUT')
         
@@ -47,14 +47,13 @@
                         </div>
                         
                         <div>
-                            <label for="image" class="block text-sm font-medium text-gray-700">Image URL</label>
-                            <input type="text" name="image" id="image" value="{{ old('image', $solution->image) }}"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            @if($solution->image)
-                                <div class="mt-4">
-                                    <img src="{{ $solution->image }}" alt="Preview" class="h-48 w-auto rounded border border-gray-200">
-                                </div>
-                            @endif
+                            <h4 class="text-md font-medium text-gray-900 mb-2">Solution Image</h4>
+                            <x-image-upload 
+                                name="image" 
+                                label="Solution Image"
+                                :value="old('image', $solution->image)"
+                                helpText="Enter an image URL or upload a file (JPG, PNG, GIF, SVG, WebP)"
+                            />
                         </div>
                         
                         <div>

@@ -20,7 +20,7 @@ Route::get('/contact', [FrontPagesController::class, 'contact'])->name('contact'
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
-        return Inertia::render('admin/page');
+        return redirect()->route('admin.dashboard');
     })->name('dashboard');
 });
 

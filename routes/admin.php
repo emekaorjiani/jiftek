@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ContentController;
 use App\Http\Controllers\Admin\MessagesController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\UsersController;
+use App\Http\Controllers\Admin\ImageUploadController;
 
 Route::middleware(['auth'])->group(function () {
     Route::prefix('admin')->name('admin.')->group(function () {
@@ -109,7 +110,9 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('admin/users')->name('admin.users.')->group(function () {
         Route::get('/', [UsersController::class, 'index'])->name('index');
         Route::get('/create', [UsersController::class, 'create'])->name('create');
+        Route::post('/store', [UsersController::class, 'store'])->name('store');
         Route::get('/{id}/edit', [UsersController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [UsersController::class, 'update'])->name('update');
         Route::get('/{id}/profile', [UsersController::class, 'profile'])->name('profile');
     });
 });

@@ -14,6 +14,7 @@ use App\Models\Partner;
 use App\Models\CaseStudy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * ContentController
@@ -23,6 +24,36 @@ use Illuminate\Support\Str;
  */
 class ContentController extends Controller
 {
+    /**
+     * Handle image upload or URL.
+     * Returns the full path/URL of the image.
+     */
+    protected function handleImageUpload(Request $request, string $fieldName, ?string $existingValue = null): ?string
+    {
+        // Check if a file was uploaded
+        if ($request->hasFile($fieldName . '_file')) {
+            $file = $request->file($fieldName . '_file');
+            
+            if ($file->isValid()) {
+                // Generate unique filename
+                $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
+                
+                // Store in public/images directory
+                $path = $file->storeAs('images', $filename, 'public');
+                
+                // Return full URL path
+                return Storage::url($path);
+            }
+        }
+        
+        // If no file uploaded, check for URL input
+        if ($request->has($fieldName) && !empty($request->input($fieldName))) {
+            return $request->input($fieldName);
+        }
+        
+        // Return existing value if nothing new provided
+        return $existingValue;
+    }
     /**
      * Display the home page content management interface.
      * Returns Blade view with links to dedicated section pages.
@@ -88,44 +119,104 @@ class ContentController extends Controller
 
     /**
      * Display the home hero section management interface.
-     * Returns Blade view.
+     * Returns Blade view with all hero items.
+     * Supports both legacy single-item format and new items array format.
      */
     public function homeHero()
     {
         $page = Page::where('slug', 'home')->first();
         $sections = [];
+        $heroItems = [];
 
         if ($page) {
             $sections = $page->sections()->get()->keyBy('section_key')->map(function ($section) {
                 return $section->content ?? [];
             })->toArray();
+
+            // Load hero items - check for items array first, then fall back to single item format
+            if (isset($sections['hero']['items']) && is_array($sections['hero']['items'])) {
+                // New format: items array
+                $heroItems = $sections['hero']['items'];
+            } elseif (isset($sections['hero']['badge'])) {
+                // Legacy format: single item - convert to array format
+                $heroItems = [[
+                    'badge' => $sections['hero']['badge'] ?? '',
+                    'title' => $sections['hero']['title'] ?? '',
+                    'titleHighlight' => $sections['hero']['titleHighlight'] ?? '',
+                    'description' => $sections['hero']['description'] ?? '',
+                    'primaryButton' => $sections['hero']['primaryButton'] ?? '',
+                    'primaryButtonLink' => $sections['hero']['primaryButtonLink'] ?? '',
+                    'secondaryButton' => $sections['hero']['secondaryButton'] ?? '',
+                    'secondaryButtonLink' => $sections['hero']['secondaryButtonLink'] ?? '',
+                    'image' => $sections['hero']['image'] ?? '',
+                    'imageAlt' => $sections['hero']['imageAlt'] ?? '',
+                ]];
+            }
         }
 
         return view('admin.home.hero', [
             'sections' => $sections,
+            'heroItems' => $heroItems,
         ]);
     }
 
     /**
      * Update the home hero section.
+     * Handles both single item updates and multiple items array.
      */
     public function updateHomeHero(Request $request)
     {
         $validated = $request->validate([
             'sections' => 'required|array',
             'sections.hero' => 'required|array',
+            'sections.hero.items' => 'nullable|array',
+            'sections.hero.items.*.badge' => 'nullable|string|max:255',
+            'sections.hero.items.*.title' => 'nullable|string|max:255',
+            'sections.hero.items.*.titleHighlight' => 'nullable|string|max:255',
+            'sections.hero.items.*.description' => 'nullable|string',
+            'sections.hero.items.*.primaryButton' => 'nullable|string|max:255',
+            'sections.hero.items.*.primaryButtonLink' => 'nullable|string|max:255',
+            'sections.hero.items.*.secondaryButton' => 'nullable|string|max:255',
+            'sections.hero.items.*.secondaryButtonLink' => 'nullable|string|max:255',
+            'sections.hero.items.*.image' => 'nullable|string|max:500',
+            'sections.hero.items.*.imageAlt' => 'nullable|string|max:255',
         ]);
 
         $page = Page::firstOrCreate(['slug' => 'home']);
 
         if (isset($validated['sections']['hero'])) {
+            $heroContent = $validated['sections']['hero'];
+
+            // If items array is provided, use it; otherwise keep existing structure
+            if (isset($heroContent['items']) && is_array($heroContent['items'])) {
+                // Filter out empty items and ensure all required fields have defaults
+                $heroContent['items'] = array_values(array_filter(array_map(function ($item) {
+                    // Only include non-empty items
+                    if (empty($item['title']) && empty($item['badge']) && empty($item['description'])) {
+                        return null;
+                    }
+                    return [
+                        'badge' => $item['badge'] ?? '',
+                        'title' => $item['title'] ?? '',
+                        'titleHighlight' => $item['titleHighlight'] ?? '',
+                        'description' => $item['description'] ?? '',
+                        'primaryButton' => $item['primaryButton'] ?? '',
+                        'primaryButtonLink' => $item['primaryButtonLink'] ?? '',
+                        'secondaryButton' => $item['secondaryButton'] ?? '',
+                        'secondaryButtonLink' => $item['secondaryButtonLink'] ?? '',
+                        'image' => $item['image'] ?? '',
+                        'imageAlt' => $item['imageAlt'] ?? '',
+                    ];
+                }, $heroContent['items'])));
+            }
+
             ContentSection::updateOrCreate(
                 [
                     'page_id' => $page->id,
                     'section_key' => 'hero',
                 ],
                 [
-                    'content' => $validated['sections']['hero'],
+                    'content' => $heroContent,
                     'order' => 0,
                 ]
             );
@@ -355,15 +446,8 @@ class ContentController extends Controller
             })->toArray();
         }
 
-        return inertia('admin/content/about/page', [
-            'page' => $page ? [
-                'id' => $page->id,
-                'slug' => $page->slug,
-                'content' => $page->content ?? [],
-                'meta_title' => $page->meta_title ?? '',
-                'meta_description' => $page->meta_description ?? '',
-                'meta_keywords' => $page->meta_keywords ?? '',
-            ] : null,
+        return view('admin.content.about', [
+            'page' => $page,
             'sections' => $sections,
         ]);
     }
@@ -430,15 +514,8 @@ class ContentController extends Controller
             })->toArray();
         }
 
-        return inertia('admin/content/solutions/page', [
-            'page' => $page ? [
-                'id' => $page->id,
-                'slug' => $page->slug,
-                'content' => $page->content ?? [],
-                'meta_title' => $page->meta_title ?? '',
-                'meta_description' => $page->meta_description ?? '',
-                'meta_keywords' => $page->meta_keywords ?? '',
-            ] : null,
+        return view('admin.content.solutions', [
+            'page' => $page,
             'sections' => $sections,
         ]);
     }
@@ -505,15 +582,8 @@ class ContentController extends Controller
             })->toArray();
         }
 
-        return inertia('admin/content/services/page', [
-            'page' => $page ? [
-                'id' => $page->id,
-                'slug' => $page->slug,
-                'content' => $page->content ?? [],
-                'meta_title' => $page->meta_title ?? '',
-                'meta_description' => $page->meta_description ?? '',
-                'meta_keywords' => $page->meta_keywords ?? '',
-            ] : null,
+        return view('admin.content.services', [
+            'page' => $page,
             'sections' => $sections,
         ]);
     }
@@ -580,15 +650,8 @@ class ContentController extends Controller
             })->toArray();
         }
 
-        return inertia('admin/content/contact/page', [
-            'page' => $page ? [
-                'id' => $page->id,
-                'slug' => $page->slug,
-                'content' => $page->content ?? [],
-                'meta_title' => $page->meta_title ?? '',
-                'meta_description' => $page->meta_description ?? '',
-                'meta_keywords' => $page->meta_keywords ?? '',
-            ] : null,
+        return view('admin.content.contact', [
+            'page' => $page,
             'sections' => $sections,
         ]);
     }
@@ -718,11 +781,15 @@ class ContentController extends Controller
             'category' => 'nullable|string|max:255',
             'tags' => 'nullable|string',
             'featured_image' => 'nullable|string',
+            'featured_image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
             'seo_title' => 'nullable|string|max:255',
             'seo_description' => 'nullable|string|max:500',
             'seo_keywords' => 'nullable|string|max:255',
             'published_at' => 'nullable|date',
         ]);
+
+        // Handle image upload
+        $validated['featured_image'] = $this->handleImageUpload($request, 'featured_image');
 
         // Auto-generate unique slug if not provided
         if (empty($validated['slug']) && isset($validated['title'])) {
@@ -772,11 +839,15 @@ class ContentController extends Controller
             'category' => 'nullable|string|max:255',
             'tags' => 'nullable|string',
             'featured_image' => 'nullable|string',
+            'featured_image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
             'seo_title' => 'nullable|string|max:255',
             'seo_description' => 'nullable|string|max:500',
             'seo_keywords' => 'nullable|string|max:255',
             'published_at' => 'nullable|date',
         ]);
+
+        // Handle image upload
+        $validated['featured_image'] = $this->handleImageUpload($request, 'featured_image', $insight->featured_image);
 
         // Auto-generate unique slug if not provided and title changed
         if (empty($validated['slug']) && isset($validated['title']) && $insight->title !== $validated['title']) {
@@ -888,6 +959,7 @@ class ContentController extends Controller
             'description' => 'nullable|string',
             'content' => 'nullable|string',
             'image' => 'nullable|string',
+            'image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
             'features' => 'nullable|array',
             'features.*' => 'string',
             'order' => 'nullable|integer|min:0',
@@ -897,6 +969,9 @@ class ContentController extends Controller
             'seo_description' => 'nullable|string|max:500',
             'seo_keywords' => 'nullable|string|max:255',
         ]);
+
+        // Handle image upload
+        $validated['image'] = $this->handleImageUpload($request, 'image');
 
         // Auto-generate slug if not provided
         if (empty($validated['slug']) && isset($validated['title'])) {
@@ -1041,6 +1116,7 @@ class ContentController extends Controller
             'description' => 'nullable|string',
             'content' => 'nullable|string',
             'image' => 'nullable|string',
+            'image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
             'icon' => 'nullable|string|max:255',
             'order' => 'nullable|integer|min:0',
             'is_active' => 'nullable|boolean',
@@ -1048,6 +1124,9 @@ class ContentController extends Controller
             'seo_description' => 'nullable|string|max:500',
             'seo_keywords' => 'nullable|string|max:255',
         ]);
+
+        // Handle image upload
+        $validated['image'] = $this->handleImageUpload($request, 'image');
 
         // Auto-generate slug if not provided
         if (empty($validated['slug']) && isset($validated['title'])) {
@@ -1088,6 +1167,7 @@ class ContentController extends Controller
             'description' => 'nullable|string',
             'content' => 'nullable|string',
             'image' => 'nullable|string',
+            'image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
             'icon' => 'nullable|string|max:255',
             'order' => 'nullable|integer|min:0',
             'is_active' => 'nullable|boolean',
@@ -1095,6 +1175,9 @@ class ContentController extends Controller
             'seo_description' => 'nullable|string|max:500',
             'seo_keywords' => 'nullable|string|max:255',
         ]);
+
+        // Handle image upload
+        $validated['image'] = $this->handleImageUpload($request, 'image', $solution->image);
 
         // Auto-generate slug if not provided and title changed
         if (empty($validated['slug']) && isset($validated['title']) && $solution->title !== $validated['title']) {
@@ -1316,6 +1399,7 @@ class ContentController extends Controller
             'description' => 'nullable|string',
             'content' => 'nullable|string',
             'image' => 'nullable|string',
+            'image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
             'client_name' => 'nullable|string|max:255',
             'client_industry' => 'nullable|string|max:255',
             'results' => 'nullable|string',
@@ -1325,6 +1409,9 @@ class ContentController extends Controller
             'seo_description' => 'nullable|string|max:500',
             'seo_keywords' => 'nullable|string|max:255',
         ]);
+
+        // Handle image upload
+        $validated['image'] = $this->handleImageUpload($request, 'image');
 
         // Auto-generate slug if not provided
         if (empty($validated['slug']) && isset($validated['title'])) {
@@ -1365,6 +1452,7 @@ class ContentController extends Controller
             'description' => 'nullable|string',
             'content' => 'nullable|string',
             'image' => 'nullable|string',
+            'image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
             'client_name' => 'nullable|string|max:255',
             'client_industry' => 'nullable|string|max:255',
             'results' => 'nullable|string',
@@ -1374,6 +1462,9 @@ class ContentController extends Controller
             'seo_description' => 'nullable|string|max:500',
             'seo_keywords' => 'nullable|string|max:255',
         ]);
+
+        // Handle image upload
+        $validated['image'] = $this->handleImageUpload($request, 'image', $testimonial->image);
 
         // Auto-generate slug if not provided and title changed
         if (empty($validated['slug']) && isset($validated['title']) && $testimonial->title !== $validated['title']) {
@@ -1465,11 +1556,19 @@ class ContentController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'logo' => 'required|string|max:500',
+            'logo' => 'nullable|string',
+            'logo_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
             'website' => 'nullable|url|max:255',
             'order' => 'nullable|integer|min:0',
             'is_active' => 'nullable|boolean',
         ]);
+
+        // Handle logo upload
+        $validated['logo'] = $this->handleImageUpload($request, 'logo');
+        
+        if (empty($validated['logo'])) {
+            return redirect()->back()->withErrors(['logo' => 'Logo is required. Please provide a URL or upload a file.'])->withInput();
+        }
 
         // Set defaults
         if (!isset($validated['order'])) {
@@ -1493,11 +1592,19 @@ class ContentController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'logo' => 'required|string|max:500',
+            'logo' => 'nullable|string',
+            'logo_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
             'website' => 'nullable|url|max:255',
             'order' => 'nullable|integer|min:0',
             'is_active' => 'nullable|boolean',
         ]);
+
+        // Handle logo upload
+        $validated['logo'] = $this->handleImageUpload($request, 'logo', $partner->logo);
+        
+        if (empty($validated['logo'])) {
+            $validated['logo'] = $partner->logo; // Keep existing if nothing new provided
+        }
 
         $partner->update($validated);
 
@@ -1592,6 +1699,7 @@ class ContentController extends Controller
             'description' => 'nullable|string',
             'content' => 'nullable|string',
             'image' => 'nullable|string',
+            'image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
             'client_name' => 'nullable|string|max:255',
             'client_industry' => 'nullable|string|max:255',
             'results' => 'nullable|string',
@@ -1601,6 +1709,9 @@ class ContentController extends Controller
             'seo_description' => 'nullable|string|max:500',
             'seo_keywords' => 'nullable|string|max:255',
         ]);
+
+        // Handle image upload
+        $validated['image'] = $this->handleImageUpload($request, 'image');
 
         // Auto-generate slug if not provided
         if (empty($validated['slug']) && isset($validated['title'])) {

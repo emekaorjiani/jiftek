@@ -6,7 +6,7 @@
 
 @section('content')
 <div class="bg-white rounded-lg shadow">
-    <form method="POST" action="{{ route('admin.content.services.store') }}" class="p-6">
+    <form method="POST" action="{{ route('admin.content.services.store') }}" enctype="multipart/form-data" class="p-6">
         @csrf
         
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -60,16 +60,12 @@
                 <!-- Image -->
                 <div>
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Service Image</h3>
-                    <div>
-                        <label for="image" class="block text-sm font-medium text-gray-700">Image URL or SVG Data URI</label>
-                        <textarea name="image" id="image" rows="4"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('image') border-red-300 @enderror"
-                            placeholder="Enter image URL or SVG data URI">{{ old('image') }}</textarea>
-                        <p class="mt-1 text-sm text-gray-500">Enter a full image URL or an SVG data URI</p>
-                        @error('image')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
+                    <x-image-upload 
+                        name="image" 
+                        label="Service Image"
+                        :value="old('image')"
+                        helpText="Enter an image URL or upload a file (JPG, PNG, GIF, SVG, WebP)"
+                    />
                 </div>
                 
                 <!-- Features -->

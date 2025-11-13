@@ -6,7 +6,7 @@
 
 @section('content')
 <div class="bg-white rounded-lg shadow">
-    <form method="POST" action="{{ route('admin.content.services.update-item', $service->id) }}" class="p-6">
+    <form method="POST" action="{{ route('admin.content.services.update-item', $service->id) }}" enctype="multipart/form-data" class="p-6">
         @csrf
         @method('PUT')
         

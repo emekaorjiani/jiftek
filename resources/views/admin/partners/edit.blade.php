@@ -6,7 +6,7 @@
 
 @section('content')
 <div class="bg-white rounded-lg shadow">
-    <form method="POST" action="{{ route('admin.content.partners.update', $partner->id) }}" class="p-6">
+    <form method="POST" action="{{ route('admin.content.partners.update', $partner->id) }}" enctype="multipart/form-data" class="p-6">
         @csrf
         @method('PUT')
         
@@ -26,34 +26,24 @@
                         </div>
                         
                         <div>
-                            <label for="logo" class="block text-sm font-medium text-gray-700">Logo URL or SVG Data URI *</label>
-                            <textarea name="logo" id="logo" rows="4" required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('logo') border-red-300 @enderror"
-                                placeholder="Enter logo URL or SVG data URI">{{ old('logo', $partner->logo) }}</textarea>
-                            <p class="mt-1 text-sm text-gray-500">Enter a full logo URL or an SVG data URI</p>
-                            @error('logo')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
+                            <x-image-upload 
+                                name="logo" 
+                                label="Company Logo"
+                                :value="old('logo', $partner->logo)"
+                                :required="true"
+                                helpText="Enter a logo URL or upload a file (JPG, PNG, GIF, SVG, WebP)"
+                            />
                         </div>
                         
                         <div>
-                            <label for="website" class="block text-sm font-medium text-gray-700">Website URL</label>
+                            <label for="website" class="block text-sm font-medium text-gray-700 mb-1">Website URL</label>
                             <input type="url" name="website" id="website" value="{{ old('website', $partner->website) }}"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('website') border-red-300 @enderror"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('website') border-red-500 @enderror"
                                 placeholder="https://example.com">
                             @error('website')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
-                        
-                        @if($partner->logo)
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Logo Preview</label>
-                            <div class="h-32 w-64 bg-white border border-gray-200 rounded p-4 flex items-center justify-center">
-                                <img src="{{ $partner->logo }}" alt="Preview" id="logo-preview" class="max-h-full max-w-full object-contain" onerror="this.style.display='none'">
-                            </div>
-                        </div>
-                        @endif
                     </div>
                 </div>
             </div>

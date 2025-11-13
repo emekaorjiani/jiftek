@@ -6,7 +6,7 @@
 
 @section('content')
 <div class="bg-white rounded-lg shadow">
-    <form method="POST" action="{{ route('admin.content.solutions.store') }}" class="p-6">
+    <form method="POST" action="{{ route('admin.content.solutions.store') }}" enctype="multipart/form-data" class="p-6">
         @csrf
         
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -47,9 +47,13 @@
                         </div>
                         
                         <div>
-                            <label for="image" class="block text-sm font-medium text-gray-700">Image URL</label>
-                            <input type="text" name="image" id="image" value="{{ old('image') }}"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            <h4 class="text-md font-medium text-gray-900 mb-2">Solution Image</h4>
+                            <x-image-upload 
+                                name="image" 
+                                label="Solution Image"
+                                :value="old('image')"
+                                helpText="Enter an image URL or upload a file (JPG, PNG, GIF, SVG, WebP)"
+                            />
                         </div>
                         
                         <div>

@@ -6,7 +6,7 @@
 
 @section('content')
 <div class="bg-white rounded-lg shadow">
-    <form method="POST" action="{{ route('admin.content.insights.update', $insight->id) }}" class="p-6">
+    <form method="POST" action="{{ route('admin.content.insights.update', $insight->id) }}" enctype="multipart/form-data" class="p-6">
         @csrf
         @method('PUT')
         
@@ -47,14 +47,13 @@
                         </div>
                         
                         <div>
-                            <label for="featured_image" class="block text-sm font-medium text-gray-700">Featured Image URL</label>
-                            <input type="text" name="featured_image" id="featured_image" value="{{ old('featured_image', $insight->featured_image) }}"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            @if($insight->featured_image)
-                                <div class="mt-4">
-                                    <img src="{{ $insight->featured_image }}" alt="Preview" class="h-48 w-auto rounded border border-gray-200">
-                                </div>
-                            @endif
+                            <h4 class="text-md font-medium text-gray-900 mb-2">Featured Image</h4>
+                            <x-image-upload 
+                                name="featured_image" 
+                                label="Featured Image"
+                                :value="old('featured_image', $insight->featured_image)"
+                                helpText="Enter an image URL or upload a file (JPG, PNG, GIF, SVG, WebP)"
+                            />
                         </div>
                     </div>
                 </div>

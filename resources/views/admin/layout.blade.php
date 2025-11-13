@@ -24,6 +24,122 @@
         .ql-editor {
             min-height: 400px;
         }
+
+        /* Improved Input Styling */
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"],
+        input[type="date"],
+        input[type="url"],
+        input[type="tel"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            transition: all 0.15s ease-in-out;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        input[type="number"]:focus,
+        input[type="date"]:focus,
+        input[type="url"]:focus,
+        input[type="tel"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        input[type="text"]:disabled,
+        input[type="email"]:disabled,
+        input[type="password"]:disabled,
+        textarea:disabled,
+        select:disabled {
+            background-color: #f3f4f6;
+            cursor: not-allowed;
+        }
+
+        /* Button Styling */
+        button[type="submit"],
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: white;
+            background-color: #2563eb;
+            border: 1px solid transparent;
+            border-radius: 0.375rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            transition: all 0.15s ease-in-out;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover,
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+
+        button[type="submit"]:focus,
+        .btn-primary:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+
+        button[type="submit"]:disabled,
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Secondary Button */
+        a.btn-secondary,
+        button.btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            background-color: white;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            transition: all 0.15s ease-in-out;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        a.btn-secondary:hover,
+        button.btn-secondary:hover {
+            background-color: #f9fafb;
+        }
+
+        /* Error States */
+        input.error,
+        textarea.error,
+        select.error {
+            border-color: #ef4444;
+        }
+
+        input.error:focus,
+        textarea.error:focus,
+        select.error:focus {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
     </style>
 
     <!-- Quill.js Rich Text Editor -->
