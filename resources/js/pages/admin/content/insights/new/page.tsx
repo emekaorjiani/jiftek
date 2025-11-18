@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { Save, Upload, ArrowLeft } from "lucide-react"
-import Link from "next/link"
+import { Link } from "@inertiajs/react"
 
 export default function NewInsightPage() {
   return (
