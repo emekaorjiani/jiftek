@@ -19,25 +19,25 @@ class RolePermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $name => $description) {
-            Permission::create([
-                'name' => $name,
-                'description' => $description,
-            ]);
+            Permission::updateOrCreate(
+                ['name' => $name],
+                ['description' => $description]
+            );
         }
 
         // Create roles
-        $adminRole = Role::create([
-            'name' => 'admin',
-            'description' => 'Full access to all features and settings',
-        ]);
+        $adminRole = Role::updateOrCreate(
+            ['name' => 'admin'],
+            ['description' => 'Full access to all features and settings']
+        );
 
-        $editorRole = Role::create([
-            'name' => 'editor',
-            'description' => 'Can edit and publish content, but cannot manage users or settings',
-        ]);
+        $editorRole = Role::updateOrCreate(
+            ['name' => 'editor'],
+            ['description' => 'Can edit and publish content, but cannot manage users or settings']
+        );
 
         // Assign permissions to roles
-        $adminRole->permissions()->attach(Permission::all());
-        $editorRole->permissions()->attach(Permission::whereIn('name', ['manage_content', 'view_analytics'])->get());
+        $adminRole->permissions()->sync(Permission::all()->pluck('id'));
+        $editorRole->permissions()->sync(Permission::whereIn('name', ['manage_content', 'view_analytics'])->pluck('id'));
     }
 }

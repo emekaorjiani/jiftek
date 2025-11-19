@@ -12,72 +12,90 @@ interface FrontLayoutProps {
 export default function FrontLayout({ children }: FrontLayoutProps) {
   return (
     <div className="flex min-h-screen flex-col bg-gray-900">
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full bg-gray-100 backdrop-blur supports-[backdrop-filter]:bg-gray-100 border-b border-100-ray-700 dark:bg-gray-900">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6 max-w-7xl">
-          <div className="flex items-center gap-2">
-            <Link href="/" className="flex items-center gap-2">
-              <img
-                src="/logo.png"
-                alt="Jiftek Logo"
-                width={40}
-                height={40}
-                className="h-10 w-10"
-              />
-              <span className="text-xl font-bold tracking-tight text-blue-600">Jiftek Digital Solutions</span>
+      {/* Header - Modern Dark Design */}
+      <header className="sticky top-0 z-50 w-full border-b border-slate-600/40 bg-slate-800/60 backdrop-blur-xl supports-[backdrop-filter]:bg-slate-800/60">
+        {/* Subtle gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-transparent to-indigo-500/5 pointer-events-none"></div>
+        
+        <div className="container mx-auto flex h-20 items-center justify-between px-4 md:px-6 max-w-7xl relative z-10">
+          <div className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="relative">
+                <img
+                  src="/logo.png"
+                  alt="Jiftek Logo"
+                  width={40}
+                  height={40}
+                  className="h-10 w-10 transition-transform group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-lg blur-sm opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              </div>
+              <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent group-hover:from-blue-400 group-hover:via-cyan-400 group-hover:to-indigo-400 transition-all">
+                Jiftek Digital Solutions
+              </span>
             </Link>
           </div>
 
-          <nav className="hidden md:flex gap-6 items-center">
-            <Link href="/about" className="text-sm font-medium text-blue-500 transition-colors hover:text-orange-600">
+          <nav className="hidden md:flex gap-1 items-center">
+            <Link 
+              href="/about" 
+              className="relative px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors rounded-lg hover:bg-slate-800/50 group"
+            >
               About Us
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 group-hover:w-full transition-all duration-300"></span>
             </Link>
             <Link
               href="/solutions"
-              className="text-sm font-medium text-blue-500 transition-colors hover:text-orange-600"
+              className="relative px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors rounded-lg hover:bg-slate-800/50 group"
             >
               Solutions
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 group-hover:w-full transition-all duration-300"></span>
             </Link>
             <Link
               href="/services"
-              className="text-sm font-medium text-blue-500 transition-colors hover:text-orange-600"
+              className="relative px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors rounded-lg hover:bg-slate-800/50 group"
             >
               Services
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 group-hover:w-full transition-all duration-300"></span>
             </Link>
             <Link
               href="/insights"
-              className="text-sm font-medium text-blue-500 transition-colors hover:text-orange-600"
+              className="relative px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors rounded-lg hover:bg-slate-800/50 group"
             >
               Insights
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 group-hover:w-full transition-all duration-300"></span>
             </Link>
-            <Link href="/contact" className="text-sm font-medium text-blue-500 transition-colors hover:text-orange-600">
+            <Link 
+              href="/contact" 
+              className="relative px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors rounded-lg hover:bg-slate-800/50 group"
+            >
               Contact
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 group-hover:w-full transition-all duration-300"></span>
             </Link>
           </nav>
 
           <div className="flex items-center gap-4">
-            {/* <Button variant="outline" className="hidden md:inline-flex bg-amber-500 text-gray-100 border-gray-200 hover:bg-amber-700 cursor-pointer">
-              Request a Demo
-            </Button> */}
             <Link href="/contact">
-            <Button className="hidden md:inline-flex bg-blue-700 hover:bg-blue-600 text-gray-200 cursor-pointer">Contact Us</Button>
+              <Button className="hidden md:inline-flex bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0 shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-300 cursor-pointer px-6 py-2.5 font-semibold">
+                Contact Us
+              </Button>
             </Link>
 
             {/* Mobile Menu */}
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden text-gray-200 hover:bg-gray-700 cursor-pointer">
+                <Button variant="ghost" size="icon" className="md:hidden text-gray-300 hover:text-white hover:bg-slate-800/50 cursor-pointer border border-slate-800/50">
                   <Menu className="h-6 w-6" />
                   <span className="sr-only">Toggle menu</span>
                 </Button>
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="w-full max-w-none sm:max-w-[400px] bg-gray-900 border-gray-700 p-0 flex flex-col h-full"
+                className="w-full max-w-none sm:max-w-[400px] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border-slate-800/50 p-0 flex flex-col h-full backdrop-blur-xl"
               >
-                <SheetHeader className="p-6 border-b border-gray-700">
+                <SheetHeader className="p-6 border-b border-slate-800/50">
                   <div className="flex items-center justify-between">
-                    <Link href="/" className="flex items-center gap-2" onClick={() => document.querySelector('[data-slot="sheet-close"]')?.click()}>
+                    <Link href="/" className="flex items-center gap-3 group" onClick={() => document.querySelector('[data-slot="sheet-close"]')?.click()}>
                       <img
                         src="/logo.png"
                         alt="Jiftek Logo"
@@ -85,10 +103,12 @@ export default function FrontLayout({ children }: FrontLayoutProps) {
                         height={40}
                         className="h-10 w-10"
                       />
-                      <span className="text-xl font-bold tracking-tight text-blue-600">Jiftek</span>
+                      <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">
+                        Jiftek
+                      </span>
                     </Link>
                     <SheetClose asChild>
-                      <Button variant="ghost" size="icon" className="text-gray-200 hover:bg-gray-800">
+                      <Button variant="ghost" size="icon" className="text-gray-300 hover:text-white hover:bg-slate-800/50 border border-slate-800/50">
                         <X className="h-5 w-5" />
                         <span className="sr-only">Close menu</span>
                       </Button>
@@ -101,7 +121,7 @@ export default function FrontLayout({ children }: FrontLayoutProps) {
                   <SheetClose asChild>
                     <Link
                       href="/about"
-                      className="block py-4 px-4 text-lg font-medium text-gray-200 hover:bg-gray-800 hover:text-blue-400 rounded-lg transition-all duration-200 active:scale-95"
+                      className="block py-4 px-4 text-lg font-medium text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-slate-800/50 hover:to-slate-800/30 rounded-lg transition-all duration-200 active:scale-95 border border-transparent hover:border-slate-700/50"
                     >
                       About Us
                     </Link>
@@ -109,7 +129,7 @@ export default function FrontLayout({ children }: FrontLayoutProps) {
                   <SheetClose asChild>
                     <Link
                       href="/solutions"
-                      className="block py-4 px-4 text-lg font-medium text-gray-200 hover:bg-gray-800 hover:text-blue-400 rounded-lg transition-all duration-200 active:scale-95"
+                      className="block py-4 px-4 text-lg font-medium text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-slate-800/50 hover:to-slate-800/30 rounded-lg transition-all duration-200 active:scale-95 border border-transparent hover:border-slate-700/50"
                     >
                       Solutions
                     </Link>
@@ -117,7 +137,7 @@ export default function FrontLayout({ children }: FrontLayoutProps) {
                   <SheetClose asChild>
                     <Link
                       href="/services"
-                      className="block py-4 px-4 text-lg font-medium text-gray-200 hover:bg-gray-800 hover:text-blue-400 rounded-lg transition-all duration-200 active:scale-95"
+                      className="block py-4 px-4 text-lg font-medium text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-slate-800/50 hover:to-slate-800/30 rounded-lg transition-all duration-200 active:scale-95 border border-transparent hover:border-slate-700/50"
                     >
                       Services
                     </Link>
@@ -125,7 +145,7 @@ export default function FrontLayout({ children }: FrontLayoutProps) {
                   <SheetClose asChild>
                     <Link
                       href="/insights"
-                      className="block py-4 px-4 text-lg font-medium text-gray-200 hover:bg-gray-800 hover:text-blue-400 rounded-lg transition-all duration-200 active:scale-95"
+                      className="block py-4 px-4 text-lg font-medium text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-slate-800/50 hover:to-slate-800/30 rounded-lg transition-all duration-200 active:scale-95 border border-transparent hover:border-slate-700/50"
                     >
                       Insights
                     </Link>
@@ -133,7 +153,7 @@ export default function FrontLayout({ children }: FrontLayoutProps) {
                   <SheetClose asChild>
                     <Link
                       href="/contact"
-                      className="block py-4 px-4 text-lg font-medium text-gray-200 hover:bg-gray-800 hover:text-blue-400 rounded-lg transition-all duration-200 active:scale-95"
+                      className="block py-4 px-4 text-lg font-medium text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-slate-800/50 hover:to-slate-800/30 rounded-lg transition-all duration-200 active:scale-95 border border-transparent hover:border-slate-700/50"
                     >
                       Contact
                     </Link>
@@ -141,10 +161,10 @@ export default function FrontLayout({ children }: FrontLayoutProps) {
                 </nav>
 
                 {/* CTA Button */}
-                <div className="p-6 border-t border-gray-700">
+                <div className="p-6 border-t border-slate-800/50">
                   <SheetClose asChild>
                     <Link href="/contact" className="block w-full">
-                      <Button className="w-full bg-blue-700 hover:bg-blue-600 text-gray-200 text-lg py-6">
+                      <Button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0 shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-300 text-lg py-6 font-semibold">
                         Contact Us
                       </Button>
                     </Link>

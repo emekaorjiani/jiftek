@@ -445,33 +445,86 @@ export default function HomePage({
 
   return (
     <FrontLayout>
-      {/* Animated Hero Section */}
-      <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-600 dark:bg-gradient-to-r dark:from-blue-900 dark:via-blue-800 dark:to-blue-700 relative overflow-hidden">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
+      {/* Animated Hero Section - Modern Dark Design */}
+      <section className="w-full py-16 md:py-28 lg:py-36 relative overflow-hidden min-h-[600px] md:min-h-[700px] lg:min-h-[800px]">
+        {/* Hero Background Images - Full Section Coverage */}
+        <div className="absolute inset-0 z-0">
+          {heroItems.map((item, index) => (
+            <img
+              key={`hero-bg-image-${index}`}
+              src={item.image}
+              alt={item.imageAlt}
+              className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ${
+                index === safeIndex
+                  ? 'opacity-100 scale-100 z-10'
+                  : 'opacity-0 scale-105 z-0'
+              }`}
+              loading={index === 0 ? 'eager' : 'lazy'}
+              onError={(e) => {
+                const target = e.target as HTMLImageElement
+                const fallbackImage = 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&h=800&fit=crop&q=80'
+                if (target.src !== fallbackImage) {
+                  console.warn(`Hero image failed to load: ${item.image}, using fallback`)
+                  target.src = fallbackImage
+                }
+              }}
+              onLoad={() => {
+                if (typeof window !== 'undefined' && !window.location.hostname.includes('production') && index === 0) {
+                  console.log('Hero image loaded successfully:', item.image)
+                }
+              }}
+            />
+          ))}
+          
+          {/* Dark gradient overlay for better text contrast */}
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-950/90 via-slate-900/80 to-black/90 z-20"></div>
+          
+          {/* Additional gradient overlay for depth */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-20"></div>
+        </div>
+
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden z-30">
+          <div className="absolute top-0 -left-4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-0 -right-4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-500/5 rounded-full blur-3xl"></div>
+        </div>
+        
+        {/* Grid pattern overlay */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)] z-30"></div>
+        
+        {/* Content Container */}
+        <div className="container mx-auto px-4 md:px-6 relative z-40">
+          <div className="max-w-4xl mx-auto">
             {/* Text Content with Animation */}
-            <div className="space-y-4 relative min-h-[400px] md:min-h-[500px]">
+            <div className="space-y-6 relative min-h-[400px] md:min-h-[500px] flex flex-col justify-center items-center text-center">
               <div
                 key={`badge-${safeIndex}`}
-                className={`inline-flex items-center rounded-lg bg-blue-900 px-3 py-1 text-sm font-medium text-blue-200 border border-blue-400 transition-all duration-500 ${
+                className={`inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-600/20 to-indigo-600/20 backdrop-blur-sm px-4 py-2 text-sm font-semibold text-blue-400 border border-blue-500/30 transition-all duration-500 w-fit ${
                   isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
                 }`}
               >
+                <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
                 <span>{currentItem.badge}</span>
               </div>
 
               <h1
                 key={`title-${safeIndex}`}
-                className={`text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl/tight text-gray-100 transition-all duration-500 delay-100 ${
+                className={`text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl text-white transition-all duration-500 delay-100 leading-tight ${
                   isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
                 }`}
               >
-                {currentItem.title} <span className="text-blue-400">{currentItem.titleHighlight}</span>
+                <span className="bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">
+                  {currentItem.title}
+                </span>{' '}
+                <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent">
+                  {currentItem.titleHighlight}
+                </span>
               </h1>
 
               <p
                 key={`description-${safeIndex}`}
-                className={`max-w-[600px] text-gray-300 md:text-xl/relaxed transition-all duration-500 delay-200 ${
+                className={`max-w-[700px] mx-auto text-gray-300 md:text-lg lg:text-xl leading-relaxed transition-all duration-500 delay-200 ${
                   isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
                 }`}
               >
@@ -480,18 +533,25 @@ export default function HomePage({
 
               <div
                 key={`buttons-${safeIndex}`}
-                className={`flex flex-col gap-2 min-[400px]:flex-row transition-all duration-500 delay-300 ${
+                className={`flex flex-col gap-4 min-[400px]:flex-row justify-center transition-all duration-500 delay-300 ${
                   isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
                 }`}
               >
                 <Link href={currentItem.primaryButtonLink}>
-                  <Button size="lg" className="bg-blue-700 hover:bg-blue-900 cursor-pointer">
+                  <Button 
+                    size="lg" 
+                    className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0 shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-300 cursor-pointer group px-8 py-6 text-base font-semibold"
+                  >
                     {currentItem.primaryButton}
-                    <ChevronRight className="ml-1 h-4 w-4" />
+                    <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
                 <Link href={currentItem.secondaryButtonLink}>
-                  <Button size="lg" variant="outline" className="dark:text-white text-amber-600 hover:text-amber-400 border-white hover:bg-blue-700 cursor-pointer">
+                  <Button 
+                    size="lg" 
+                    variant="outline" 
+                    className="bg-slate-900/50 backdrop-blur-sm border-slate-700 text-gray-300 hover:text-white hover:bg-slate-800/50 hover:border-slate-600 cursor-pointer px-8 py-6 text-base font-semibold transition-all duration-300"
+                  >
                     {currentItem.secondaryButton}
                   </Button>
                 </Link>
@@ -499,7 +559,7 @@ export default function HomePage({
 
               {/* Navigation Dots */}
               {heroItems.length > 1 && (
-                <div className="flex gap-2 mt-8">
+                <div className="flex gap-2 mt-8 justify-center">
                   {heroItems.map((_, index) => (
                     <button
                       key={index}
@@ -512,55 +572,14 @@ export default function HomePage({
                       }}
                       className={`h-2 rounded-full transition-all duration-300 ${
                         index === safeIndex
-                          ? 'w-8 bg-blue-400'
-                          : 'w-2 bg-blue-300/50 hover:bg-blue-300'
+                          ? 'w-10 bg-gradient-to-r from-blue-500 to-indigo-500 shadow-lg shadow-blue-500/50'
+                          : 'w-2 bg-slate-700 hover:bg-slate-600'
                       }`}
                       aria-label={`Go to slide ${index + 1}`}
                     />
                   ))}
                 </div>
               )}
-            </div>
-
-            {/* Image with Animation */}
-            <div className="mx-auto lg:mx-0 relative w-full min-h-[400px] md:min-h-[500px] aspect-square lg:aspect-auto">
-              {/* Gradient background effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-teal-500 rounded-2xl blur-2xl opacity-10 z-0"></div>
-              {/* Image container with proper z-index */}
-              <div className="relative w-full h-full min-h-[400px] md:min-h-[500px] rounded-2xl overflow-hidden z-10">
-                {heroItems.map((item, index) => (
-                  <img
-                    key={`hero-image-${index}`}
-                    src={item.image}
-                    alt={item.imageAlt}
-                    width={600}
-                    height={600}
-                    className={`absolute inset-0 w-full h-full object-cover rounded-2xl transition-all duration-1000 ${
-                      index === safeIndex
-                        ? 'opacity-100 scale-100 translate-x-0 z-20'
-                        : index < safeIndex
-                        ? 'opacity-0 scale-95 -translate-x-4 z-10'
-                        : 'opacity-0 scale-95 translate-x-4 z-10'
-                    }`}
-                    loading={index === 0 ? 'eager' : 'lazy'}
-                    onError={(e) => {
-                      // Fallback to reliable placeholder if image fails to load
-                      const target = e.target as HTMLImageElement
-                      const fallbackImage = 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&h=800&fit=crop&q=80'
-                      if (target.src !== fallbackImage) {
-                        console.warn(`Hero image failed to load: ${item.image}, using fallback`)
-                        target.src = fallbackImage
-                      }
-                    }}
-                    onLoad={() => {
-                      // Log successful image load in development
-                      if (typeof window !== 'undefined' && !window.location.hostname.includes('production') && index === 0) {
-                        console.log('Hero image loaded successfully:', item.image)
-                      }
-                    }}
-                  />
-                ))}
-              </div>
             </div>
           </div>
         </div>
