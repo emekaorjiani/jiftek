@@ -9,6 +9,6 @@ class SettingsController extends Controller
 {
     public function index()
     {
-        return inertia('admin/settings/page');
+        return view('admin.settings');
     }
 }

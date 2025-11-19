@@ -1,41 +1,68 @@
-import * as React from "react"
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+} from 'chart.js'
+import { Line, Bar, Pie } from 'react-chartjs-2'
+
+// Register ChartJS components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+)
 
 interface ChartProps {
   data: any
   options?: any
 }
 
-function BarChart({ data, options }: ChartProps) {
-  return (
-    <div className="flex items-center justify-center h-full w-full text-slate-500">
-      <p>Bar Chart - Chart library integration needed</p>
-    </div>
-  )
+export function LineChart({ data, options }: ChartProps) {
+  return <Line data={data} options={options} />
 }
 
-function LineChart({ data, options }: ChartProps) {
-  return (
-    <div className="flex items-center justify-center h-full w-full text-slate-500">
-      <p>Line Chart - Chart library integration needed</p>
-    </div>
-  )
+export function BarChart({ data, options }: ChartProps) {
+  return <Bar data={data} options={options} />
 }
 
-function PieChart({ data, options }: ChartProps) {
-  return (
-    <div className="flex items-center justify-center h-full w-full text-slate-500">
-      <p>Pie Chart - Chart library integration needed</p>
-    </div>
-  )
+export function PieChart({ data, options }: ChartProps) {
+  return <Pie data={data} options={options} />
 }
 
-function AreaChart({ data, options }: ChartProps) {
-  return (
-    <div className="flex items-center justify-center h-full w-full text-slate-500">
-      <p>Area Chart - Chart library integration needed</p>
-    </div>
-  )
+export function AreaChart({ data, options }: ChartProps) {
+  // For area chart, we'll use Line chart with fill option
+  const areaData = {
+    ...data,
+    datasets: data.datasets.map((dataset: any) => ({
+      ...dataset,
+      fill: true,
+    })),
+  }
+
+  const areaOptions = {
+    ...options,
+    plugins: {
+      ...options?.plugins,
+      filler: {
+        propagate: false,
+      },
+    },
+  }
+
+  return <Line data={areaData} options={areaOptions} />
 }
-
-export { BarChart, LineChart, PieChart, AreaChart }
-

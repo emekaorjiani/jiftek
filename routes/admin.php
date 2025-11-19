@@ -8,24 +8,115 @@ use App\Http\Controllers\Admin\ContentController;
 use App\Http\Controllers\Admin\MessagesController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\UsersController;
+use App\Http\Controllers\Admin\ImageUploadController;
 
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
-    Route::get('/content', [ContentController::class, 'index'])->name('content');
-    Route::get('/messages', [MessagesController::class, 'index'])->name('messages');
-    Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
-    Route::get('/users', [UsersController::class, 'index'])->name('users');
-});
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
+        Route::get('/messages', [MessagesController::class, 'index'])->name('messages');
+        Route::get('/messages/{id}', [MessagesController::class, 'show'])->name('messages.show');
+        Route::post('/messages/{id}/mark-read', [MessagesController::class, 'markAsRead'])->name('messages.mark-read');
+        Route::post('/messages/{id}/mark-unread', [MessagesController::class, 'markAsUnread'])->name('messages.mark-unread');
+        Route::delete('/messages/{id}', [MessagesController::class, 'destroy'])->name('messages.destroy');
+        Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
+        Route::get('/users', [UsersController::class, 'index'])->name('users');
+    });
 
-Route::prefix('admin/users')->name('admin.users.')->group(function () {
-    Route::get('/', [UsersController::class, 'index'])->name('index');
-    Route::get('/create', [UsersController::class, 'create'])->name('create');
-    Route::get('/{id}/edit', [UsersController::class, 'edit'])->name('edit');
-    Route::get('/{id}/profile', [UsersController::class, 'profile'])->name('profile');
-});
+    Route::prefix('admin/content')->name('admin.content.')->group(function () {
+    // Page content management routes
+    Route::get('/home', [ContentController::class, 'home'])->name('home');
+    Route::put('/home', [ContentController::class, 'updateHome'])->name('home.update');
 
+    // Home page section routes (dedicated pages instead of tabs)
+    Route::get('/home/hero', [ContentController::class, 'homeHero'])->name('home.hero');
+    Route::put('/home/hero', [ContentController::class, 'updateHomeHero'])->name('home.hero.update');
+    Route::get('/home/trusted', [ContentController::class, 'homeTrusted'])->name('home.trusted');
+    Route::put('/home/trusted', [ContentController::class, 'updateHomeTrusted'])->name('home.trusted.update');
+    Route::get('/home/solutions', [ContentController::class, 'homeSolutions'])->name('home.solutions');
+    Route::put('/home/solutions', [ContentController::class, 'updateHomeSolutions'])->name('home.solutions.update');
+    Route::get('/home/case-studies', [ContentController::class, 'homeCaseStudies'])->name('home.case-studies');
+    Route::put('/home/case-studies', [ContentController::class, 'updateHomeCaseStudies'])->name('home.case-studies.update');
+    Route::get('/home/cta', [ContentController::class, 'homeCta'])->name('home.cta');
+    Route::put('/home/cta', [ContentController::class, 'updateHomeCta'])->name('home.cta.update');
 
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-// Route::get?
+    Route::get('/about', [ContentController::class, 'about'])->name('about');
+    Route::put('/about', [ContentController::class, 'updateAbout'])->name('about.update');
+
+    // Solutions page content management (for the solutions page itself)
+    Route::get('/solutions', [ContentController::class, 'solutions'])->name('solutions');
+    Route::put('/solutions', [ContentController::class, 'updateSolutions'])->name('solutions.update');
+
+    // Solutions management routes (for managing individual solutions)
+    Route::get('/solutions/list', [ContentController::class, 'solutionsList'])->name('solutions.list');
+    Route::get('/solutions/new', [ContentController::class, 'createSolution'])->name('solutions.create');
+    Route::post('/solutions/store', [ContentController::class, 'storeSolution'])->name('solutions.store');
+    Route::get('/solutions/{id}/edit', [ContentController::class, 'editSolution'])->name('solutions.edit');
+    Route::put('/solutions/{id}', [ContentController::class, 'updateSolution'])->name('solutions.update-item');
+    Route::delete('/solutions/{id}', [ContentController::class, 'destroySolution'])->name('solutions.destroy');
+
+    // Services page content management (for the services page itself)
+    Route::get('/services', [ContentController::class, 'services'])->name('services');
+    Route::put('/services', [ContentController::class, 'updateServices'])->name('services.update');
+
+    // Services management routes (for managing individual services)
+    Route::get('/services/list', [ContentController::class, 'servicesList'])->name('services.list');
+    Route::get('/services/new', [ContentController::class, 'createService'])->name('services.create');
+    Route::post('/services/store', [ContentController::class, 'storeService'])->name('services.store');
+    Route::get('/services/{id}/edit', [ContentController::class, 'editService'])->name('services.edit');
+    Route::put('/services/{id}', [ContentController::class, 'updateService'])->name('services.update-item');
+    Route::delete('/services/{id}', [ContentController::class, 'destroyService'])->name('services.destroy');
+
+    Route::get('/contact', [ContentController::class, 'contact'])->name('contact');
+    Route::put('/contact', [ContentController::class, 'updateContact'])->name('contact.update');
+
+    // Insights management routes
+    Route::get('/insights', [ContentController::class, 'insights'])->name('insights');
+    Route::get('/insights/new', [ContentController::class, 'createInsight'])->name('insights.create');
+    Route::post('/insights', [ContentController::class, 'storeInsight'])->name('insights.store');
+    Route::get('/insights/{id}/edit', [ContentController::class, 'editInsight'])->name('insights.edit');
+    Route::put('/insights/{id}', [ContentController::class, 'updateInsight'])->name('insights.update');
+    Route::delete('/insights/{id}', [ContentController::class, 'destroyInsight'])->name('insights.destroy');
+
+    // Team members management routes
+    Route::get('/team-members', [ContentController::class, 'teamMembers'])->name('team-members');
+    Route::get('/team-members/new', [ContentController::class, 'createTeamMember'])->name('team-members.create');
+    Route::post('/team-members/store', [ContentController::class, 'storeTeamMember'])->name('team-members.store');
+    Route::get('/team-members/{id}/edit', [ContentController::class, 'editTeamMember'])->name('team-members.edit');
+    Route::put('/team-members/{id}', [ContentController::class, 'updateTeamMember'])->name('team-members.update');
+    Route::delete('/team-members/{id}', [ContentController::class, 'destroyTeamMember'])->name('team-members.destroy');
+
+    // Testimonials/case studies management routes
+    Route::get('/testimonials', [ContentController::class, 'testimonials'])->name('testimonials');
+    Route::get('/testimonials/new', [ContentController::class, 'createTestimonial'])->name('testimonials.create');
+    Route::post('/testimonials/store', [ContentController::class, 'storeTestimonial'])->name('testimonials.store');
+    Route::get('/testimonials/{id}/edit', [ContentController::class, 'editTestimonial'])->name('testimonials.edit');
+    Route::put('/testimonials/{id}', [ContentController::class, 'updateTestimonial'])->name('testimonials.update');
+    Route::delete('/testimonials/{id}', [ContentController::class, 'destroyTestimonial'])->name('testimonials.destroy');
+
+    // Partners/company logos management routes
+    Route::get('/partners', [ContentController::class, 'partners'])->name('partners');
+    Route::get('/partners/new', [ContentController::class, 'createPartner'])->name('partners.create');
+    Route::post('/partners/store', [ContentController::class, 'storePartner'])->name('partners.store');
+    Route::get('/partners/{id}/edit', [ContentController::class, 'editPartner'])->name('partners.edit');
+    Route::put('/partners/{id}', [ContentController::class, 'updatePartner'])->name('partners.update');
+    Route::delete('/partners/{id}', [ContentController::class, 'destroyPartner'])->name('partners.destroy');
+
+    // Case studies management routes
+    Route::get('/case-studies', [ContentController::class, 'caseStudies'])->name('case-studies');
+    Route::get('/case-studies/new', [ContentController::class, 'createCaseStudy'])->name('case-studies.create');
+    Route::post('/case-studies/store', [ContentController::class, 'storeCaseStudy'])->name('case-studies.store');
+    Route::get('/case-studies/{id}/edit', [ContentController::class, 'editCaseStudy'])->name('case-studies.edit');
+    Route::put('/case-studies/{id}', [ContentController::class, 'updateCaseStudy'])->name('case-studies.update');
+    Route::delete('/case-studies/{id}', [ContentController::class, 'destroyCaseStudy'])->name('case-studies.destroy');
+    });
+
+    Route::prefix('admin/users')->name('admin.users.')->group(function () {
+        Route::get('/', [UsersController::class, 'index'])->name('index');
+        Route::get('/create', [UsersController::class, 'create'])->name('create');
+        Route::post('/store', [UsersController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [UsersController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [UsersController::class, 'update'])->name('update');
+        Route::get('/{id}/profile', [UsersController::class, 'profile'])->name('profile');
+    });
 });

@@ -1,7 +1,29 @@
 import { Button } from "@/components/ui/button"
 import { ChevronRight, Award, Target, Users, Heart } from "lucide-react"
 import FrontLayout from "@/layouts/front-pages/front-layout"
-export default function AboutPage() {
+
+/**
+ * TeamMember Interface
+ */
+interface TeamMember {
+  id: number
+  name: string
+  title: string
+  bio: string | null
+  image: string | null
+}
+
+/**
+ * AboutPage Component
+ * 
+ * Displays information about Jiftek including mission, vision, values,
+ * company journey, and team members from the database.
+ */
+interface Props {
+  teamMembers?: TeamMember[]
+}
+
+export default function AboutPage({ teamMembers = [] }: Props) {
   return (
     <FrontLayout>
     <div className="flex min-h-screen flex-col">
@@ -25,11 +47,16 @@ export default function AboutPage() {
               <div className="mx-auto lg:mx-0 relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-teal-500 rounded-2xl blur-2xl opacity-10"></div>
                 <img
-                  src="/placeholder.svg?height=400&width=600&text=About+Us"
+                  src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop&q=80"
                   alt="Jiftek Team"
                   width={600}
                   height={400}
                   className="mx-auto object-cover rounded-2xl relative"
+                  onError={(e) => {
+                    // Fallback to placeholder if image fails to load
+                    const target = e.target as HTMLImageElement
+                    target.src = "/placeholder.svg?height=400&width=600&text=About+Us"
+                  }}
                 />
               </div>
             </div>
@@ -115,8 +142,10 @@ export default function AboutPage() {
           <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-blue-900">Our Journey</h2>
-                <p className="mx-auto max-w-[700px] text-slate-700 dark:text-blue-50 md:text-xl/relaxed">
+                {/* Main heading - white text for visibility on blue background */}
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-white">Our Journey</h2>
+                {/* Subtitle - light blue text for readability on blue background */}
+                <p className="mx-auto max-w-[700px] text-blue-50 md:text-xl/relaxed">
                   From our humble beginnings to where we are today.
                 </p>
               </div>
@@ -160,14 +189,17 @@ export default function AboutPage() {
                     description: "Continuing to grow and innovate, serving clients across industries and geographies.",
                   },
                 ].map((milestone, i) => (
-                  <div key={i} className="relative pl-8 border-l-2 border-blue-200">
+                  <div key={i} className="relative pl-8 border-l-2 border-blue-100">
                     <div className="absolute left-0 top-0 flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 -translate-x-1/2">
                       <div className="h-2 w-2 rounded-full bg-white"></div>
                     </div>
                     <div className="space-y-1">
-                      <div className="text-sm font-medium text-blue-200">{milestone.year}</div>
-                      <h3 className="text-lg font-bold">{milestone.title}</h3>
-                      <p className="text-slate-700 dark:text-blue-50">{milestone.description}</p>
+                      {/* Year - white text for better visibility */}
+                      <div className="text-sm font-medium text-white">{milestone.year}</div>
+                      {/* Title - white text for visibility on blue background */}
+                      <h3 className="text-lg font-bold text-white">{milestone.title}</h3>
+                      {/* Description - light blue text for readability */}
+                      <p className="text-blue-50">{milestone.description}</p>
                     </div>
                   </div>
                 ))}
@@ -176,76 +208,52 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Leadership Team */}
+        {/* Our Team */}
         <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-blue-950">
           <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-blue-500">Our Leadership Team</h2>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-blue-500">Our Team</h2>
                 <p className="mx-auto max-w-[700px] text-slate-700 dark:text-blue-50 md:text-xl/relaxed">
-                  Meet the experienced professionals guiding our company.
+                  Meet just a few of the talented group that will help you solve problems and create value through digital solutions.
                 </p>
               </div>
             </div>
             <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-12">
-              {[
-                {
-                  name: "Alex Johnson",
-                  title: "Chief Executive Officer",
-                  bio: "With over 20 years of experience in technology leadership, Alex has led Jiftek from its founding to become an industry leader.",
-                  img: "/placeholder.svg?height=300&width=300&text=CEO",
-                },
-                {
-                  name: "Sarah Chen",
-                  title: "Chief Technology Officer",
-                  bio: "Sarah brings deep technical expertise and a passion for innovation, leading our technology strategy and development teams.",
-                  img: "/placeholder.svg?height=300&width=300&text=CTO",
-                },
-                {
-                  name: "Michael Rodriguez",
-                  title: "Chief Operating Officer",
-                  bio: "Michael ensures operational excellence across all aspects of our business, with a focus on client satisfaction and results.",
-                  img: "/placeholder.svg?height=300&width=300&text=COO",
-                },
-                {
-                  name: "Emily Patel",
-                  title: "VP of Client Services",
-                  bio: "Emily leads our client services team, ensuring we deliver exceptional value and build lasting relationships with our clients.",
-                  img: "/placeholder.svg?height=300&width=300&text=VP",
-                },
-                {
-                  name: "David Kim",
-                  title: "VP of Engineering",
-                  bio: "David oversees our engineering teams, bringing technical excellence and innovation to every solution we deliver.",
-                  img: "/placeholder.svg?height=300&width=300&text=VP",
-                },
-                {
-                  name: "Lisa Thompson",
-                  title: "VP of Marketing",
-                  bio: "Lisa leads our marketing efforts, sharing Jiftek's story and connecting our solutions with the organizations that need them most.",
-                  img: "/placeholder.svg?height=300&width=300&text=VP",
-                },
-              ].map((leader, i) => (
-                <div
-                  key={i}
-                  className="group relative overflow-hidden rounded-lg border border-slate-200 bg-white dark:bg-blue-950 shadow-sm"
-                >
-                  <div className="aspect-square overflow-hidden">
-                    <img
-                      src={leader.img || "/placeholder.svg"}
-                      alt={leader.name}
-                      width={300}
-                      height={300}
-                      className="object-cover transition-all group-hover:scale-105"
-                    />
+              {teamMembers && teamMembers.length > 0 ? (
+                teamMembers.map((member) => (
+                  <div
+                    key={member.id}
+                    className="group relative overflow-hidden rounded-lg border border-slate-200 bg-white dark:bg-blue-950 shadow-sm"
+                  >
+                    <div className="aspect-square overflow-hidden">
+                      <img
+                        src={member.image || "/placeholder.svg?height=300&width=300&text=" + encodeURIComponent(member.name)}
+                        alt={member.name}
+                        width={300}
+                        height={300}
+                        className="object-cover transition-all group-hover:scale-105 w-full h-full"
+                        onError={(e) => {
+                          // Fallback to placeholder if image fails to load
+                          const target = e.target as HTMLImageElement
+                          target.src = "/placeholder.svg?height=300&width=300&text=" + encodeURIComponent(member.name)
+                        }}
+                      />
+                    </div>
+                    <div className="p-6">
+                      <h3 className="text-lg font-bold">{member.name}</h3>
+                      <p className="text-sm text-blue-600">{member.title}</p>
+                      {member.bio && (
+                        <p className="mt-2 text-sm text-slate-700 dark:text-blue-50">{member.bio}</p>
+                      )}
+                    </div>
                   </div>
-                  <div className="p-6">
-                    <h3 className="text-lg font-bold">{leader.name}</h3>
-                    <p className="text-sm text-blue-600">{leader.title}</p>
-                    <p className="mt-2 text-sm text-slate-700 dark:text-blue-50">{leader.bio}</p>
-                  </div>
+                ))
+              ) : (
+                <div className="col-span-full text-center py-12">
+                  <p className="text-slate-600 dark:text-slate-400">No team members available at the moment. Please check back later.</p>
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </section>

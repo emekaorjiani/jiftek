@@ -1,22 +1,371 @@
-import { Link } from "@inertiajs/react"
+import { Link, useForm, router } from "@inertiajs/react"
+import { useState, useEffect, FormEventHandler } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Phone, Mail, MapPin, Clock } from "lucide-react"
+import { Phone, Mail, MapPin, MessageCircle } from "lucide-react"
 import FrontLayout from "@/layouts/front-pages/front-layout"
-export default function ContactPage() {
+
+/**
+ * ContactInfoItem interface for type safety
+ */
+interface ContactInfoItem {
+  type: string
+  label: string
+  value: string
+  link?: string
+}
+
+/**
+ * ContactPage component props
+ */
+interface ContactPageProps {
+  contactInfo?: {
+    title?: string
+    items?: ContactInfoItem[]
+  }
+  mapInfo?: {
+    title?: string
+    latitude?: number
+    longitude?: number
+    zoom?: number
+    address?: string
+  }
+  heroSection?: {
+    title?: string
+    description?: string
+  }
+}
+
+/**
+ * Get icon component based on contact info type
+ */
+function getContactIcon(type: string) {
+  switch (type) {
+    case 'phone':
+      return Phone
+    case 'whatsapp':
+      return MessageCircle
+    case 'email':
+      return Mail
+    case 'address':
+      return MapPin
+    default:
+      return MapPin
+  }
+}
+
+/**
+ * Contact Form Component with CAPTCHA
+ */
+function ContactFormComponent() {
+  const [captcha, setCaptcha] = useState<{ question: string; token: string } | null>(null)
+  const [captchaAnswer, setCaptchaAnswer] = useState('')
+  const [loadingCaptcha, setLoadingCaptcha] = useState(false)
+
+  const { data, setData, processing, errors, reset } = useForm({
+    name: '',
+    email: '',
+    phone: '',
+    company: '',
+    subject: '',
+    message: '',
+    captcha_answer: 0,
+    captcha_token: '',
+  })
+
+  const loadCaptcha = async () => {
+    setLoadingCaptcha(true)
+    try {
+      const response = await fetch('/captcha/generate', {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        credentials: 'same-origin', // Important: include cookies/session
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to generate CAPTCHA')
+      }
+
+      const result = await response.json()
+      setCaptcha(result)
+      setData('captcha_token', result.token)
+      console.log('CAPTCHA loaded:', result.question, 'Token:', result.token.substring(0, 20) + '...')
+    } catch (error) {
+      console.error('Failed to load CAPTCHA:', error)
+      alert('Failed to load CAPTCHA. Please refresh the page.')
+    } finally {
+      setLoadingCaptcha(false)
+    }
+  }
+
+  // Load CAPTCHA on component mount
+  useEffect(() => {
+    loadCaptcha()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const submit: FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault()
+
+    // Ensure we have the current token
+    if (!captcha || !captcha.token) {
+      alert('Please wait for CAPTCHA to load')
+      loadCaptcha()
+      return
+    }
+
+    // Update form data with CAPTCHA answer and token
+    const captchaAnswerInt = parseInt(captchaAnswer, 10)
+
+    if (isNaN(captchaAnswerInt)) {
+      alert('Please enter a valid CAPTCHA answer')
+      return
+    }
+
+    // Prepare complete form data with CAPTCHA
+    const formData = {
+      name: data.name,
+      email: data.email,
+      phone: data.phone || '',
+      company: data.company || '',
+      subject: data.subject || '',
+      message: data.message,
+      captcha_answer: captchaAnswerInt,
+      captcha_token: captcha.token,
+    }
+
+    console.log('Submitting form with:', {
+      name: formData.name,
+      email: formData.email,
+      captcha_answer: formData.captcha_answer,
+      captcha_token: formData.captcha_token.substring(0, 20) + '...',
+    })
+
+    // Use router.post directly to ensure all data is sent
+    router.post('/contact/submit', formData, {
+      preserveScroll: true,
+      preserveState: false,
+      onStart: () => {
+        // Update form processing state
+      },
+      onSuccess: () => {
+        reset()
+        setCaptchaAnswer('')
+        loadCaptcha() // Generate new CAPTCHA
+        // Toast notification will be shown via flash message
+      },
+      onError: (errors: Record<string, string>) => {
+        console.error('Form errors:', errors)
+        // Reload CAPTCHA on error
+        loadCaptcha()
+        setCaptchaAnswer('')
+      },
+      onFinish: () => {
+        // Form submission finished
+      },
+    })
+  }
+
+  return (
+    <form onSubmit={submit} className="space-y-4">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="space-y-2">
+          <label htmlFor="first-name" className="text-sm font-medium leading-none">
+            First name
+          </label>
+          <Input
+            id="first-name"
+            value={data.name.split(' ')[0] || ''}
+            onChange={(e) => {
+              const parts = data.name.split(' ')
+              parts[0] = e.target.value
+              setData('name', parts.join(' ').trim())
+            }}
+            placeholder="Enter your first name"
+          />
+        </div>
+        <div className="space-y-2">
+          <label htmlFor="last-name" className="text-sm font-medium leading-none">
+            Last name
+          </label>
+          <Input
+            id="last-name"
+            value={data.name.split(' ').slice(1).join(' ') || ''}
+            onChange={(e) => {
+              const first = data.name.split(' ')[0] || ''
+              setData('name', `${first} ${e.target.value}`.trim())
+            }}
+            placeholder="Enter your last name"
+          />
+        </div>
+      </div>
+      <div className="space-y-2">
+        <label htmlFor="email" className="text-sm font-medium leading-none">
+          Email *
+        </label>
+        <Input
+          id="email"
+          type="email"
+          value={data.email}
+          onChange={(e) => setData('email', e.target.value)}
+          required
+          placeholder="Enter your email"
+        />
+        {errors.email && <p className="text-xs text-red-600">{errors.email}</p>}
+      </div>
+      <div className="space-y-2">
+        <label htmlFor="phone" className="text-sm font-medium leading-none">
+          Phone
+        </label>
+        <Input
+          id="phone"
+          type="tel"
+          value={data.phone}
+          onChange={(e) => setData('phone', e.target.value)}
+          placeholder="Enter your phone number"
+        />
+      </div>
+      <div className="space-y-2">
+        <label htmlFor="company" className="text-sm font-medium leading-none">
+          Company
+        </label>
+        <Input
+          id="company"
+          value={data.company}
+          onChange={(e) => setData('company', e.target.value)}
+          placeholder="Enter your company name"
+        />
+      </div>
+      <div className="space-y-2">
+        <label htmlFor="subject" className="text-sm font-medium leading-none">
+          Subject
+        </label>
+        <Input
+          id="subject"
+          value={data.subject}
+          onChange={(e) => setData('subject', e.target.value)}
+          placeholder="Enter the subject"
+        />
+      </div>
+      <div className="space-y-2">
+        <label htmlFor="message" className="text-sm font-medium leading-none">
+          Message *
+        </label>
+        <Textarea
+          id="message"
+          value={data.message}
+          onChange={(e) => setData('message', e.target.value)}
+          required
+          placeholder="Enter your message"
+          className="min-h-[150px] resize-y"
+        />
+        {errors.message && <p className="text-xs text-red-600">{errors.message}</p>}
+      </div>
+
+      {/* CAPTCHA */}
+      <div className="space-y-2">
+        <label htmlFor="captcha" className="text-sm font-medium leading-none">
+          Security Check *
+        </label>
+        <div className="flex items-center gap-3">
+          <div className="flex-1">
+            {loadingCaptcha ? (
+              <div className="h-10 rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-500 flex items-center">
+                Loading...
+              </div>
+            ) : captcha ? (
+              <div className="h-10 rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-900 font-semibold flex items-center">
+                What is {captcha.question}?
+              </div>
+            ) : (
+              <div className="h-10 rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-500 flex items-center">
+                Loading CAPTCHA...
+              </div>
+            )}
+          </div>
+          <Input
+            id="captcha"
+            type="number"
+            value={captchaAnswer}
+            onChange={(e) => setCaptchaAnswer(e.target.value)}
+            required
+            className="w-24"
+            placeholder="Answer"
+          />
+          <button
+            type="button"
+            onClick={loadCaptcha}
+            className="px-3 py-2 text-xs text-gray-600 hover:text-gray-900 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+            title="Refresh CAPTCHA"
+          >
+            ↻
+          </button>
+        </div>
+        {errors.captcha_answer && <p className="text-xs text-red-600">{errors.captcha_answer}</p>}
+      </div>
+
+      <Button
+        type="submit"
+        className="w-full bg-blue-600 hover:bg-blue-700"
+        disabled={processing || loadingCaptcha}
+      >
+        {processing ? 'Sending...' : 'Send Message'}
+      </Button>
+    </form>
+  )
+}
+
+/**
+ * ContactPage - Displays contact form and contact information
+ *
+ * Fetches contact information from the database and displays it dynamically.
+ * Includes contact form, contact info cards, and interactive OpenStreetMap.
+ */
+export default function ContactPage({
+  contactInfo = { title: 'Contact Information', items: [] },
+  mapInfo = { title: 'Our Location', latitude: 6.6, longitude: 3.505 },
+  heroSection = { title: 'Contact Us', description: 'Have questions or ready to start your next project? Get in touch with our team.' }
+}: ContactPageProps) {
+  // Generate OpenStreetMap embed URL with coordinates
+  const generateMapUrl = (lat: number, lon: number) => {
+    // Calculate bounding box for the map view
+    const latOffset = 0.02
+    const lonOffset = 0.02
+    const bbox = `${lon - lonOffset},${lat - latOffset},${lon + lonOffset},${lat + latOffset}`
+    return `https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(bbox)}&layer=mapnik&marker=${lat},${lon}`
+  }
+
+  // Generate link to view larger map
+  const generateMapLink = (lat: number, lon: number) => {
+    return `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=15/${lat}/${lon}`
+  }
+
+  const mapUrl = mapInfo.latitude && mapInfo.longitude
+    ? generateMapUrl(mapInfo.latitude, mapInfo.longitude)
+    : generateMapUrl(6.6, 3.505)
+
+  const mapLink = mapInfo.latitude && mapInfo.longitude
+    ? generateMapLink(mapInfo.latitude, mapInfo.longitude)
+    : generateMapLink(6.6, 3.505)
+
   return (
     <FrontLayout>
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-blue-950">
+        <section className="w-full py-12 md:py-24 lg:py-32 from-blue-800 to-blue-700 bg-gradient-to-r dark:bg-blue-950">
           <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl text-slate-700 dark:text-blue-50">Contact Us</h1>
-                <p className="mx-auto max-w-[700px] text-slate-700 dark:text-blue-50 md:text-xl/relaxed">
-                  Have questions or ready to start your next project? Get in touch with our team.
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl text-blue-400">
+                  {heroSection.title || 'Contact Us'}
+                </h1>
+                <p className="mx-auto max-w-[700px] text-slate-200 dark:text-blue-50 md:text-xl/relaxed">
+                  {heroSection.description || 'Have questions or ready to start your next project? Get in touch with our team.'}
                 </p>
               </div>
             </div>
@@ -34,115 +383,90 @@ export default function ContactPage() {
                     Fill out the form below and our team will get back to you within 24 hours.
                   </p>
                 </div>
-                <form className="space-y-4">
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="space-y-2">
-                      <label htmlFor="first-name" className="text-sm font-medium leading-none">
-                        First name
-                      </label>
-                      <Input id="first-name" placeholder="Enter your first name" />
-                    </div>
-                    <div className="space-y-2">
-                      <label htmlFor="last-name" className="text-sm font-medium leading-none">
-                        Last name
-                      </label>
-                      <Input id="last-name" placeholder="Enter your last name" />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="email" className="text-sm font-medium leading-none">
-                      Email
-                    </label>
-                    <Input id="email" type="email" placeholder="Enter your email" />
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="phone" className="text-sm font-medium leading-none">
-                      Phone
-                    </label>
-                    <Input id="phone" type="tel" placeholder="Enter your phone number" />
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="company" className="text-sm font-medium leading-none">
-                      Company
-                    </label>
-                    <Input id="company" placeholder="Enter your company name" />
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="subject" className="text-sm font-medium leading-none">
-                      Subject
-                    </label>
-                    <Input id="subject" placeholder="Enter the subject" />
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="message" className="text-sm font-medium leading-none">
-                      Message
-                    </label>
-                    <Textarea id="message" placeholder="Enter your message" className="min-h-[150px] resize-y" />
-                  </div>
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700">Send Message</Button>
-                </form>
+                <ContactFormComponent />
               </div>
               <div className="space-y-8">
                 <div className="space-y-2">
-                  <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight text-slate-700 dark:text-blue-50">Contact Information</h2>
+                  <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight text-slate-700 dark:text-blue-50">
+                    {contactInfo.title || 'Contact Information'}
+                  </h2>
                   <p className="text-slate-700 dark:text-blue-50 md:text-lg/relaxed">
                     Reach out to us directly using the information below.
                   </p>
                 </div>
-                <div className="grid gap-4 sm:grid-cols-2">
+                {/* Contact Information Items - Dynamically rendered from database */}
+                {contactInfo.items && contactInfo.items.length > 0 ? (
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {contactInfo.items.map((item, index) => {
+                      const IconComponent = getContactIcon(item.type)
+                      const isLink = item.link && item.link.trim() !== ''
+                      const isExternal = item.link?.startsWith('http')
+
+                      return (
+                        <div key={index} className="rounded-lg border border-slate-200 bg-white dark:bg-blue-950 p-6 shadow-sm">
+                          <div className="flex items-start space-x-4">
+                            <IconComponent className="h-6 w-6 text-blue-600" />
+                            <div className="space-y-1">
+                              <h3 className="font-medium">{item.label}</h3>
+                              {isLink ? (
+                                <a
+                                  href={item.link}
+                                  target={isExternal ? "_blank" : undefined}
+                                  rel={isExternal ? "noopener noreferrer" : undefined}
+                                  className="text-sm text-slate-700 dark:text-blue-50 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                                >
+                                  {item.value}
+                                </a>
+                              ) : (
+                                <p className="text-sm text-slate-700 dark:text-blue-50">
+                                  {item.value}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-slate-500 dark:text-slate-400">
+                    No contact information available.
+                  </div>
+                )}
+                {/* Map Section - Dynamically rendered with coordinates from database */}
+                {mapInfo && (
                   <div className="rounded-lg border border-slate-200 bg-white dark:bg-blue-950 p-6 shadow-sm">
-                    <div className="flex items-start space-x-4">
-                      <Phone className="h-6 w-6 text-blue-600" />
-                      <div className="space-y-1">
-                        <h3 className="font-medium">Phone</h3>
-                        <p className="text-sm text-slate-700 dark:text-blue-50">+1 (555) 123-4567</p>
-                        <p className="text-sm text-slate-500 dark:text-blue-50">Mon-Fri, 9am-5pm EST</p>
-                      </div>
+                    <h3 className="font-medium mb-4">{mapInfo.title || 'Our Location'}</h3>
+                    <div className="aspect-video overflow-hidden rounded-lg border border-slate-200">
+                      <iframe
+                        width="100%"
+                        height="100%"
+                        frameBorder="0"
+                        scrolling="no"
+                        marginHeight={0}
+                        marginWidth={0}
+                        src={mapUrl}
+                        className="w-full h-full"
+                        title="Office Location Map"
+                      />
                     </div>
-                  </div>
-                  <div className="rounded-lg border border-slate-200 bg-white dark:bg-blue-950 p-6 shadow-sm">
-                    <div className="flex items-start space-x-4">
-                      <Mail className="h-6 w-6 text-blue-600" />
-                      <div className="space-y-1">
-                        <h3 className="font-medium">Email</h3>
-                        <p className="text-sm text-slate-700 dark:text-blue-50">info@jiftek.com</p>
-                        <p className="text-sm text-slate-500 dark:text-blue-50">We'll respond within 24 hours</p>
-                      </div>
+                    <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                      <a
+                        href={mapLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                      >
+                        View larger map
+                      </a>
                     </div>
+                    {mapInfo.address && (
+                      <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+                        {mapInfo.address}
+                      </p>
+                    )}
                   </div>
-                  <div className="rounded-lg border border-slate-200 bg-white dark:bg-blue-950 p-6 shadow-sm">
-                    <div className="flex items-start space-x-4">
-                      <MapPin className="h-6 w-6 text-blue-600" />
-                      <div className="space-y-1">
-                        <h3 className="font-medium">Headquarters</h3>
-                        <p className="text-sm text-slate-700 dark:text-blue-50">123 Tech Plaza, Suite 400</p>
-                        <p className="text-sm text-slate-700 dark:text-blue-50">San Francisco, CA 94105</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="rounded-lg border border-slate-200 bg-white dark:bg-blue-950 p-6 shadow-sm">
-                    <div className="flex items-start space-x-4">
-                      <Clock className="h-6 w-6 text-blue-600" />
-                      <div className="space-y-1">
-                        <h3 className="font-medium">Business Hours</h3>
-                        <p className="text-sm text-slate-700 dark:text-blue-50">Monday-Friday: 9am-5pm</p>
-                        <p className="text-sm text-slate-700 dark:text-blue-50">Saturday-Sunday: Closed</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="rounded-lg border border-slate-200 bg-white dark:bg-blue-950 p-6 shadow-sm">
-                  <h3 className="font-medium mb-4">Our Locations</h3>
-                  <div className="aspect-video overflow-hidden rounded-lg">
-                    <img
-                      src="/placeholder.svg?height=300&width=600&text=Map"
-                      alt="Office Locations Map"
-                      width={600}
-                      height={300}
-                      className="object-cover"
-                    />
-                  </div>
-                </div>
+                )}
                 <div className="space-y-2">
                   <h3 className="font-medium">Connect With Us</h3>
                   <div className="flex gap-4">
